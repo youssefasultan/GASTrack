@@ -8,9 +8,14 @@ import 'product.dart';
 
 class Payments with ChangeNotifier {
   List<Payment> _paymentsItems = [];
+  double _total = 0.0;
 
   List<Payment> getPaymentsMethods() {
     return _paymentsItems;
+  }
+
+  double get getTotal {
+    return _total;
   }
 
   Future<void> fetchPayments() async {
@@ -41,19 +46,17 @@ class Payments with ChangeNotifier {
   Future<bool> uploadShift(List<Product> productList) async {
     try {
       return RequestBuilder()
-          .postShiftRequest(productList, _paymentsItems, getTotal());
+          .postShiftRequest(productList, _paymentsItems, _total);
     } catch (error) {
       rethrow;
     }
   }
 
-  double getTotal() {
-    double total = 0.0;
-
+  void calculateTotal() {
     for (var method in _paymentsItems) {
-      total += method.amount;
+      _total += method.amount;
     }
 
-    return total;
+    notifyListeners();
   }
 }

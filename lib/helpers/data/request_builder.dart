@@ -96,7 +96,7 @@ class RequestBuilder {
       'ShiftLocation': '${userData['funLoc']}',
       'TotalAmount': '$total',
       'Currency': 'EGP',
-      'BillingDoc': '1234',
+      'BillingDoc': '',
       'GasokToGasop': productList
           .map((pro) => {
                 'Mandt': '',

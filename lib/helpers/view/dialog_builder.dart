@@ -44,6 +44,7 @@ class DialogBuilder {
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (_) {
         return SizedBox(
           height: deviceSize.height * 0.8,
@@ -54,7 +55,7 @@ class DialogBuilder {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  t.confirm,
+                  '${t.confirm} ?',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 25,
@@ -90,13 +91,15 @@ class DialogBuilder {
                           showErrorDialog(error.toString());
                         }
                       },
-                      t.okay,
-                      Colors.green,
+                      t.confirm,
+                      Theme.of(context).primaryColor,
+                      Theme.of(context).primaryColor,
                     ),
                     _dialogTextButton(
                       hideOpenDialog,
                       t.cancel,
-                      Colors.red,
+                      Colors.white,
+                      Theme.of(context).primaryColor,
                     )
                   ],
                 ),
@@ -137,6 +140,7 @@ class DialogBuilder {
           _dialogTextButton(
             hideOpenDialog,
             t.okay,
+            Theme.of(context).primaryColor,
             Theme.of(context).primaryColor,
           )
         ],
@@ -182,18 +186,25 @@ class DialogBuilder {
             },
             t.okay,
             Theme.of(context).primaryColor,
+            Theme.of(context).primaryColor,
           )
         ],
       ),
     );
   }
 
-  TextButton _dialogTextButton(Function()? fun, String title, Color color) {
+  TextButton _dialogTextButton(
+      Function()? fun, String title, Color bgColor, Color borderColor) {
+    var textColorCheck = bgColor == Theme.of(context).primaryColor;
     return TextButton(
       onPressed: fun,
       style: ButtonStyle(
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
+            side: BorderSide(
+              color: borderColor,
+              width: 1,
+            ),
             borderRadius: BorderRadius.circular(30),
           ),
         ),
@@ -204,15 +215,15 @@ class DialogBuilder {
           ),
         ),
         backgroundColor: MaterialStateProperty.all(
-          color,
+          bgColor,
         ),
       ),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontFamily: 'Bebas',
           fontSize: 20.0,
-          color: Colors.white,
+          color: textColorCheck ? Colors.white : Theme.of(context).primaryColor,
         ),
       ),
     );
@@ -245,7 +256,7 @@ class ConfirmationWarining extends StatelessWidget {
               title: Text(
                 productsList[index].equipmentDesc,
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: 15,
                   fontFamily: 'Bebas',
                   fontWeight: FontWeight.bold,
                 ),
@@ -259,7 +270,7 @@ class ConfirmationWarining extends StatelessWidget {
                   Text(
                     '${t.reading} : ${productsList[index].enteredReading.toString()}',
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
                       fontFamily: 'Bebas',
                       fontWeight: FontWeight.normal,
                     ),
@@ -287,7 +298,10 @@ class ConfirmationWarining extends StatelessWidget {
                 ),
               ),
               Text(
-                '${paymentData.getTotal()} ${t.egp}',
+                '${paymentData.getTotal} ${t.egp}',
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
               ),
             ],
           ),

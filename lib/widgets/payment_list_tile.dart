@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/payment.dart';
+import '../providers/payments.dart';
 
 class PaymentTile extends StatefulWidget {
   const PaymentTile({super.key});
@@ -44,6 +45,7 @@ class _PaymentTileState extends State<PaymentTile> {
   Widget build(BuildContext context) {
     t = AppLocalizations.of(context)!;
     final payment = Provider.of<Payment>(context);
+    final payments = Provider.of<Payments>(context, listen: false);
 
     TextEditingController amountController =
         TextEditingController(text: payment.amount.toString());
@@ -58,14 +60,16 @@ class _PaymentTileState extends State<PaymentTile> {
             fontFamily: 'Bebas',
             color: Theme.of(context).primaryColor,
             fontSize: 16,
-            fontWeight: FontWeight.normal,
+            fontWeight: FontWeight.bold,
           ),
         ),
         trailing: SizedBox(
           width: MediaQuery.of(context).size.width * 0.6,
           child: Focus(
             onFocusChange: (value) {
-              if (value && double.parse(amountController.text) == 0.0) {
+              if (value &&
+                  amountController.text.isNotEmpty &&
+                  double.parse(amountController.text) == 0.0) {
                 amountController.clear();
               }
             },
@@ -87,6 +91,7 @@ class _PaymentTileState extends State<PaymentTile> {
                 setState(() {
                   payment.amount = double.parse(value);
                 });
+                payments.calculateTotal();
               },
             ),
           ),

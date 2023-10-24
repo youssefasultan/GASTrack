@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import '../providers/auth.dart';
 import '../providers/payments.dart';
 import '../helpers/view/dialog_builder.dart';
+import '../widgets/payment_card.dart';
 import '../widgets/payment_list_tile.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -40,7 +42,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
-    var mediaQuery = MediaQuery.of(context).size;
 
     final paymentsData = Provider.of<Payments>(context);
     final paymentMethods = paymentsData.getPaymentsMethods();
@@ -55,6 +56,42 @@ class _PaymentScreenState extends State<PaymentScreen> {
             color: Theme.of(context).primaryColor,
           ),
         ),
+        actions: [
+          PopupMenuButton(
+            icon: Icon(
+              Icons.more_vert,
+              color: Theme.of(context).primaryColor,
+            ),
+            onSelected: (value) {
+              if (value == 'logout') {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
+                Provider.of<Auth>(context, listen: false).logout();
+              }
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.logout,
+                      color: Theme.of(context).primaryColor,
+                      size: 30.0,
+                    ),
+                    Text(
+                      t.logout,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(
@@ -62,46 +99,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             )
           : Column(
               children: [
-                SizedBox(
-                  width: double.infinity,
-                  height: mediaQuery.height * 0.3,
-                  child: Center(
-                    child: Image.asset(
-                      'assets/images/pay.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 5.0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          t.total,
-                          style: TextStyle(
-                            fontFamily: 'Bebas',
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        Text(
-                          '${paymentsData.getTotal()} ${t.egp}',
-                          style: const TextStyle(
-                            fontFamily: 'Bebas',
-                            fontSize: 20,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                const PaymentCard(),
                 Expanded(
                   child: ListView.builder(
                     itemBuilder: (context, index) =>

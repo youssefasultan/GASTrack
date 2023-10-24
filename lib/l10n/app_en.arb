@@ -19,7 +19,7 @@
   "liter" : "Liter",
   "amount": "Amount",
   "egp" : "EGP",
-  "confirm" : "Confirm?",
+  "confirm" : "Confirm",
   "successMsg" : "Data Uploaded Successfully!",
   "okay" : "Okay",
   "cancel" : "Cancel",
@@ -39,6 +39,7 @@
   "welcome" : "Welcome",
   "station" : "Station",
   "shift" : "Shift",
-  "uploadError" : "Unsuccessful Billing"
+  "uploadError" : "Unsuccessful Billing",
+  "logout":"Logout"
 
 }

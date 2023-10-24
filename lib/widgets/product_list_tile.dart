@@ -41,7 +41,7 @@ class ProductListTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
       child: ExpansionTile(
-        key: GlobalObjectKey(product),
+        key: UniqueKey(),
         title: Text(
           product.equipmentDesc,
           style: TextStyle(

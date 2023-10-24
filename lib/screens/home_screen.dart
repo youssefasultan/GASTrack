@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/data/constants.dart';
+import '../providers/auth.dart';
 import '../providers/products.dart';
 import '../widgets/category_card.dart';
 import '../widgets/product_list_tile.dart';
@@ -73,18 +74,39 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(PaymentScreen.routeName);
-            },
-            icon: Padding(
-              padding: const EdgeInsets.only(top: 5, right: 10),
-              child: Icon(
-                Icons.payment,
-                color: Theme.of(context).primaryColor,
-                size: 35.0,
-              ),
+          PopupMenuButton(
+            icon: Icon(
+              Icons.more_vert,
+              color: Theme.of(context).primaryColor,
             ),
+            onSelected: (value) {
+              if (value == 'logout') {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
+                Provider.of<Auth>(context, listen: false).logout();
+              }
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.logout,
+                      color: Theme.of(context).primaryColor,
+                      size: 30.0,
+                    ),
+                    Text(
+                      t.logout,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -127,6 +149,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ],
             ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.payment,
+          color: Theme.of(context).primaryColor,
+          size: 35.0,
+        ),
+        onPressed: () {
+          Navigator.of(context).pushNamed(PaymentScreen.routeName);
+        },
+      ),
     );
   }
 }
