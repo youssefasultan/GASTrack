@@ -113,6 +113,8 @@ class ProductListTile extends StatelessWidget {
                               .showErrorDialog(t.readingError);
                         } else {
                           product.enteredReading = double.parse(value);
+                          product.quantity =
+                              product.enteredReading - product.currentReading;
                         }
                       },
                     ),

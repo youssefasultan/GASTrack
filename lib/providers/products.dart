@@ -11,9 +11,14 @@ class Products with ChangeNotifier {
   List<Product> _items = [];
 
   bool isUpdated = false;
+  double _total = 0.0;
 
   bool get dataUpdated {
     return isUpdated;
+  }
+
+  double get getTotalSales {
+    return _total;
   }
 
   List<Product> getProductsPerCategory(ProductCategory productCategory) {
@@ -48,7 +53,7 @@ class Products with ChangeNotifier {
       final extractedData = responseData['d']['results'] as List<dynamic>;
 
       if (extractedData.isEmpty) {
-        return;
+        throw ArgumentError("No Equipments Found.");
       }
 
       final List<Product> loadedProducts = [];
@@ -83,6 +88,14 @@ class Products with ChangeNotifier {
       return ProductCategory.Fuel;
     }
 
-    return ProductCategory.Oil;
+    // return ProductCategory.Oil;
+    throw ArgumentError("Could not determine product category.");
+  }
+
+  void calculateTotal() {
+    for (var element in _items) {
+      _total += (element.quantity * element.unitPrice);
+    }
+    notifyListeners();
   }
 }

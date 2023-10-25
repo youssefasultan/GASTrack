@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/auth.dart';
 import '../providers/payments.dart';
 import '../helpers/view/dialog_builder.dart';
+import '../providers/products.dart';
 import '../widgets/payment_card.dart';
 import '../widgets/payment_list_tile.dart';
 
@@ -45,6 +47,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     final paymentsData = Provider.of<Payments>(context);
     final paymentMethods = paymentsData.getPaymentsMethods();
+
+    final productData = Provider.of<Products>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -113,7 +117,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ],
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => DialogBuilder(context).showConfirmationDialog(),
+        onPressed: () {
+          if (paymentsData.getTotalCollection < productData.getTotalSales) {
+            DialogBuilder(context).showErrorDialog(t.salesError);
+          } else {
+            DialogBuilder(context).showConfirmationDialog();
+          }
+        },
         child: Icon(
           Icons.upload,
           size: 35,

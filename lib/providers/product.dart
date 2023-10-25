@@ -11,6 +11,7 @@ class Product with ChangeNotifier {
   final String objectNumber;
   double currentReading;
   double enteredReading;
+  double quantity;
   double unitPrice;
   String measuringUnit;
 
@@ -22,6 +23,7 @@ class Product with ChangeNotifier {
     required this.category,
     required this.currentReading,
     this.enteredReading = 0.0,
+    this.quantity = 0.0,
     required this.unitPrice,
     required this.measuringUnit,
     required this.objectNumber,

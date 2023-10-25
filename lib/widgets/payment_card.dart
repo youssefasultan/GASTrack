@@ -61,7 +61,7 @@ class PaymentCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${paymentData.getTotal} ${t.egp}',
+                  '${paymentData.getTotalCollection} ${t.egp}',
                   style: const TextStyle(
                     fontFamily: 'Bebas',
                     fontSize: 20,

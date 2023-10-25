@@ -14,7 +14,7 @@ class Payments with ChangeNotifier {
     return _paymentsItems;
   }
 
-  double get getTotal {
+  double get getTotalCollection {
     return _total;
   }
 
@@ -37,6 +37,7 @@ class Payments with ChangeNotifier {
       }
 
       _paymentsItems = loadedPayments;
+      _total = 0.0;
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -53,10 +54,11 @@ class Payments with ChangeNotifier {
   }
 
   void calculateTotal() {
+    var total = 0.0;
     for (var method in _paymentsItems) {
-      _total += method.amount;
+      total += method.amount;
     }
-
+    _total = total;
     notifyListeners();
   }
 }

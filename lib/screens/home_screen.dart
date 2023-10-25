@@ -156,6 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
           size: 35.0,
         ),
         onPressed: () {
+          productsData.calculateTotal();
           Navigator.of(context).pushNamed(PaymentScreen.routeName);
         },
       ),

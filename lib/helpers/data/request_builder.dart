@@ -111,7 +111,7 @@ class RequestBuilder {
                 'MeasuringPoint': '${pro.currentReading}',
                 'Measurmntrangeunit': pro.measuringUnit,
                 'Material': pro.material,
-                'Quantity': '${pro.enteredReading}',
+                'Quantity': '${pro.quantity}',
                 'Uoms': pro.measuringUnit,
               })
           .toList(),

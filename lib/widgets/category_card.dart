@@ -16,8 +16,8 @@ class CategoryCard extends StatelessWidget {
         return t.fuel;
       case ProductCategory.Gas:
         return t.gas;
-      case ProductCategory.Oil:
-        return t.oil;
+      // case ProductCategory.Oil:
+      //   return t.oil;
       default:
         return '';
     }

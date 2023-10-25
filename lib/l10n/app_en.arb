@@ -25,7 +25,8 @@
   "cancel" : "Cancel",
   "readingError" : "Reading Must be Greater than current reading",
   "unitPrice" : "Unit Price",
-  "total" : "Total",
+  "totalSales" : "Total Sales",
+  "totalCollection" : "Total Collection",
   "error" : "Error",
   "payment" : "Payment",
   "cash" : "Cash",
@@ -40,6 +41,9 @@
   "station" : "Station",
   "shift" : "Shift",
   "uploadError" : "Unsuccessful Billing",
-  "logout":"Logout"
+  "logout":"Logout",
+  "quantity" : "Quantity",
+  "total" : "Total",
+  "salesError": "Total Collection Should be greater than  or Equal Total Sales"
 
 }

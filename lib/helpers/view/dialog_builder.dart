@@ -6,7 +6,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../providers/auth.dart';
 import '../../providers/payments.dart';
 import '../../providers/products.dart';
-import '../../providers/product.dart';
 
 class DialogBuilder {
   DialogBuilder(this.context);
@@ -65,11 +64,7 @@ class DialogBuilder {
                   ),
                 ),
                 const DashSeparator(),
-                ConfirmationWarining(
-                    context: context,
-                    productsList: productsList,
-                    t: t,
-                    paymentData: paymentData),
+                const ConfirmationWarining(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -180,9 +175,6 @@ class DialogBuilder {
               Navigator.of(context)
                   .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
               Provider.of<Auth>(context, listen: false).logout();
-
-              // Navigator.of(context).pushNamedAndRemoveUntil(
-              //     AuthScreen.routeName, (route) => false);
             },
             t.okay,
             Theme.of(context).primaryColor,
@@ -231,21 +223,16 @@ class DialogBuilder {
 }
 
 class ConfirmationWarining extends StatelessWidget {
-  const ConfirmationWarining({
-    super.key,
-    required this.context,
-    required this.productsList,
-    required this.t,
-    required this.paymentData,
-  });
-
-  final BuildContext context;
-  final List<Product> productsList;
-  final AppLocalizations t;
-  final Payments paymentData;
+  const ConfirmationWarining({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var t = AppLocalizations.of(context)!;
+
+    final productsData = Provider.of<Products>(context, listen: false);
+    final productsList = productsData.getProducts();
+    final paymentData = Provider.of<Payments>(context, listen: false);
+
     return Column(
       children: [
         SizedBox(
@@ -268,7 +255,7 @@ class ConfirmationWarining extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${t.reading} : ${productsList[index].enteredReading.toString()}',
+                    '${t.quantity} : ${productsList[index].quantity.toString()}',
                     style: const TextStyle(
                       fontSize: 14,
                       fontFamily: 'Bebas',
@@ -282,26 +269,51 @@ class ConfirmationWarining extends StatelessWidget {
           ),
         ),
         const DashSeparator(),
-        SizedBox(
+        Container(
           width: double.maxFinite,
           height: MediaQuery.of(context).size.height * 0.1,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          child: Column(
             children: [
-              Text(
-                t.total,
-                style: TextStyle(
-                  fontFamily: 'Bebas',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    t.totalSales,
+                    style: TextStyle(
+                      fontFamily: 'Bebas',
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  Text(
+                    '${productsData.getTotalSales} ${t.egp}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                '${paymentData.getTotal} ${t.egp}',
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    t.totalCollection,
+                    style: TextStyle(
+                      fontFamily: 'Bebas',
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  Text(
+                    '${paymentData.getTotalCollection} ${t.egp}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
