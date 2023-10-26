@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/data/constants.dart';
@@ -157,7 +158,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         onPressed: () {
           productsData.calculateTotal();
-          Navigator.of(context).pushNamed(PaymentScreen.routeName);
+
+          if (productsData.getTotalSales == 0.0) {
+            DialogBuilder(context).showErrorDialog(t.totalError);
+          } else {
+            Navigator.of(context).pushNamed(PaymentScreen.routeName);
+          }
         },
       ),
     );

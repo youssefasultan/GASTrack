@@ -17,7 +17,7 @@ class UserCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: 150,
+      height: MediaQuery.of(context).size.height * 0.2,
       margin: const EdgeInsets.all(20.0),
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
@@ -34,8 +34,8 @@ class UserCard extends StatelessWidget {
           stops: const [0, 1],
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+      child: Container(
+        margin: const EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -56,7 +56,7 @@ class UserCard extends StatelessWidget {
                   userSettings.getUsername!,
                   style: const TextStyle(
                       fontFamily: 'Bebas',
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),
@@ -73,7 +73,7 @@ class UserCard extends StatelessWidget {
                   userSettings.getLocationDesc!,
                   style: const TextStyle(
                     fontFamily: 'Bebas',
-                    fontSize: 22,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -81,7 +81,7 @@ class UserCard extends StatelessWidget {
               ],
             ),
             Container(
-              height: 80,
+              height: MediaQuery.of(context).size.height * 0.1,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.white,

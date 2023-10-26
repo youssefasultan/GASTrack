@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:gasolina/helpers/data/request_builder.dart';
 
 import '../helpers/data/constants.dart';
+import '../helpers/data/request_builder.dart';
 import '../helpers/data/shared.dart';
 import 'product.dart';
 
@@ -34,7 +34,7 @@ class Products with ChangeNotifier {
   void updateProductsData() {
     for (var item in _items) {
       if (item.enteredReading != 0.0) {
-        item.currentReading = item.enteredReading;
+        item.lastReading = item.enteredReading;
       }
     }
 
@@ -66,7 +66,7 @@ class Products with ChangeNotifier {
             material: element['Material'],
             materialDesc: element['MaterialDesc'],
             category: getProductCategory(element['EquipmentDescription']),
-            currentReading: double.parse(element['MeasuringPoint']),
+            lastReading: double.parse(element['LastRead']),
             unitPrice: double.parse(element['PricingUnit']),
             measuringUnit: element['Measurmntrangeunit'],
             objectNumber: element['ObjectNumber'],

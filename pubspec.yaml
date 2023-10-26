@@ -1,4 +1,4 @@
-name: gasolina
+name: gas_track
 description: A new Flutter project.
 publish_to: 'none'
 version: 0.1.0
@@ -15,13 +15,29 @@ dependencies:
   http: ^0.13.5
   intl: ^0.18.1
   shared_preferences: ^2.2.1
-  
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.4
+
+flutter_launcher_icons:
+  image_path: "assets/images/icon.png"
+  android: true
+
+flutter_native_splash:
+  color: "#ffffff"
+  branding: assets/images/logo.png
+  branding_mode: bottom
+  android_12:
+    branding: assets/images/logo.png
+    android_gravity: bottom
+    color: "#ffffff"
+
+
 
 flutter:
   generate: true

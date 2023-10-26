@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:gasolina/models/http_exception.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/data/constants.dart';
 import '../helpers/data/shared.dart';
+import '../models/http_exception.dart';
 import '../providers/auth.dart';
 import '../helpers/view/dialog_builder.dart';
 
@@ -132,7 +132,7 @@ class _AuthCardState extends State<AuthCard>
       setState(() {
         _authMode = AuthMode.Admin;
       });
-      if (settings['ip']!.isNotEmpty) {
+      if (settings['ip']!.isNotEmpty && settings['ip'] != 'null') {
         _usernameController.text = settings['username']!;
         _passwordController.text = settings['password']!;
         _urlController.text = settings['ip']!;
@@ -144,11 +144,11 @@ class _AuthCardState extends State<AuthCard>
       });
 
       // Clear username and password TextFormFields
-      _usernameController.clear();
-      _passwordController.clear();
 
       _controller.reverse();
     }
+    _usernameController.clear();
+    _passwordController.clear();
   }
 
   @override

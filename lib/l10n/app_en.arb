@@ -44,6 +44,7 @@
   "logout":"Logout",
   "quantity" : "Quantity",
   "total" : "Total",
-  "salesError": "Total Collection Should be greater than  or Equal Total Sales"
+  "salesError": "Total Collection Should be greater than  or Equal to Total Sales",
+  "totalError": "Totals Must be greater than zero"
 
 }

@@ -9,7 +9,7 @@ class Product with ChangeNotifier {
   final String material;
   final String materialDesc;
   final String objectNumber;
-  double currentReading;
+  double lastReading;
   double enteredReading;
   double quantity;
   double unitPrice;
@@ -21,7 +21,7 @@ class Product with ChangeNotifier {
     required this.material,
     required this.materialDesc,
     required this.category,
-    required this.currentReading,
+    required this.lastReading,
     this.enteredReading = 0.0,
     this.quantity = 0.0,
     required this.unitPrice,

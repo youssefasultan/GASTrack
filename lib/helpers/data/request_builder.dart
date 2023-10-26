@@ -108,10 +108,11 @@ class RequestBuilder {
                     .padLeft(6, '0'),
                 'Equipment': pro.equipment,
                 'ObjectNumber': pro.objectNumber,
-                'MeasuringPoint': '${pro.currentReading}',
+                'MeasuringPoint': '${pro.lastReading}',
                 'Measurmntrangeunit': pro.measuringUnit,
                 'Material': pro.material,
                 'Quantity': '${pro.quantity}',
+                'TotalRead': '${pro.enteredReading}',
                 'Uoms': pro.measuringUnit,
               })
           .toList(),

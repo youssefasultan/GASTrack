@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:gasolina/helpers/data/request_builder.dart';
-import 'package:gasolina/helpers/data/shared.dart';
 
+import '../helpers/data/request_builder.dart';
+import '../helpers/data/shared.dart';
 import '../models/http_exception.dart';
 
 class Auth with ChangeNotifier {
@@ -16,6 +16,9 @@ class Auth with ChangeNotifier {
   String? _shiftDate;
   String? _shiftNo;
   String? _shiftTime;
+
+  bool _lock = false;
+  int _lockCounter = 0;
 
   String? get getLocation {
     if (_location != null) {
@@ -55,12 +58,23 @@ class Auth with ChangeNotifier {
 
   Future<void> _authenticate(String username, String password) async {
     try {
+      if (_lockCounter >= 3) {
+        _lock = true;
+      }
+
       final response = await RequestBuilder().buildGetRequest(
-          "GasolinaLoginSet(Username='${username.toUpperCase().trim()}',Password='$password',Locked=false)?");
+          "GasolinaLoginSet(Username='${username.toUpperCase().trim()}',Password='$password',Locked=$_lock)?");
 
       final responseData = json.decode(response.body);
 
       if (responseData['d']['Found'] != '0') {
+        if (responseData['d']['Found'] == '1') {
+          _lockCounter++;
+        } else if (responseData['d']['Found'] == '2') {
+          _lockCounter = 0;
+          _lock = false;
+        }
+
         String error = await getErrorMsg(responseData['d']['Found'].toString());
 
         throw HttpException(error);

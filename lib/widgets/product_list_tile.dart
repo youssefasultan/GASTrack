@@ -1,10 +1,10 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:gasolina/helpers/data/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../helpers/data/constants.dart';
 import '../providers/product.dart';
 import '../providers/products.dart';
 import '../helpers/view/dialog_builder.dart';
@@ -79,7 +79,7 @@ class ProductListTile extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Text(
-                      '${product.currentReading} ${getUom(product.measuringUnit)}',
+                      '${product.lastReading} ${getUom(product.measuringUnit)}',
                       textAlign: TextAlign.center,
                       key: UniqueKey(),
                       style: TextStyle(
@@ -94,6 +94,19 @@ class ProductListTile extends StatelessWidget {
                     onFocusChange: (value) {
                       if (value && product.enteredReading == 0.0) {
                         readingController.clear();
+                      } else if (!value &&
+                          double.parse(readingController.text) <
+                              product.lastReading) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(t.readingError),
+                          ),
+                        );
+                      } else if (!value) {
+                        product.enteredReading =
+                            double.parse(readingController.text);
+                        product.quantity =
+                            product.enteredReading - product.lastReading;
                       }
                     },
                     child: TextField(
@@ -108,13 +121,13 @@ class ProductListTile extends StatelessWidget {
                       keyboardType: TextInputType.number,
                       key: UniqueKey(),
                       onSubmitted: (value) {
-                        if (double.parse(value) < product.currentReading) {
+                        if (double.parse(value) < product.lastReading) {
                           DialogBuilder(context)
                               .showErrorDialog(t.readingError);
                         } else {
                           product.enteredReading = double.parse(value);
                           product.quantity =
-                              product.enteredReading - product.currentReading;
+                              product.enteredReading - product.lastReading;
                         }
                       },
                     ),

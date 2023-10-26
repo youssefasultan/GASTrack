@@ -120,6 +120,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
         onPressed: () {
           if (paymentsData.getTotalCollection < productData.getTotalSales) {
             DialogBuilder(context).showErrorDialog(t.salesError);
+          } else if (paymentsData.getTotalCollection == 0.0 ||
+              productData.getTotalSales == 0.0) {
+            DialogBuilder(context).showErrorDialog(t.totalError);
           } else {
             DialogBuilder(context).showConfirmationDialog();
           }

@@ -71,6 +71,11 @@ class _PaymentTileState extends State<PaymentTile> {
                   amountController.text.isNotEmpty &&
                   double.parse(amountController.text) == 0.0) {
                 amountController.clear();
+              } else if (!value) {
+                setState(() {
+                  payment.amount = double.parse(amountController.text);
+                });
+                payments.calculateTotal();
               }
             },
             child: TextField(

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:gasolina/helpers/data/request_builder.dart';
 
+import '../helpers/data/request_builder.dart';
 import 'payment.dart';
 import 'product.dart';
 

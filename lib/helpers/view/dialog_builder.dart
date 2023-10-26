@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gasolina/helpers/view/dash_separator.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../providers/auth.dart';
 import '../../providers/payments.dart';
 import '../../providers/products.dart';
+import 'dash_separator.dart';
 
 class DialogBuilder {
   DialogBuilder(this.context);
