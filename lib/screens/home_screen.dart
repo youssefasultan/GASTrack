@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var t = AppLocalizations.of(context)!;
 
     final productsData = Provider.of<Products>(context);
+
     final products = productsData.getProductsPerCategory(
         ProductCategory.values.elementAt(selectedIndex));
 

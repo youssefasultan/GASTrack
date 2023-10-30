@@ -31,17 +31,6 @@ class Products with ChangeNotifier {
     return _items;
   }
 
-  void updateProductsData() {
-    for (var item in _items) {
-      if (item.enteredReading != 0.0) {
-        item.lastReading = item.enteredReading;
-      }
-    }
-
-    isUpdated = true;
-    notifyListeners();
-  }
-
   Future<void> fetchProducts() async {
     try {
       var userData = await Shared.getUserdata();
@@ -70,11 +59,13 @@ class Products with ChangeNotifier {
             unitPrice: double.parse(element['PricingUnit']),
             measuringUnit: element['Measurmntrangeunit'],
             objectNumber: element['ObjectNumber'],
+            measuringPoint: int.parse(element['MeasuringPoint']),
           ),
         );
       }
 
       _items = loadedProducts;
+
       notifyListeners();
     } catch (error) {
       rethrow;

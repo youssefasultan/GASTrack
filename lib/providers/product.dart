@@ -13,6 +13,7 @@ class Product with ChangeNotifier {
   double enteredReading;
   double quantity;
   double unitPrice;
+  int measuringPoint;
   String measuringUnit;
 
   Product({
@@ -27,5 +28,6 @@ class Product with ChangeNotifier {
     required this.unitPrice,
     required this.measuringUnit,
     required this.objectNumber,
+    required this.measuringPoint,
   });
 }

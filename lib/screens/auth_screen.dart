@@ -42,7 +42,7 @@ class AuthScreen extends StatelessWidget {
                 t.appTitle,
                 textAlign: TextAlign.left,
                 style: TextStyle(
-                  fontSize: 40,
+                  fontSize: 35,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Bebas',
                   color: Theme.of(context).primaryColor,

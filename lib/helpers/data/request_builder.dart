@@ -108,7 +108,7 @@ class RequestBuilder {
                     .padLeft(6, '0'),
                 'Equipment': pro.equipment,
                 'ObjectNumber': pro.objectNumber,
-                'MeasuringPoint': '${pro.lastReading}',
+                'MeasuringPoint': '${pro.measuringPoint}',
                 'Measurmntrangeunit': pro.measuringUnit,
                 'Material': pro.material,
                 'Quantity': '${pro.quantity}',
