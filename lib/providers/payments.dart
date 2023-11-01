@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../helpers/data/request_builder.dart';
 import 'payment.dart';
-import 'product.dart';
+import 'products.dart';
 
 class Payments with ChangeNotifier {
   List<Payment> _paymentsItems = [];
@@ -16,6 +17,17 @@ class Payments with ChangeNotifier {
 
   double get getTotalCollection {
     return _total;
+  }
+
+  Map<String, String> getEndOfDaySummeryPayments() {
+    // TODO: return all day total for each payment type, total collection and total sales
+    return {
+      "collection": "",
+      "sales": "",
+      "cash": "",
+      "card": "",
+      "coupon": ""
+    };
   }
 
   Future<void> fetchPayments() async {
@@ -44,10 +56,12 @@ class Payments with ChangeNotifier {
     }
   }
 
-  Future<bool> uploadShift(List<Product> productList) async {
+  Future<bool> uploadShift(BuildContext context) async {
     try {
+      final productsData = Provider.of<Products>(context, listen: false);
+      final productsList = productsData.getProducts();
       return RequestBuilder()
-          .postShiftRequest(productList, _paymentsItems, _total);
+          .postShiftRequest(productsList, _paymentsItems, _total);
     } catch (error) {
       rethrow;
     }

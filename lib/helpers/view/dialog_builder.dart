@@ -35,9 +35,9 @@ class DialogBuilder {
   void showConfirmationDialog() {
     var t = AppLocalizations.of(context)!;
 
-    final productsData = Provider.of<Products>(context, listen: false);
-    final productsList = productsData.getProducts();
     final paymentData = Provider.of<Payments>(context, listen: false);
+
+    final authData = Provider.of<Auth>(context, listen: false);
 
     final deviceSize = MediaQuery.of(context).size;
 
@@ -65,41 +65,140 @@ class DialogBuilder {
                 ),
                 const DashSeparator(),
                 const ConfirmationWarining(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _dialogTextButton(
-                      () async {
-                        Navigator.pop(context);
-                        showLoadingIndicator(t.uploading);
+                !authData.isAdmin
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _dialogTextButton(
+                            () async {
+                              Navigator.pop(context);
+                              showLoadingIndicator(t.uploading);
 
-                        try {
-                          if (await paymentData.uploadShift(productsList)) {
-                            hideOpenDialog();
-                            showSuccessDialog(t.successMsg);
-                          } else {
-                            hideOpenDialog();
-                            showErrorDialog(t.uploadError);
-                          }
-                        } catch (error) {
+                              try {
+                                if (await paymentData.uploadShift(context)) {
+                                  hideOpenDialog();
+                                  showSuccessDialog(t.successMsg);
+                                } else {
+                                  hideOpenDialog();
+                                  showErrorDialog(t.uploadError);
+                                }
+                              } catch (error) {
+                                hideOpenDialog();
+                                showErrorDialog(error.toString());
+                              }
+                            },
+                            t.confirm,
+                            Theme.of(context).primaryColor,
+                            Theme.of(context).primaryColor,
+                          ),
+                          _dialogTextButton(
+                            hideOpenDialog,
+                            t.cancel,
+                            Colors.white,
+                            Theme.of(context).primaryColor,
+                          )
+                        ],
+                      )
+                    : _dialogTextButton(
+                        () {
                           hideOpenDialog();
-                          showErrorDialog(error.toString());
-                        }
-                      },
-                      t.confirm,
-                      Theme.of(context).primaryColor,
-                      Theme.of(context).primaryColor,
-                    ),
-                    _dialogTextButton(
-                      hideOpenDialog,
-                      t.cancel,
-                      Colors.white,
-                      Theme.of(context).primaryColor,
-                    )
-                  ],
-                ),
+                          showEndOfDaySummery();
+                        },
+                        t.next,
+                        Theme.of(context).primaryColor,
+                        Theme.of(context).primaryColor,
+                      )
               ],
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<dynamic> showEndOfDaySummery() {
+    final deviceSize = MediaQuery.of(context).size;
+    var t = AppLocalizations.of(context)!;
+    final endOfDayData = Provider.of<Payments>(context, listen: false)
+        .getEndOfDaySummeryPayments();
+
+    return showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return SizedBox(
+          height: deviceSize.height * 0.8,
+          width: deviceSize.width,
+          child: Column(
+            children: [
+              Text(
+                t.daySummery,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontFamily: 'Bebas',
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const DashSeparator(),
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) => const ListTile(),
+                  itemCount: 3,
+                ),
+              ),
+              const DashSeparator(),
+              Container(
+                width: double.maxFinite,
+                height: MediaQuery.of(context).size.height * 0.1,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          t.totalSales,
+                          style: TextStyle(
+                            fontFamily: 'Bebas',
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        Text(
+                          '${endOfDayData['sales']} ${t.egp}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          t.totalCollection,
+                          style: TextStyle(
+                            fontFamily: 'Bebas',
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        Text(
+                          '${endOfDayData['collection']} ${t.egp}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },

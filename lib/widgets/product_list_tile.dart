@@ -207,7 +207,7 @@ class ProductListTile extends StatelessWidget {
                         border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                         ),
-                        hintText: getUom(product.measuringUnit),
+                        hintText: t.egp,
                       ),
                       textAlign: TextAlign.center,
                       controller: amountController,
