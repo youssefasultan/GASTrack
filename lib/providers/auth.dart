@@ -16,9 +16,11 @@ class Auth with ChangeNotifier {
   String? _shiftDate;
   String? _shiftNo;
   String? _shiftTime;
-
+  String? _name;
   bool _lock = false;
   int _lockCounter = 0;
+
+  bool _isAdmin = false;
 
   String? get getLocation {
     if (_location != null) {
@@ -34,9 +36,9 @@ class Auth with ChangeNotifier {
     return null;
   }
 
-  String? get getUsername {
+  String? get getName {
     if (_username != null) {
-      return _username!;
+      return _name!;
     }
     return null;
   }
@@ -48,22 +50,27 @@ class Auth with ChangeNotifier {
     return null;
   }
 
+  bool get isAdmin {
+    return _isAdmin;
+  }
+
   bool get isAuth {
     return getLocation != null && getLocation!.isNotEmpty;
   }
 
-  Future<void> login(String username, String password) async {
-    return _authenticate(username, password);
+  Future<void> login(String username, String password, String shiftType) async {
+    return _authenticate(username, password, shiftType);
   }
 
-  Future<void> _authenticate(String username, String password) async {
+  Future<void> _authenticate(
+      String username, String password, String shiftType) async {
     try {
       if (_lockCounter >= 3) {
         _lock = true;
       }
 
       final response = await RequestBuilder().buildGetRequest(
-          "GasolinaLoginSet(Username='${username.toUpperCase().trim()}',Password='$password',Locked=$_lock)?");
+          "GasolinaLoginSet(Username='${username.toUpperCase().trim()}',Password='$password',ShiftType='$shiftType',Locked=$_lock)?");
 
       final responseData = json.decode(response.body);
 
@@ -86,9 +93,19 @@ class Auth with ChangeNotifier {
       _shiftDate = responseData['d']['ShiftDate'];
       _shiftNo = responseData['d']['Shift'];
       _shiftTime = responseData['d']['ShiftTime'];
+      _isAdmin = responseData['d']['Admin'] as bool;
+      _name = responseData['d']['Name'];
 
-      await Shared.saveUserData(_location!, _locationDescription!, _username!,
-          _shiftDate!, _shiftNo!, _shiftTime!);
+      await Shared.saveUserData(
+        _location!,
+        _locationDescription!,
+        _username!,
+        _shiftDate!,
+        _shiftNo!,
+        _shiftTime!,
+        shiftType,
+        _name!,
+      );
 
       notifyListeners();
     } catch (error) {

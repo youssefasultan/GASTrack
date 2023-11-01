@@ -23,7 +23,7 @@
   "successMsg" : "Data Uploaded Successfully!",
   "okay" : "Okay",
   "cancel" : "Cancel",
-  "readingError" : "Reading Must be Greater than current reading",
+  "readingError" : "Reading Must be Greater than last reading",
   "unitPrice" : "Unit Price",
   "totalSales" : "Total Sales",
   "totalCollection" : "Total Collection",
@@ -45,6 +45,8 @@
   "quantity" : "Quantity",
   "total" : "Total",
   "salesError": "Total Collection Should be greater than  or Equal to Total Sales",
-  "totalError": "Totals Must be greater than zero"
+  "totalError": "Totals Must be greater than zero",
+  "amountError": "Please Check Amount Entered",
+  "shiftTypeHint" : "Select Shift Type"
 
 }

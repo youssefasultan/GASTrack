@@ -53,7 +53,7 @@ class UserCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  userSettings.getUsername!,
+                  userSettings.getName!,
                   style: const TextStyle(
                       fontFamily: 'Bebas',
                       fontSize: 20,

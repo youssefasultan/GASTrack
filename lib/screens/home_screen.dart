@@ -3,10 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:provider/provider.dart';
 
-import '../helpers/data/constants.dart';
 import '../providers/auth.dart';
 import '../providers/products.dart';
-import '../widgets/category_card.dart';
 import '../widgets/product_list_tile.dart';
 import '../widgets/user_card.dart';
 import 'payment_screen.dart';
@@ -58,8 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final productsData = Provider.of<Products>(context);
 
-    final products = productsData.getProductsPerCategory(
-        ProductCategory.values.elementAt(selectedIndex));
+    final products = productsData.getProducts();
 
     return Scaffold(
       appBar: AppBar(
@@ -119,26 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
           : Column(
               children: [
                 const UserCard(),
-                SizedBox(
-                  height: 80,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () => onCardSelected(index),
-                        child: Container(
-                          width: 100,
-                          margin: const EdgeInsets.all(11.0),
-                          child: CategoryCard(
-                            category: ProductCategory.values.elementAt(index),
-                            isSelected: selectedIndex == index,
-                          ),
-                        ),
-                      );
-                    },
-                    itemCount: ProductCategory.values.length,
-                  ),
-                ),
                 Expanded(
                   child: ListView.builder(
                     itemBuilder: (context, index) =>

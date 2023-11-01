@@ -24,51 +24,20 @@ class _AuthCardState extends State<AuthCard>
     'username': '',
     'password': '',
     'url': '',
+    'shiftType': '',
   };
 
   final _passwordController = TextEditingController();
   final _usernameController = TextEditingController();
   final _urlController = TextEditingController();
 
-  late AnimationController _controller;
-  late Animation<Offset> _slidAnimation;
-  late Animation<double> _opacityAnimation;
-
   var _isLoading = false;
+
+  List<String> listOfValue = ['F', 'G'];
 
   @override
   void initState() {
     super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(
-        milliseconds: 300,
-      ),
-    );
-
-    _slidAnimation = Tween<Offset>(
-      begin: const Offset(0, -1.5),
-      end: const Offset(0, 0),
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.fastOutSlowIn,
-      ),
-    );
-
-    _opacityAnimation = Tween(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeIn,
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
   }
 
   Future<void> _submit() async {
@@ -102,6 +71,7 @@ class _AuthCardState extends State<AuthCard>
           await Provider.of<Auth>(context, listen: false).login(
             _authData['username']!,
             _authData['password']!,
+            _authData['shiftType']!,
           );
         } else if (_authMode == AuthMode.Admin) {
           // call register
@@ -137,18 +107,14 @@ class _AuthCardState extends State<AuthCard>
         _passwordController.text = settings['password']!;
         _urlController.text = settings['ip']!;
       }
-      _controller.forward();
     } else {
       setState(() {
         _authMode = AuthMode.Login;
       });
 
-      // Clear username and password TextFormFields
-
-      _controller.reverse();
+      _usernameController.clear();
+      _passwordController.clear();
     }
-    _usernameController.clear();
-    _passwordController.clear();
   }
 
   @override
@@ -161,12 +127,8 @@ class _AuthCardState extends State<AuthCard>
         borderRadius: BorderRadius.circular(10.0),
       ),
       elevation: 8.0,
-      child: AnimatedContainer(
-        duration: const Duration(microseconds: 400),
-        curve: Curves.easeIn,
-        height: _authMode == AuthMode.Admin ? 320 : 260,
-        constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Admin ? 320 : 260),
+      child: Container(
+        height: 320,
         width: deviceSize.width * 0.75,
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -205,18 +167,8 @@ class _AuthCardState extends State<AuthCard>
                     _authData['password'] = value!;
                   },
                 ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  constraints: BoxConstraints(
-                    minHeight: _authMode == AuthMode.Admin ? 60 : 0,
-                    maxHeight: _authMode == AuthMode.Admin ? 120 : 0,
-                  ),
-                  curve: Curves.easeIn,
-                  child: FadeTransition(
-                    opacity: _opacityAnimation,
-                    child: SlideTransition(
-                      position: _slidAnimation,
-                      child: TextFormField(
+                _authMode == AuthMode.Admin
+                    ? TextFormField(
                         enabled: _authMode == AuthMode.Admin,
                         decoration: InputDecoration(labelText: t.url),
                         controller: _urlController,
@@ -229,10 +181,43 @@ class _AuthCardState extends State<AuthCard>
                         onSaved: (value) {
                           _authData['url'] = value!;
                         },
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 3.0,
+                          vertical: 8.0,
+                        ),
+                        child: DropdownButtonFormField(
+                          value: _authData['shiftType']!.isEmpty
+                              ? null
+                              : _authData['shiftType'],
+                          hint: Text(t.shiftTypeHint),
+                          items: listOfValue
+                              .map((val) => DropdownMenuItem(
+                                    value: val,
+                                    child: Text(
+                                      val == "F" ? t.fuel : t.gas,
+                                    ),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _authData['shiftType'] = value!;
+                            });
+                          },
+                          onSaved: (value) {
+                            setState(() {
+                              _authData['shiftType'] = value!;
+                            });
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty && _authMode == AuthMode.Login) {
+                              return t.shiftTypeHint;
+                            }
+                            return null;
+                          },
+                        ),
                       ),
-                    ),
-                  ),
-                ),
                 const SizedBox(
                   height: 20,
                 ),

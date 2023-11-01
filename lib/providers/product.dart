@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../helpers/data/constants.dart';
-
 class Product with ChangeNotifier {
   final String equipment;
   final String equipmentDesc;
-  final ProductCategory category;
   final String material;
   final String materialDesc;
   final String objectNumber;
   double lastReading;
+  double lastAmount;
   double enteredReading;
+  double enteredAmount;
   double quantity;
   double unitPrice;
   int measuringPoint;
@@ -21,10 +20,11 @@ class Product with ChangeNotifier {
     required this.equipmentDesc,
     required this.material,
     required this.materialDesc,
-    required this.category,
     required this.lastReading,
+    required this.lastAmount,
     this.enteredReading = 0.0,
     this.quantity = 0.0,
+    this.enteredAmount = 0.0,
     required this.unitPrice,
     required this.measuringUnit,
     required this.objectNumber,

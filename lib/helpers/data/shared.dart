@@ -11,6 +11,8 @@ class Shared {
   static const String _shiftDate = 'shiftDate';
   static const String _shiftNo = 'shiftNo';
   static const String _shiftTime = 'shiftTime';
+  static const String _shiftType = 'shiftType';
+  static const String _name = 'name';
 
   static Future<void> saveSettings(
       String username, String password, String url) async {
@@ -26,7 +28,9 @@ class Shared {
       String loggedInUser,
       String shiftDate,
       String shiftNo,
-      String shiftTime) async {
+      String shiftTime,
+      String shiftType,
+      String name) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setString(_functionalLocation, location);
@@ -35,6 +39,8 @@ class Shared {
     prefs.setString(_shiftDate, shiftDate);
     prefs.setString(_shiftNo, shiftNo);
     prefs.setString(_shiftTime, shiftTime);
+    prefs.setString(_shiftType, shiftType);
+    prefs.setString(_name, name);
   }
 
   static Future<Map<String, String>> getSettings() async {
@@ -56,7 +62,9 @@ class Shared {
       'user': '${prefs.getString(_loggedInUser)}',
       'shiftDate': '${prefs.getString(_shiftDate)}',
       'shiftNo': '${prefs.getString(_shiftNo)}',
-      'shiftTime' : '${prefs.getString(_shiftTime)}',
+      'shiftTime': '${prefs.getString(_shiftTime)}',
+      'shiftType': '${prefs.getString(_shiftType)}',
+      'name': '${prefs.getString(_name)}',
     };
   }
 

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import '../helpers/data/constants.dart';
 import '../helpers/data/request_builder.dart';
 import '../helpers/data/shared.dart';
 import 'product.dart';
@@ -21,12 +20,6 @@ class Products with ChangeNotifier {
     return _total;
   }
 
-  List<Product> getProductsPerCategory(ProductCategory productCategory) {
-    return _items
-        .where((product) => product.category == productCategory)
-        .toList();
-  }
-
   List<Product> getProducts() {
     return _items;
   }
@@ -36,7 +29,7 @@ class Products with ChangeNotifier {
       var userData = await Shared.getUserdata();
 
       final response = await RequestBuilder().buildGetRequest(
-          "GasoItemsSet?\$filter=FunctionalLocation eq '${userData['funLoc']}'&");
+          "GasoItemsSet?\$filter=FunctionalLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
 
       final responseData = json.decode(response.body);
       final extractedData = responseData['d']['results'] as List<dynamic>;
@@ -54,12 +47,12 @@ class Products with ChangeNotifier {
             equipmentDesc: element['EquipmentDescription'],
             material: element['Material'],
             materialDesc: element['MaterialDesc'],
-            category: getProductCategory(element['EquipmentDescription']),
             lastReading: double.parse(element['LastRead']),
             unitPrice: double.parse(element['PricingUnit']),
             measuringUnit: element['Measurmntrangeunit'],
             objectNumber: element['ObjectNumber'],
             measuringPoint: int.parse(element['MeasuringPoint']),
+            lastAmount: 50.0,
           ),
         );
       }
@@ -70,17 +63,6 @@ class Products with ChangeNotifier {
     } catch (error) {
       rethrow;
     }
-  }
-
-  ProductCategory getProductCategory(String equipmentDesc) {
-    if (equipmentDesc.contains('GAS')) {
-      return ProductCategory.Gas;
-    } else if (equipmentDesc.contains('benzen')) {
-      return ProductCategory.Fuel;
-    }
-
-    // return ProductCategory.Oil;
-    throw ArgumentError("Could not determine product category.");
   }
 
   void calculateTotal() {
