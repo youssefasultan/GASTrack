@@ -17,6 +17,8 @@ class Auth with ChangeNotifier {
   String? _shiftNo;
   String? _shiftTime;
   String? _name;
+  late String _shiftType;
+
   bool _lock = false;
   int _lockCounter = 0;
 
@@ -41,6 +43,10 @@ class Auth with ChangeNotifier {
       return _name!;
     }
     return null;
+  }
+
+  String get getShiftType {
+    return _shiftType;
   }
 
   String? get getShiftNo {
@@ -95,6 +101,7 @@ class Auth with ChangeNotifier {
       _shiftTime = responseData['d']['ShiftTime'];
       _isAdmin = responseData['d']['Admin'] as bool;
       _name = responseData['d']['Name'];
+      _shiftType = shiftType;
 
       await Shared.saveUserData(
         _location!,

@@ -32,20 +32,53 @@ class Payments with ChangeNotifier {
 
   Future<void> fetchPayments() async {
     try {
-      final response = await RequestBuilder().buildGetRequest("GasoPayMSet?");
+      // get payment methods
+      var response = await RequestBuilder().buildGetRequest("GasoPayMSet?");
 
-      final responseData = json.decode(response.body);
-      final extractedData = responseData['d']['results'] as List<dynamic>;
+      var responseData = json.decode(response.body);
+      var extractedData = responseData['d']['results'] as List<dynamic>;
       if (extractedData.isEmpty) {
         return;
       }
       final List<Payment> loadedPayments = [];
 
       for (var element in extractedData) {
-        loadedPayments.add(Payment(
-          icon: element['Icon'],
-          paymentType: element['PaymentType'],
-        ));
+        if (element['Icon'] == 'COUPON') {
+          loadedPayments.add(Coupon(
+            icon: element['Icon'],
+            paymentType: element['PaymentType'],
+          ));
+        } else {
+          loadedPayments.add(Payment(
+            icon: element['Icon'],
+            paymentType: element['PaymentType'],
+          ));
+        }
+      }
+
+      // get coupons
+      response = await RequestBuilder().buildGetRequest("YGasoCouponsSet?");
+
+      responseData = json.decode(response.body);
+      extractedData = responseData['d']['results'] as List<dynamic>;
+
+      Coupon? coupon;
+
+      for (var payment in loadedPayments) {
+        if (payment is Coupon) {
+          coupon = payment;
+          break;
+        }
+      }
+      for (var element in extractedData) {
+        coupon!.couponsList.add(
+          CouponData(
+            coupon: element['Coupons'],
+            couponDesc: element['CouponsDesc'],
+            value: double.parse(element['Value']),
+            currency: element['Currency'],
+          ),
+        );
       }
 
       _paymentsItems = loadedPayments;
@@ -65,6 +98,37 @@ class Payments with ChangeNotifier {
     } catch (error) {
       rethrow;
     }
+  }
+
+  void calculateCouponTotal() {
+    for (var payment in _paymentsItems) {
+      if (payment is Coupon) {
+        payment.amount = 0.0;
+        for (var coupon in payment.couponsList) {
+          payment.amount += coupon.amount;
+        }
+      }
+    }
+    calculateTotal();
+    notifyListeners();
+  }
+
+  void calculateCash(BuildContext context) {
+    final productsData = Provider.of<Products>(context, listen: false);
+    final totalSales = productsData.getTotalSales;
+    double totalVisaCoupon = 0.0;
+    for (var payment in _paymentsItems) {
+      if (payment.icon != 'CASH') {
+        totalVisaCoupon += payment.amount;
+      }
+    }
+
+    for (var payment in _paymentsItems) {
+      if (payment.icon == 'CASH') {
+        payment.amount = totalSales - totalVisaCoupon;
+      }
+    }
+    notifyListeners();
   }
 
   void calculateTotal() {

@@ -9,12 +9,9 @@ import 'product.dart';
 class Products with ChangeNotifier {
   List<Product> _items = [];
 
-  bool isUpdated = false;
   double _total = 0.0;
 
-  bool get dataUpdated {
-    return isUpdated;
-  }
+
 
   double get getTotalSales {
     return _total;

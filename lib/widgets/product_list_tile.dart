@@ -6,7 +6,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../helpers/data/constants.dart';
 import '../providers/product.dart';
-import '../providers/products.dart';
 import '../helpers/view/dialog_builder.dart';
 
 class ProductListTile extends StatelessWidget {
@@ -32,18 +31,18 @@ class ProductListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<Products>(context);
     final product = Provider.of<Product>(context);
     t = AppLocalizations.of(context)!;
 
-    TextEditingController readingController =
-        TextEditingController(text: product.enteredReading.toString());
+    TextEditingController readingController = TextEditingController(
+        text: product.enteredReading == 0.0
+            ? ''
+            : product.enteredReading.toString());
 
-    TextEditingController amountController = TextEditingController();
-
-    if (productsData.isUpdated) {
-      readingController.clear();
-    }
+    TextEditingController amountController = TextEditingController(
+        text: product.enteredAmount == 0.0
+            ? ''
+            : product.enteredAmount.toString());
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
@@ -99,9 +98,8 @@ class ProductListTile extends StatelessWidget {
                 Expanded(
                   child: Focus(
                     onFocusChange: (value) {
-                      if (value && product.enteredReading == 0.0) {
-                        readingController.clear();
-                      } else if (!value &&
+                      if (!value &&
+                          readingController.text.isNotEmpty &&
                           double.parse(readingController.text) <
                               product.lastReading) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -177,9 +175,7 @@ class ProductListTile extends StatelessWidget {
                 Expanded(
                   child: Focus(
                     onFocusChange: (value) {
-                      if (value && product.enteredAmount == 0.0) {
-                        readingController.clear();
-                      } else if (!value &&
+                      if (!value &&
                           double.parse(amountController.text) <
                               product.lastAmount) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -194,7 +190,7 @@ class ProductListTile extends StatelessWidget {
                               double.parse(readingController.text))) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(t.amount),
+                            content: Text(t.amountError),
                           ),
                         );
                       } else if (!value) {
@@ -217,20 +213,19 @@ class ProductListTile extends StatelessWidget {
                         if (double.parse(value) < product.lastAmount) {
                           DialogBuilder(context)
                               .showErrorDialog(t.readingError);
-                        } else if (
-                          amountValidation(
-                              product,
-                              double.parse(amountController.text),
-                              double.parse(readingController.text))) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(t.amountError),
-                          ),
-                        );
-                      } else {
-                        product.enteredAmount =
-                            double.parse(amountController.text);
-                      }
+                        } else if (amountValidation(
+                            product,
+                            double.parse(amountController.text),
+                            double.parse(readingController.text))) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(t.amountError),
+                            ),
+                          );
+                        } else {
+                          product.enteredAmount =
+                              double.parse(amountController.text);
+                        }
                       },
                     ),
                   ),

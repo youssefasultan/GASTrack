@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gas_track/widgets/coupon_list_tile.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/auth.dart';
 import '../providers/payment.dart';
 import '../providers/payments.dart';
 
@@ -46,229 +48,106 @@ class _PaymentTileState extends State<PaymentTile> {
     t = AppLocalizations.of(context)!;
     final payment = Provider.of<Payment>(context);
     final payments = Provider.of<Payments>(context, listen: false);
+    final auth = Provider.of<Auth>(context, listen: false);
 
     TextEditingController amountController =
         TextEditingController(text: payment.amount.toString());
 
-    switch (payment.icon) {
-      case 'VISA':
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-          child: ListTile(
-            key: GlobalObjectKey(payment),
-            title: Text(
-              t.card,
-              style: TextStyle(
-                fontFamily: 'Bebas',
-                color: Theme.of(context).primaryColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            trailing: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: Focus(
-                onFocusChange: (value) {
-                  if (value &&
-                      amountController.text.isNotEmpty &&
-                      double.parse(amountController.text) == 0.0) {
-                    amountController.clear();
-                  } else if (!value) {
-                    setState(() {
-                      payment.amount = double.parse(amountController.text);
-                    });
-                    payments.calculateTotal();
-                  }
-                },
-                child: TextField(
-                  controller: amountController,
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      Icons.payment,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  key: UniqueKey(),
-                  onSubmitted: (value) {
-                    setState(() {
-                      payment.amount = double.parse(value);
-                    });
-                    payments.calculateTotal();
-                  },
-                ),
-              ),
+    if (auth.getShiftType == 'G' && payment is Coupon) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+        child: ExpansionTile(
+          key: UniqueKey(),
+          title: Text(
+            t.coupon,
+            style: TextStyle(
+              fontFamily: 'Bebas',
+              color: Theme.of(context).primaryColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        );
+          collapsedBackgroundColor: Theme.of(context).primaryColorLight,
+          backgroundColor: Theme.of(context).primaryColorLight,
+          expandedAlignment: Alignment.center,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          collapsedShape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(50))),
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: payment.couponsList.length,
+              itemBuilder: (context, index) => ChangeNotifierProvider.value(
+                value: payment.couponsList[index],
+                child: const CouponListTile(),
+              ),
+            )
+          ],
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+        child: ListTile(
+          key: GlobalObjectKey(payment),
+          title: Text(
+            getTitle(payment.icon),
+            style: TextStyle(
+              fontFamily: 'Bebas',
+              color: Theme.of(context).primaryColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          trailing: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: Focus(
+              onFocusChange: (value) {
+                if (value &&
+                    amountController.text.isNotEmpty &&
+                    double.parse(amountController.text) == 0.0) {
+                  amountController.clear();
+                } else if (!value) {
+                  setState(() {
+                    payment.amount = double.parse(amountController.text);
+                  });
 
-      case 'CASH':
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-          child: ListTile(
-            key: GlobalObjectKey(payment),
-            title: Text(
-              t.cash,
-              style: TextStyle(
-                fontFamily: 'Bebas',
-                color: Theme.of(context).primaryColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            trailing: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: Focus(
-                onFocusChange: (value) {
-                  if (value &&
-                      amountController.text.isNotEmpty &&
-                      double.parse(amountController.text) == 0.0) {
-                    amountController.clear();
-                  } else if (!value) {
-                    setState(() {
-                      payment.amount = double.parse(amountController.text);
-                    });
-                    payments.calculateTotal();
-                  }
-                },
-                child: TextField(
-                  controller: amountController,
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      Icons.monetization_on_sharp,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                    ),
+                  // payments.calculateCash(context);
+                  payments.calculateTotal();
+                }
+              },
+              child: TextField(
+                controller: amountController,
+                decoration: InputDecoration(
+                  icon: Icon(
+                    getIcon(payment.icon),
+                    color: Theme.of(context).primaryColor,
                   ),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  key: UniqueKey(),
-                  onSubmitted: (value) {
-                    setState(() {
-                      payment.amount = double.parse(value);
-                    });
-                    payments.calculateTotal();
-                  },
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
                 ),
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                key: UniqueKey(),
+                enabled: payment.icon != 'CASH',
+                onSubmitted: (value) {
+                  setState(() {
+                    // if (payment.icon != 'CASH') {
+                    payment.amount = double.parse(value);
+                    // } else {
+                    //   payments.calculateCash(context);
+                    // }
+                  });
+                  payments.calculateTotal();
+                },
               ),
             ),
           ),
-        );
-
-      case 'COUPON':
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-          child: ListTile(
-            key: GlobalObjectKey(payment),
-            title: Text(
-              t.coupon,
-              style: TextStyle(
-                fontFamily: 'Bebas',
-                color: Theme.of(context).primaryColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            trailing: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: Focus(
-                onFocusChange: (value) {
-                  if (value &&
-                      amountController.text.isNotEmpty &&
-                      double.parse(amountController.text) == 0.0) {
-                    amountController.clear();
-                  } else if (!value) {
-                    setState(() {
-                      payment.amount = double.parse(amountController.text);
-                    });
-                    payments.calculateTotal();
-                  }
-                },
-                child: TextField(
-                  controller: amountController,
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      Icons.card_membership,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  key: UniqueKey(),
-                  onSubmitted: (value) {
-                    setState(() {
-                      payment.amount = double.parse(value);
-                    });
-                    payments.calculateTotal();
-                  },
-                ),
-              ),
-            ),
-          ),
-        );
-      default:
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-          child: ListTile(
-            key: GlobalObjectKey(payment),
-            title: Text(
-              getTitle(payment.icon),
-              style: TextStyle(
-                fontFamily: 'Bebas',
-                color: Theme.of(context).primaryColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            trailing: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: Focus(
-                onFocusChange: (value) {
-                  if (value &&
-                      amountController.text.isNotEmpty &&
-                      double.parse(amountController.text) == 0.0) {
-                    amountController.clear();
-                  } else if (!value) {
-                    setState(() {
-                      payment.amount = double.parse(amountController.text);
-                    });
-                    payments.calculateTotal();
-                  }
-                },
-                child: TextField(
-                  controller: amountController,
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      getIcon(payment.icon),
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  key: UniqueKey(),
-                  onSubmitted: (value) {
-                    setState(() {
-                      payment.amount = double.parse(value);
-                    });
-                    payments.calculateTotal();
-                  },
-                ),
-              ),
-            ),
-          ),
-        );
+        ),
+      );
     }
   }
 }
