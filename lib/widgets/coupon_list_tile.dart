@@ -16,7 +16,7 @@ class _CouponListTileState extends State<CouponListTile> {
   @override
   Widget build(BuildContext context) {
     final coupon = Provider.of<CouponData>(context);
-    final payments = Provider.of<Payments>(context);
+    final payments = Provider.of<Payments>(context, listen: false);
 
     TextEditingController couponCountController =
         TextEditingController(text: coupon.count.toString());
@@ -51,14 +51,12 @@ class _CouponListTileState extends State<CouponListTile> {
                     coupon.amount = coupon.value * coupon.count;
                   });
                   payments.calculateCouponTotal();
-                  // payments.calculateCash(context);
-                  payments.calculateTotal();
                 } else if (coupon.count == 0) {
                   couponCountController.clear();
                 }
               },
               child: TextField(
-                key: UniqueKey(),
+                key: Key(coupon.coupon),
                 controller: couponCountController,
                 keyboardType: TextInputType.number,
                 inputFormatters: [
@@ -79,8 +77,6 @@ class _CouponListTileState extends State<CouponListTile> {
                     coupon.amount = coupon.value * coupon.count;
                   });
                   payments.calculateCouponTotal();
-                  // payments.calculateCash(context);
-                  payments.calculateTotal();
                 },
               ),
             ),

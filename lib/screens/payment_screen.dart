@@ -22,12 +22,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   void didChangeDependencies() {
+    final auth = Provider.of<Auth>(context, listen: false);
+
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
 
-      Provider.of<Payments>(context).fetchPayments().then((_) {
+      Provider.of<Payments>(context).fetchPayments(auth.getShiftType).then((_) {
         setState(() {
           _isLoading = false;
         });

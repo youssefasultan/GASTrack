@@ -11,6 +11,10 @@ class Payments with ChangeNotifier {
   List<Payment> _paymentsItems = [];
   double _total = 0.0;
 
+  Payments(double totalSales) {
+    _total = totalSales;
+  }
+
   List<Payment> getPaymentsMethods() {
     return _paymentsItems;
   }
@@ -30,7 +34,7 @@ class Payments with ChangeNotifier {
     };
   }
 
-  Future<void> fetchPayments() async {
+  Future<void> fetchPayments(String shiftType) async {
     try {
       // get payment methods
       var response = await RequestBuilder().buildGetRequest("GasoPayMSet?");
@@ -43,46 +47,66 @@ class Payments with ChangeNotifier {
       final List<Payment> loadedPayments = [];
 
       for (var element in extractedData) {
-        if (element['Icon'] == 'COUPON') {
+        final paymentType = element['PaymentType'];
+        final icon = element['Icon'];
+        final isCoupon = icon == 'COUPON';
+
+        if (shiftType == 'G' && isCoupon) {
           loadedPayments.add(Coupon(
-            icon: element['Icon'],
-            paymentType: element['PaymentType'],
+            icon: icon,
+            paymentType: paymentType,
           ));
-        } else {
+        } else if (shiftType == 'G' && !isCoupon) {
           loadedPayments.add(Payment(
-            icon: element['Icon'],
-            paymentType: element['PaymentType'],
+            icon: icon,
+            paymentType: paymentType,
+          ));
+        } else if (!isCoupon) {
+          loadedPayments.add(Payment(
+            icon: icon,
+            paymentType: paymentType,
           ));
         }
       }
 
       // get coupons
-      response = await RequestBuilder().buildGetRequest("YGasoCouponsSet?");
+      if (shiftType == 'G') {
+        response = await RequestBuilder().buildGetRequest("YGasoCouponsSet?");
 
-      responseData = json.decode(response.body);
-      extractedData = responseData['d']['results'] as List<dynamic>;
+        responseData = json.decode(response.body);
+        extractedData = responseData['d']['results'] as List<dynamic>;
 
-      Coupon? coupon;
+        Coupon? coupon;
 
-      for (var payment in loadedPayments) {
-        if (payment is Coupon) {
-          coupon = payment;
-          break;
+        for (var payment in loadedPayments) {
+          if (payment is Coupon) {
+            coupon = payment;
+            break;
+          }
         }
-      }
-      for (var element in extractedData) {
-        coupon!.couponsList.add(
-          CouponData(
-            coupon: element['Coupons'],
-            couponDesc: element['CouponsDesc'],
-            value: double.parse(element['Value']),
-            currency: element['Currency'],
-          ),
-        );
+        for (var element in extractedData) {
+          coupon!.couponsList.add(
+            CouponData(
+              coupon: element['Coupons'],
+              couponDesc: element['CouponsDesc'],
+              value: double.parse(element['Value']),
+              currency: element['Currency'],
+            ),
+          );
+        }
       }
 
       _paymentsItems = loadedPayments;
-      _total = 0.0;
+
+      // make cash payment at the end of payment list
+      final Payment cashPayment = _paymentsItems
+          .where(
+            (element) => element.icon == 'CASH',
+          )
+          .first;
+      _paymentsItems.remove(cashPayment);
+      _paymentsItems.add(cashPayment);
+
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -109,13 +133,11 @@ class Payments with ChangeNotifier {
         }
       }
     }
-    calculateTotal();
+    calculateCash();
     notifyListeners();
   }
 
-  void calculateCash(BuildContext context) {
-    final productsData = Provider.of<Products>(context, listen: false);
-    final totalSales = productsData.getTotalSales;
+  void calculateCash() {
     double totalVisaCoupon = 0.0;
     for (var payment in _paymentsItems) {
       if (payment.icon != 'CASH') {
@@ -125,18 +147,9 @@ class Payments with ChangeNotifier {
 
     for (var payment in _paymentsItems) {
       if (payment.icon == 'CASH') {
-        payment.amount = totalSales - totalVisaCoupon;
+        payment.amount = _total - totalVisaCoupon;
       }
     }
-    notifyListeners();
-  }
-
-  void calculateTotal() {
-    var total = 0.0;
-    for (var method in _paymentsItems) {
-      total += method.amount;
-    }
-    _total = total;
     notifyListeners();
   }
 }

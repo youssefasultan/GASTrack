@@ -11,8 +11,6 @@ class Products with ChangeNotifier {
 
   double _total = 0.0;
 
-
-
   double get getTotalSales {
     return _total;
   }
@@ -63,6 +61,7 @@ class Products with ChangeNotifier {
   }
 
   void calculateTotal() {
+    _total = 0.0;
     for (var element in _items) {
       _total += (element.quantity * element.unitPrice);
     }

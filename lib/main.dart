@@ -41,10 +41,11 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => Products(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => Payments(),
+        ChangeNotifierProxyProvider<Products, Payments>(
+          create: (context) => Payments(
+              Provider.of<Products>(context, listen: false).getTotalSales),
+          update: (context, value, previous) => Payments(value.getTotalSales),
         ),
-        
       ],
       child: Consumer<Auth>(
         builder: (context, auth, child) => MaterialApp(

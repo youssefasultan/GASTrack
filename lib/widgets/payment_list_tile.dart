@@ -47,7 +47,7 @@ class _PaymentTileState extends State<PaymentTile> {
   Widget build(BuildContext context) {
     t = AppLocalizations.of(context)!;
     final payment = Provider.of<Payment>(context);
-    final payments = Provider.of<Payments>(context, listen: false);
+    final payments = Provider.of<Payments>(context);
     final auth = Provider.of<Auth>(context, listen: false);
 
     TextEditingController amountController =
@@ -57,7 +57,7 @@ class _PaymentTileState extends State<PaymentTile> {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
         child: ExpansionTile(
-          key: UniqueKey(),
+          key: Key(payment.paymentType),
           title: Text(
             t.coupon,
             style: TextStyle(
@@ -91,7 +91,7 @@ class _PaymentTileState extends State<PaymentTile> {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
         child: ListTile(
-          key: GlobalObjectKey(payment),
+          key: Key(payment.paymentType),
           title: Text(
             getTitle(payment.icon),
             style: TextStyle(
@@ -114,8 +114,7 @@ class _PaymentTileState extends State<PaymentTile> {
                     payment.amount = double.parse(amountController.text);
                   });
 
-                  // payments.calculateCash(context);
-                  payments.calculateTotal();
+                  payments.calculateCash();
                 }
               },
               child: TextField(
@@ -131,17 +130,13 @@ class _PaymentTileState extends State<PaymentTile> {
                 ),
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
-                key: UniqueKey(),
+                key: Key(payment.icon),
                 enabled: payment.icon != 'CASH',
                 onSubmitted: (value) {
                   setState(() {
-                    // if (payment.icon != 'CASH') {
                     payment.amount = double.parse(value);
-                    // } else {
-                    //   payments.calculateCash(context);
-                    // }
                   });
-                  payments.calculateTotal();
+                  payments.calculateCash();
                 },
               ),
             ),
