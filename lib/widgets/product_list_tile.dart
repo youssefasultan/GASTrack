@@ -6,7 +6,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../helpers/data/constants.dart';
 import '../providers/product.dart';
-import '../helpers/view/dialog_builder.dart';
 
 class ProductListTile extends StatelessWidget {
   ProductListTile({super.key});
@@ -27,6 +26,15 @@ class ProductListTile extends StatelessWidget {
   bool amountValidation(Product product, double amount, double reading) {
     return (amount - product.lastAmount) !=
         ((reading - product.lastReading) * product.unitPrice);
+  }
+
+  void showWarning(BuildContext context, String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: redColor,
+      ),
+    );
   }
 
   @override
@@ -102,17 +110,12 @@ class ProductListTile extends StatelessWidget {
                           readingController.text.isNotEmpty &&
                           double.parse(readingController.text) <
                               product.lastReading) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(t.readingError),
-                          ),
-                        );
+                        showWarning(context, t.readingError);
                       } else if (!value) {
                         product.enteredReading =
                             double.parse(readingController.text);
                         product.quantity =
                             product.enteredReading - product.lastReading;
-                        
                       }
                     },
                     child: TextField(
@@ -128,8 +131,7 @@ class ProductListTile extends StatelessWidget {
                       key: UniqueKey(),
                       onSubmitted: (value) {
                         if (double.parse(value) < product.lastReading) {
-                          DialogBuilder(context)
-                              .showErrorDialog(t.readingError);
+                          showWarning(context, t.readingError);
                         } else {
                           product.enteredReading = double.parse(value);
                           product.quantity =
@@ -179,21 +181,14 @@ class ProductListTile extends StatelessWidget {
                       if (!value &&
                           double.parse(amountController.text) <
                               product.lastAmount) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(t.readingError),
-                          ),
-                        );
+                        showWarning(context, t.readingError);
                       } else if (!value &&
                           amountValidation(
                               product,
                               double.parse(amountController.text),
                               double.parse(readingController.text))) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(t.amountError),
-                          ),
-                        );
+                        showWarning(context,
+                            '${t.amountError} ${product.equipmentDesc}');
                       } else if (!value) {
                         product.enteredAmount =
                             double.parse(amountController.text);
@@ -212,17 +207,13 @@ class ProductListTile extends StatelessWidget {
                       key: UniqueKey(),
                       onSubmitted: (value) {
                         if (double.parse(value) < product.lastAmount) {
-                          DialogBuilder(context)
-                              .showErrorDialog(t.readingError);
+                          showWarning(context, t.readingError);
                         } else if (amountValidation(
                             product,
                             double.parse(amountController.text),
                             double.parse(readingController.text))) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(t.amountError),
-                            ),
-                          );
+                          showWarning(context,
+                              '${t.amountError} ${product.equipmentDesc}');
                         } else {
                           product.enteredAmount =
                               double.parse(amountController.text);

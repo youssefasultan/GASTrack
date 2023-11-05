@@ -106,4 +106,15 @@ class Products with ChangeNotifier {
 
     notifyListeners();
   }
+
+  Product? validateProducts() {
+    for (var item in _items) {
+      if ((item.enteredReading - item.lastReading) * item.unitPrice !=
+          (item.enteredAmount - item.lastAmount)) {
+        return item;
+      }
+    }
+
+    return null;
+  }
 }

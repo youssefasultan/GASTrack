@@ -67,7 +67,6 @@ class _PaymentTileState extends State<PaymentTile> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          collapsedBackgroundColor: Theme.of(context).primaryColorLight,
           backgroundColor: Theme.of(context).primaryColorLight,
           expandedAlignment: Alignment.center,
           shape: const RoundedRectangleBorder(

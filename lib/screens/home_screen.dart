@@ -168,9 +168,11 @@ class _HomeScreenState extends State<HomeScreen>
         ),
         onPressed: () {
           productsData.calculateTotal();
-
+          var product = productsData.validateProducts();
           if (productsData.getTotalSales == 0.0) {
             DialogBuilder(context).showErrorDialog(t.totalError);
+          } else if (product != null) {
+            DialogBuilder(context).showErrorDialog('${t.amountError} ${product.equipmentDesc}' );
           } else {
             Navigator.of(context).pushNamed(PaymentScreen.routeName);
           }

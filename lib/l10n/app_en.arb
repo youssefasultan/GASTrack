@@ -46,7 +46,7 @@
   "total" : "Total",
   "salesError": "Total Collection Should be greater than  or Equal to Total Sales",
   "totalError": "Totals Must be greater than zero",
-  "amountError": "Please Check Amount Entered",
+  "amountError": "Please Check Amount Entered for item",
   "shiftTypeHint" : "Select Shift Type",
   "next" : "Next",
   "daySummery" : "Day Summery",
