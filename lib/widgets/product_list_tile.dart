@@ -112,6 +112,7 @@ class ProductListTile extends StatelessWidget {
                             double.parse(readingController.text);
                         product.quantity =
                             product.enteredReading - product.lastReading;
+                        
                       }
                     },
                     child: TextField(

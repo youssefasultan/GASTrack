@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import '../../models/http_exception.dart';
 import '../../providers/payment.dart';
 import '../../providers/product.dart';
+import '../../providers/tank.dart';
 import 'shared.dart';
 
 class RequestBuilder {
@@ -32,13 +33,13 @@ class RequestBuilder {
   }
 
   Future<bool> postShiftRequest(List<Product> productList,
-      List<Payment> paymentList, double total) async {
+      List<Payment> paymentList, List<Tank> tankList, double total) async {
     int responseCode;
     try {
       await _getToken();
 
-      responseCode =
-          await _upload(_token!, _cookie!, productList, paymentList, total);
+      responseCode = await _upload(
+          _token!, _cookie!, productList, paymentList, total, tankList);
     } catch (error) {
       throw HttpException(error.toString());
     }
@@ -71,7 +72,7 @@ class RequestBuilder {
   }
 
   Future<int> _upload(String token, String cookie, List<Product> productList,
-      List<Payment> paymentList, double total) async {
+      List<Payment> paymentList, double total, List<Tank> tankList) async {
     var settings = await Shared.getSettings();
     var userData = await Shared.getUserdata();
 
@@ -91,6 +92,7 @@ class RequestBuilder {
     var body = json.encode({
       'ShiftDate': '${userData['shiftDate']}',
       'Shift': '${userData['shiftNo']}',
+      'ShiftType': '${userData['shiftType']}',
       'ShiftTime': '${userData['shiftTime']}',
       'ShiftEndBy': '${userData['user']}',
       'ShiftLocation': '${userData['funLoc']}',
@@ -103,6 +105,7 @@ class RequestBuilder {
                 'ShiftLocation': '${userData['funLoc']}',
                 'ShiftDate': '${userData['shiftDate']}',
                 'Shift': '${userData['shiftNo']}',
+                'ShiftType': '${userData['shiftType']}',
                 'GasShiftItem': ((productList.indexOf(pro) + 1) * 10)
                     .toString()
                     .padLeft(6, '0'),
@@ -112,8 +115,11 @@ class RequestBuilder {
                 'Measurmntrangeunit': pro.measuringUnit,
                 'Material': pro.material,
                 'Quantity': '${pro.quantity}',
-                'TotalRead': '${pro.enteredReading}',
+                'ExpQuantity': '${pro.enteredReading}',
                 'Uoms': pro.measuringUnit,
+                'PricingUnit': '${pro.unitPrice}',
+                'ExpAmount': '${pro.enteredAmount}',
+                'Currency': 'EGP',
               })
           .toList(),
       'GasokToGasov': paymentList
@@ -122,9 +128,23 @@ class RequestBuilder {
                 'ShiftLocation': '${userData['funLoc']}',
                 'ShiftDate': '${userData['shiftDate']}',
                 'Shift': '${userData['shiftNo']}',
+                'ShiftType': '${userData['shiftType']}',
                 'PaymentType': pay.paymentType,
                 'PaymentValue': "${pay.amount}",
                 'PaymentCurrency': "EGP",
+              })
+          .toList(),
+      'GasokToGasot': tankList
+          .map((tank) => {
+                'Mandt': '',
+                'ShiftLocation': '${userData['funLoc']}',
+                'ShiftDate': '${userData['shiftDate']}',
+                'Shift': '${userData['shiftNo']}',
+                'ShiftType': '${userData['shiftType']}',
+                'Material': tank.material,
+                'Quantity': '${tank.quantity}',
+                'ExpQuantity': '${tank.expectedQuantity}',
+                'Uoms': 'L',
               })
           .toList(),
     });

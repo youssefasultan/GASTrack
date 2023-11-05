@@ -49,7 +49,9 @@
   "amountError": "من فضلك تأكد من قراءه العداد",
   "shiftTypeHint" : "أختر نوع الشيفت",
   "next" : "التالي",
-  "daySummery" : "ملخص اليوم"
+  "daySummery" : "ملخص اليوم",
+  "dispenser":"موزع",
+  "tank": "خزان"
 
 
 }

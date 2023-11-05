@@ -47,7 +47,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     var t = AppLocalizations.of(context)!;
 
     final paymentsData = Provider.of<Payments>(context);
-    final paymentMethods = paymentsData.getPaymentsMethods();
+    final paymentMethods = paymentsData.getPaymentsMethods;
 
     return Scaffold(
       appBar: AppBar(

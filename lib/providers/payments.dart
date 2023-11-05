@@ -15,7 +15,7 @@ class Payments with ChangeNotifier {
     _total = totalSales;
   }
 
-  List<Payment> getPaymentsMethods() {
+  List<Payment> get getPaymentsMethods {
     return _paymentsItems;
   }
 
@@ -116,9 +116,10 @@ class Payments with ChangeNotifier {
   Future<bool> uploadShift(BuildContext context) async {
     try {
       final productsData = Provider.of<Products>(context, listen: false);
-      final productsList = productsData.getProducts();
+      final productsList = productsData.getProducts;
+      final tankList = productsData.getTanks;
       return RequestBuilder()
-          .postShiftRequest(productsList, _paymentsItems, _total);
+          .postShiftRequest(productsList, _paymentsItems, tankList, _total);
     } catch (error) {
       rethrow;
     }

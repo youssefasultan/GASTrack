@@ -49,6 +49,8 @@
   "amountError": "Please Check Amount Entered",
   "shiftTypeHint" : "Select Shift Type",
   "next" : "Next",
-  "daySummery" : "Day Summery"
+  "daySummery" : "Day Summery",
+  "dispenser":"Dispenser",
+  "tank": "Tanks"
 
 }

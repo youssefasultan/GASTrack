@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/helpers/view/dialog_builder.dart';
+import 'package:gas_track/widgets/fuel_tabbar_library.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
@@ -17,13 +18,17 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   int selectedIndex = 0;
   var _isLoading = false;
   var _isInit = true;
+  late TabController _tabController;
 
   @override
   void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+
     super.initState();
   }
 
@@ -56,7 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final productsData = Provider.of<Products>(context);
 
-    final products = productsData.getProducts();
+    final products = productsData.getProducts;
+
+    final shiftType = Provider.of<Auth>(context, listen: false).getShiftType;
 
     return Scaffold(
       appBar: AppBar(
@@ -116,16 +123,41 @@ class _HomeScreenState extends State<HomeScreen> {
           : Column(
               children: [
                 const UserCard(),
-                Expanded(
-                  child: ListView.builder(
+                if (shiftType == 'G')
+                  Expanded(
+                      child: ListView.builder(
                     itemBuilder: (context, index) =>
                         ChangeNotifierProvider.value(
                       value: products[index],
                       child: ProductListTile(),
                     ),
                     itemCount: products.length,
+                  ))
+                else
+                  Expanded(
+                    child: Column(
+                      children: [
+                        TabBar(
+                          tabs: [
+                            Tab(
+                              text: t.dispenser,
+                            ),
+                            Tab(
+                              text: t.tank,
+                            ),
+                          ],
+                          controller: _tabController,
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          onTap: (value) {
+                            if (value == 1) {
+                              productsData.calculateTankQuantity();
+                            }
+                          },
+                        ),
+                        FuelTabBarLibrary(tabController: _tabController),
+                      ],
+                    ),
                   ),
-                )
               ],
             ),
       floatingActionButton: FloatingActionButton(

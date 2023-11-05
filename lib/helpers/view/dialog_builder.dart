@@ -329,7 +329,7 @@ class ConfirmationWarining extends StatelessWidget {
     var t = AppLocalizations.of(context)!;
 
     final productsData = Provider.of<Products>(context, listen: false);
-    final productsList = productsData.getProducts();
+    final productsList = productsData.getProducts;
     final paymentData = Provider.of<Payments>(context, listen: false);
 
     return Column(
@@ -372,47 +372,23 @@ class ConfirmationWarining extends StatelessWidget {
           width: double.maxFinite,
           height: MediaQuery.of(context).size.height * 0.1,
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    t.totalSales,
-                    style: TextStyle(
-                      fontFamily: 'Bebas',
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  Text(
-                    '${productsData.getTotalSales} ${t.egp}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
+              Text(
+                t.total,
+                style: TextStyle(
+                  fontFamily: 'Bebas',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    t.totalCollection,
-                    style: TextStyle(
-                      fontFamily: 'Bebas',
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  Text(
-                    '${paymentData.getTotalCollection} ${t.egp}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
+              Text(
+                '${paymentData.getTotalCollection} ${t.egp}',
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
               ),
             ],
           ),
