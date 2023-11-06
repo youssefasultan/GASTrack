@@ -46,7 +46,7 @@ class DialogBuilder {
       isScrollControlled: true,
       builder: (_) {
         return SizedBox(
-          height: deviceSize.height * 0.8,
+          height: deviceSize.height * 0.9,
           width: deviceSize.width,
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -327,16 +327,32 @@ class ConfirmationWarining extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
+    final size = MediaQuery.of(context).size;
 
+    final shiftType = Provider.of<Auth>(context, listen: false).getShiftType;
     final productsData = Provider.of<Products>(context, listen: false);
     final productsList = productsData.getProducts;
+    final tankList = productsData.getTanks;
     final paymentData = Provider.of<Payments>(context, listen: false);
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Text(
+            t.dispenser,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+        ),
         SizedBox(
           width: double.maxFinite,
-          height: MediaQuery.of(context).size.height * 0.5,
+          height: shiftType == 'F' ? size.height * 0.3 : size.height * 0.5,
           child: ListView.builder(
             itemBuilder: (context, index) => ListTile(
               title: Text(
@@ -354,7 +370,15 @@ class ConfirmationWarining extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${t.quantity} : ${productsList[index].quantity.toString()}',
+                    '${t.quantity} : ${productsList[index].enteredReading.toString()}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'Bebas',
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  Text(
+                    '${t.amount} : ${productsList[index].enteredAmount.toString()}',
                     style: const TextStyle(
                       fontSize: 14,
                       fontFamily: 'Bebas',
@@ -367,10 +391,58 @@ class ConfirmationWarining extends StatelessWidget {
             itemCount: productsList.length,
           ),
         ),
+        if (shiftType == 'F' && tankList.isNotEmpty) ...{
+          const DashSeparator(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3.0),
+            child: Text(
+              t.tank,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: double.maxFinite,
+            height: size.height * 0.2,
+            child: ListView.builder(
+              itemBuilder: (context, index) => ListTile(
+                title: Text(
+                  tankList[index].material,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontFamily: 'Bebas',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Text(
+                  '${t.amount} : ${tankList[index].quantity.toString()}',
+                ),
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${t.reading} : ${tankList[index].expectedQuantity.toString()}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Bebas',
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              itemCount: tankList.length,
+            ),
+          )
+        },
         const DashSeparator(),
         Container(
           width: double.maxFinite,
-          height: MediaQuery.of(context).size.height * 0.1,
+          height: size.height * 0.1,
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

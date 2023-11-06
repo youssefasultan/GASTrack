@@ -46,6 +46,8 @@ class _PaymentTileState extends State<PaymentTile> {
   @override
   Widget build(BuildContext context) {
     t = AppLocalizations.of(context)!;
+    ThemeData themeData = Theme.of(context);
+
     final payment = Provider.of<Payment>(context);
     final payments = Provider.of<Payments>(context);
     final auth = Provider.of<Auth>(context, listen: false);
@@ -67,7 +69,8 @@ class _PaymentTileState extends State<PaymentTile> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          backgroundColor: Theme.of(context).primaryColorLight,
+          backgroundColor: themeData.primaryColorLight,
+          collapsedBackgroundColor: themeData.primaryColorLight,
           expandedAlignment: Alignment.center,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -95,7 +98,7 @@ class _PaymentTileState extends State<PaymentTile> {
             getTitle(payment.icon),
             style: TextStyle(
               fontFamily: 'Bebas',
-              color: Theme.of(context).primaryColor,
+              color: themeData.primaryColor,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -121,7 +124,7 @@ class _PaymentTileState extends State<PaymentTile> {
                 decoration: InputDecoration(
                   icon: Icon(
                     getIcon(payment.icon),
-                    color: Theme.of(context).primaryColor,
+                    color: themeData.primaryColor,
                   ),
                   border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),

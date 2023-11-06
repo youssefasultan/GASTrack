@@ -11,6 +11,8 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+    ThemeData themeData = Theme.of(context);
+
     var t = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -40,12 +42,12 @@ class AuthScreen extends StatelessWidget {
               ),
               child: Text(
                 t.appTitle,
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.start,
                 style: TextStyle(
                   fontSize: 35,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Bebas',
-                  color: Theme.of(context).primaryColor,
+                  color: themeData.primaryColor,
                 ),
               ),
             ),

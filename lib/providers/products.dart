@@ -27,7 +27,7 @@ class Products with ChangeNotifier {
 
   Future<void> fetchProducts() async {
     try {
-      var userData = await Shared.getUserdata();
+      final userData = await Shared.getUserdata();
 
       final response = await RequestBuilder().buildGetRequest(
           "GasoItemsSet?\$filter=FunctionalLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
@@ -39,42 +39,30 @@ class Products with ChangeNotifier {
         throw ArgumentError("No Equipments Found.");
       }
 
-      final List<Product> loadedProducts = [];
-
-      for (var element in extractedData) {
-        loadedProducts.add(
-          Product(
-            equipment: element['Equipment'],
-            equipmentDesc: element['EquipmentDescription'],
-            material: element['Material'],
-            materialDesc: element['MaterialDesc'],
-            lastReading: double.parse(element['LastRead']),
-            unitPrice: double.parse(element['PricingUnit']),
-            measuringUnit: element['Measurmntrangeunit'],
-            objectNumber: element['ObjectNumber'],
-            measuringPoint: int.parse(element['MeasuringPoint']),
-            lastAmount: 50.0,
-          ),
+      final loadedProducts = extractedData.map((element) {
+        return Product(
+          equipment: element['Equipment'],
+          equipmentDesc: element['EquipmentDescription'],
+          material: element['Material'],
+          materialDesc: element['MaterialDesc'],
+          lastReading: double.parse(element['LastRead']),
+          unitPrice: double.parse(element['PricingUnit']),
+          measuringUnit: element['Measurmntrangeunit'],
+          objectNumber: element['ObjectNumber'],
+          measuringPoint: int.parse(element['MeasuringPoint']),
+          lastAmount: 50.0,
         );
-      }
+      }).toList();
 
       _items = loadedProducts;
 
-      // create tanks based on material from items
-      final List<Tank> loadedTanks = [];
+      final loadedTanks = userData['shiftType'] == 'F'
+          ? loadedProducts
+              .map((product) => Tank(material: product.material))
+              .toList()
+          : [] as List<Tank>;
 
-      if (userData['shiftType'] == 'F') {
-        var uniqueMaterials = <String>{};
-        loadedProducts
-            .where((element) => uniqueMaterials.add(element.material))
-            .toList();
-
-        for (var mat in uniqueMaterials) {
-          loadedTanks.add(Tank(material: mat));
-        }
-
-        _tanks = loadedTanks;
-      }
+      _tanks = loadedTanks;
 
       notifyListeners();
     } catch (error) {
@@ -108,13 +96,16 @@ class Products with ChangeNotifier {
   }
 
   Product? validateProducts() {
-    for (var item in _items) {
-      if ((item.enteredReading - item.lastReading) * item.unitPrice !=
-          (item.enteredAmount - item.lastAmount)) {
-        return item;
-      }
-    }
+    final itemsWithIncorrectAmount = _items
+        .where(
+            (item) => item.enteredReading != 0.0 && item.enteredAmount != 0.0)
+        .where((item) =>
+            (item.enteredReading - item.lastReading) * item.unitPrice !=
+            (item.enteredAmount - item.lastAmount))
+        .toList();
 
-    return null;
+    return itemsWithIncorrectAmount.isEmpty
+        ? null
+        : itemsWithIncorrectAmount.first;
   }
 }

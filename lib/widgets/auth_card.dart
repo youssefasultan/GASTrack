@@ -24,7 +24,7 @@ class _AuthCardState extends State<AuthCard>
     'username': '',
     'password': '',
     'url': '',
-    'shiftType': '',
+    'shiftType': 'F',
   };
 
   final _passwordController = TextEditingController();
@@ -32,8 +32,6 @@ class _AuthCardState extends State<AuthCard>
   final _urlController = TextEditingController();
 
   var _isLoading = false;
-
-  List<String> listOfValue = ['F', 'G'];
 
   @override
   void initState() {
@@ -117,6 +115,35 @@ class _AuthCardState extends State<AuthCard>
     }
   }
 
+  Widget customRadioButton(String text, String index) {
+    Color primary = Theme.of(context).primaryColor;
+
+    return OutlinedButton(
+        onPressed: () {
+          setState(() {
+            _authData['shiftType'] = index;
+          });
+        },
+        style: OutlinedButton.styleFrom(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          side: BorderSide(
+            color: primary,
+            width: 2.0,
+            style: BorderStyle.solid,
+          ),
+          backgroundColor:
+              (_authData['shiftType'] == index) ? primary : Colors.white,
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: (_authData['shiftType'] == index) ? Colors.white : primary,
+          ),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -183,41 +210,16 @@ class _AuthCardState extends State<AuthCard>
                         },
                       )
                     : Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 3.0,
-                          vertical: 8.0,
+                        padding: const EdgeInsets.only(
+                          top: 20.0,
                         ),
-                        child: DropdownButtonFormField(
-                          value: _authData['shiftType']!.isEmpty
-                              ? null
-                              : _authData['shiftType'],
-                          hint: Text(t.shiftTypeHint),
-                          items: listOfValue
-                              .map((val) => DropdownMenuItem(
-                                    value: val,
-                                    child: Text(
-                                      val == "F" ? t.fuel : t.gas,
-                                    ),
-                                  ))
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _authData['shiftType'] = value!;
-                            });
-                          },
-                          onSaved: (value) {
-                            setState(() {
-                              _authData['shiftType'] = value!;
-                            });
-                          },
-                          validator: (value) {
-                            if (value!.isEmpty && _authMode == AuthMode.Login) {
-                              return t.shiftTypeHint;
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            customRadioButton(t.fuel, 'F'),
+                            customRadioButton(t.gas, 'G'),
+                          ],
+                        )),
                 const SizedBox(
                   height: 20,
                 ),

@@ -45,6 +45,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
+    ThemeData themeData = Theme.of(context);
 
     final paymentsData = Provider.of<Payments>(context);
     final paymentMethods = paymentsData.getPaymentsMethods;
@@ -56,14 +57,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
           style: TextStyle(
             fontFamily: 'Babas',
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).primaryColor,
+            color: themeData.primaryColor,
           ),
         ),
         actions: [
           PopupMenuButton(
             icon: Icon(
               Icons.more_vert,
-              color: Theme.of(context).primaryColor,
+              color: themeData.primaryColor,
             ),
             onSelected: (value) {
               if (value == 'logout') {
@@ -79,14 +80,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   children: [
                     Icon(
                       Icons.logout,
-                      color: Theme.of(context).primaryColor,
+                      color: themeData.primaryColor,
                       size: 30.0,
                     ),
                     Text(
                       t.logout,
                       style: TextStyle(
                         fontSize: 18,
-                        color: Theme.of(context).primaryColor,
+                        color: themeData.primaryColor,
                       ),
                     )
                   ],
@@ -117,7 +118,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (paymentsData.getTotalCollection == 0.0) {
+          if (paymentsData.validatePayments()) {
             DialogBuilder(context).showErrorDialog(t.totalError);
           } else {
             DialogBuilder(context).showConfirmationDialog();
@@ -126,7 +127,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: Icon(
           Icons.upload,
           size: 35,
-          color: Theme.of(context).primaryColor,
+          color: themeData.primaryColor,
         ),
       ),
     );

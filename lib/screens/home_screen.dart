@@ -20,7 +20,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  int selectedIndex = 0;
   var _isLoading = false;
   var _isInit = true;
   late TabController _tabController;
@@ -30,12 +29,6 @@ class _HomeScreenState extends State<HomeScreen>
     _tabController = TabController(length: 2, vsync: this);
 
     super.initState();
-  }
-
-  void onCardSelected(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
   }
 
   @override
@@ -58,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
+    ThemeData themeData = Theme.of(context);
 
     final productsData = Provider.of<Products>(context);
 
@@ -74,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen>
             style: TextStyle(
               fontFamily: 'Babas',
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
+              color: themeData.primaryColor,
             ),
           ),
         ),
@@ -83,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen>
           PopupMenuButton(
             icon: Icon(
               Icons.more_vert,
-              color: Theme.of(context).primaryColor,
+              color: themeData.primaryColor,
             ),
             onSelected: (value) {
               if (value == 'logout') {
@@ -99,14 +93,14 @@ class _HomeScreenState extends State<HomeScreen>
                   children: [
                     Icon(
                       Icons.logout,
-                      color: Theme.of(context).primaryColor,
+                      color: themeData.primaryColor,
                       size: 30.0,
                     ),
                     Text(
                       t.logout,
                       style: TextStyle(
                         fontSize: 18,
-                        color: Theme.of(context).primaryColor,
+                        color: themeData.primaryColor,
                       ),
                     )
                   ],
@@ -163,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen>
       floatingActionButton: FloatingActionButton(
         child: Icon(
           Icons.payment,
-          color: Theme.of(context).primaryColor,
+          color: themeData.primaryColor,
           size: 35.0,
         ),
         onPressed: () {
@@ -172,7 +166,8 @@ class _HomeScreenState extends State<HomeScreen>
           if (productsData.getTotalSales == 0.0) {
             DialogBuilder(context).showErrorDialog(t.totalError);
           } else if (product != null) {
-            DialogBuilder(context).showErrorDialog('${t.amountError} ${product.equipmentDesc}' );
+            DialogBuilder(context)
+                .showErrorDialog('${t.amountError} ${product.equipmentDesc}');
           } else {
             Navigator.of(context).pushNamed(PaymentScreen.routeName);
           }

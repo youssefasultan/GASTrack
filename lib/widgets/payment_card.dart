@@ -24,15 +24,7 @@ class PaymentCard extends StatelessWidget {
         borderRadius: const BorderRadius.all(
           Radius.circular(20),
         ),
-        gradient: LinearGradient(
-          colors: [
-            blueColor.withOpacity(0.5),
-            redColor.withOpacity(0.8),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: const [0, 1],
-        ),
+        gradient: linerGradient,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(

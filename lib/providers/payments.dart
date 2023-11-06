@@ -118,7 +118,7 @@ class Payments with ChangeNotifier {
       final productsData = Provider.of<Products>(context, listen: false);
       final productsList = productsData.getProducts;
       final tankList = productsData.getTanks;
-      return RequestBuilder()
+      return await RequestBuilder()
           .postShiftRequest(productsList, _paymentsItems, tankList, _total);
     } catch (error) {
       rethrow;
@@ -128,29 +128,35 @@ class Payments with ChangeNotifier {
   void calculateCouponTotal() {
     for (var payment in _paymentsItems) {
       if (payment is Coupon) {
-        payment.amount = 0.0;
-        for (var coupon in payment.couponsList) {
-          payment.amount += coupon.amount;
-        }
+        payment.amount =
+            payment.couponsList.fold(0.0, (sum, coupon) => sum + coupon.amount);
       }
     }
+
     calculateCash();
     notifyListeners();
   }
 
   void calculateCash() {
-    double totalVisaCoupon = 0.0;
-    for (var payment in _paymentsItems) {
-      if (payment.icon != 'CASH') {
-        totalVisaCoupon += payment.amount;
+    double totalVisaCoupon = _paymentsItems
+        .where((p) => p.icon != 'CASH')
+        .fold(0, (sum, p) => sum + p.amount);
+
+    for (var p in _paymentsItems) {
+      if (p.icon == 'CASH') {
+        p.amount = _total - totalVisaCoupon;
       }
     }
 
-    for (var payment in _paymentsItems) {
-      if (payment.icon == 'CASH') {
-        payment.amount = _total - totalVisaCoupon;
-      }
-    }
     notifyListeners();
+  }
+
+  bool validatePayments() {
+    double total = 0.0;
+    for (var payment in _paymentsItems) {
+      total += payment.amount;
+    }
+
+    return total == 0.0;
   }
 }

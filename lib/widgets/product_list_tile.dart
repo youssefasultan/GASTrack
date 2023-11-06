@@ -41,6 +41,7 @@ class ProductListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context);
     t = AppLocalizations.of(context)!;
+    ThemeData themeData = Theme.of(context);
 
     TextEditingController readingController = TextEditingController(
         text: product.enteredReading == 0.0
@@ -60,12 +61,12 @@ class ProductListTile extends StatelessWidget {
           product.equipmentDesc,
           style: TextStyle(
             fontFamily: 'Bebas',
-            color: Theme.of(context).primaryColor,
+            color: themeData.primaryColor,
           ),
         ),
         subtitle: Text(product.materialDesc),
-        collapsedBackgroundColor: Theme.of(context).primaryColorLight,
-        backgroundColor: Theme.of(context).primaryColorLight,
+        collapsedBackgroundColor: themeData.primaryColorLight,
+        backgroundColor: themeData.primaryColorLight,
         expandedAlignment: Alignment.center,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20))),

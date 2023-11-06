@@ -15,6 +15,8 @@ class CouponListTile extends StatefulWidget {
 class _CouponListTileState extends State<CouponListTile> {
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+
     final coupon = Provider.of<CouponData>(context);
     final payments = Provider.of<Payments>(context, listen: false);
 
@@ -29,7 +31,7 @@ class _CouponListTileState extends State<CouponListTile> {
           Text(
             coupon.value.toString(),
             style: TextStyle(
-              color: Theme.of(context).primaryColor,
+              color: themeData.primaryColor,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
