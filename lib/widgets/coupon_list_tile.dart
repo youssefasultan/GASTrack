@@ -29,7 +29,7 @@ class _CouponListTileState extends State<CouponListTile> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            coupon.value.toString(),
+            coupon.coupon,
             style: TextStyle(
               color: themeData.primaryColor,
               fontSize: 18,

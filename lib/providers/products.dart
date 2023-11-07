@@ -50,19 +50,21 @@ class Products with ChangeNotifier {
           measuringUnit: element['Measurmntrangeunit'],
           objectNumber: element['ObjectNumber'],
           measuringPoint: int.parse(element['MeasuringPoint']),
-          lastAmount: 50.0,
+          lastAmount: double.parse(element['LastAmount']),
         );
       }).toList();
 
       _items = loadedProducts;
 
-      final loadedTanks = userData['shiftType'] == 'F'
-          ? loadedProducts
-              .map((product) => Tank(material: product.material))
-              .toList()
-          : [] as List<Tank>;
+      if (userData['shiftType'] == 'F') {
+        final loadedTanks = userData['shiftType'] == 'F'
+            ? loadedProducts
+                .map((product) => Tank(material: product.material))
+                .toList()
+            : [] as List<Tank>;
 
-      _tanks = loadedTanks;
+        _tanks = loadedTanks;
+      }
 
       notifyListeners();
     } catch (error) {

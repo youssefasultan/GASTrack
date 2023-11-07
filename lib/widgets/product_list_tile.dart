@@ -190,6 +190,8 @@ class ProductListTile extends StatelessWidget {
                               double.parse(readingController.text))) {
                         showWarning(context,
                             '${t.amountError} ${product.equipmentDesc}');
+                        amountController.text =
+                            product.enteredAmount.toString();
                       } else if (!value) {
                         product.enteredAmount =
                             double.parse(amountController.text);
@@ -215,6 +217,8 @@ class ProductListTile extends StatelessWidget {
                             double.parse(readingController.text))) {
                           showWarning(context,
                               '${t.amountError} ${product.equipmentDesc}');
+                          amountController.text =
+                              product.enteredAmount.toString();
                         } else {
                           product.enteredAmount =
                               double.parse(amountController.text);

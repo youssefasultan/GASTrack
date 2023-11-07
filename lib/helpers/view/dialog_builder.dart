@@ -153,47 +153,23 @@ class DialogBuilder {
                 height: MediaQuery.of(context).size.height * 0.1,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                child: Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          t.totalSales,
-                          style: TextStyle(
-                            fontFamily: 'Bebas',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        Text(
-                          '${endOfDayData['sales']} ${t.egp}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      t.total,
+                      style: TextStyle(
+                        fontFamily: 'Bebas',
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          t.totalCollection,
-                          style: TextStyle(
-                            fontFamily: 'Bebas',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        Text(
-                          '${endOfDayData['collection']} ${t.egp}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      '${endOfDayData['collection']} ${t.egp}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                   ],
                 ),
