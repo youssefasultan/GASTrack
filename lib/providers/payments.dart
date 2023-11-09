@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/data/request_builder.dart';
-import 'payment.dart';
+import '../helpers/data/shared.dart';
+import '../models/payment.dart';
 import 'products.dart';
 
 class Payments with ChangeNotifier {
   List<Payment> _paymentsItems = [];
   double _total = 0.0;
+  Map<String, dynamic> _summery = {};
 
   Payments(double totalSales) {
     _total = totalSales;
@@ -23,15 +25,29 @@ class Payments with ChangeNotifier {
     return _total;
   }
 
-  Map<String, String> getEndOfDaySummeryPayments() {
-    // TODO: return all day total for each payment type, total collection and total sales
-    return {
-      "collection": "",
-      "sales": "",
-      "cash": "",
-      "card": "",
-      "coupon": ""
-    };
+  Map<String, dynamic> get getSummery {
+    return _summery;
+  }
+
+  Future<void> getEndOfDaySummeryPayments() async {
+    // return all day total for each payment type, total collection and total sales
+    final userData = await Shared.getUserdata();
+
+    var response = await RequestBuilder().buildGetRequest(
+        "GasAdminSet?\$filter=ShiftLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
+
+    var responseData = json.decode(response.body);
+    var extractedData = responseData['d']['results'] as List<dynamic>;
+
+    _summery = extractedData.map((e) => {
+          {
+            'shift': e['Shift'],
+            'type': e['PaymentTextEg'],
+            'value': e['PaymentValue'],
+          }
+        }) as Map<String, dynamic>;
+
+    notifyListeners();
   }
 
   Future<void> fetchPayments(String shiftType) async {

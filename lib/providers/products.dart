@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../helpers/data/request_builder.dart';
 import '../helpers/data/shared.dart';
-import 'product.dart';
-import 'tank.dart';
+import '../models/product.dart';
+import '../models/tank.dart';
 
 class Products with ChangeNotifier {
   List<Product> _items = [];

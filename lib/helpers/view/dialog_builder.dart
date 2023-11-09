@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../providers/auth.dart';
 import '../../providers/payments.dart';
 import '../../providers/products.dart';
+import '../data/constants.dart';
 import 'dash_separator.dart';
 
 class DialogBuilder {
@@ -28,6 +29,15 @@ class DialogBuilder {
     );
   }
 
+  void showSnackBar(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: redColor,
+      ),
+    );
+  }
+
   void hideOpenDialog() {
     Navigator.of(context).pop();
   }
@@ -36,8 +46,6 @@ class DialogBuilder {
     var t = AppLocalizations.of(context)!;
 
     final paymentData = Provider.of<Payments>(context, listen: false);
-
-    final authData = Provider.of<Auth>(context, listen: false);
 
     final deviceSize = MediaQuery.of(context).size;
 
@@ -65,49 +73,39 @@ class DialogBuilder {
                 ),
                 const DashSeparator(),
                 const ConfirmationWarining(),
-                !authData.isAdmin
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _dialogTextButton(
-                            () async {
-                              Navigator.pop(context);
-                              showLoadingIndicator(t.uploading);
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _dialogTextButton(
+                      () async {
+                        Navigator.pop(context);
+                        showLoadingIndicator(t.uploading);
 
-                              try {
-                                if (await paymentData.uploadShift(context)) {
-                                  hideOpenDialog();
-                                  showSuccessDialog(t.successMsg);
-                                } else {
-                                  hideOpenDialog();
-                                  showErrorDialog(t.uploadError);
-                                }
-                              } catch (error) {
-                                hideOpenDialog();
-                                showErrorDialog(error.toString());
-                              }
-                            },
-                            t.confirm,
-                            Theme.of(context).primaryColor,
-                            Theme.of(context).primaryColor,
-                          ),
-                          _dialogTextButton(
-                            hideOpenDialog,
-                            t.cancel,
-                            Colors.white,
-                            Theme.of(context).primaryColor,
-                          )
-                        ],
-                      )
-                    : _dialogTextButton(
-                        () {
+                        try {
+                          if (await paymentData.uploadShift(context)) {
+                            hideOpenDialog();
+                            showSuccessDialog(t.successMsg);
+                          } else {
+                            hideOpenDialog();
+                            showErrorDialog(t.uploadError);
+                          }
+                        } catch (error) {
                           hideOpenDialog();
-                          showEndOfDaySummery();
-                        },
-                        t.next,
-                        Theme.of(context).primaryColor,
-                        Theme.of(context).primaryColor,
-                      )
+                          showErrorDialog(error.toString());
+                        }
+                      },
+                      t.confirm,
+                      Theme.of(context).primaryColor,
+                      Theme.of(context).primaryColor,
+                    ),
+                    _dialogTextButton(
+                      hideOpenDialog,
+                      t.cancel,
+                      Colors.white,
+                      Theme.of(context).primaryColor,
+                    )
+                  ],
+                )
               ],
             ),
           ),
@@ -117,66 +115,10 @@ class DialogBuilder {
   }
 
   Future<dynamic> showEndOfDaySummery() {
-    final deviceSize = MediaQuery.of(context).size;
-    var t = AppLocalizations.of(context)!;
-    final endOfDayData = Provider.of<Payments>(context, listen: false)
-        .getEndOfDaySummeryPayments();
-
     return showModalBottomSheet(
       context: context,
       builder: (_) {
-        return SizedBox(
-          height: deviceSize.height * 0.8,
-          width: deviceSize.width,
-          child: Column(
-            children: [
-              Text(
-                t.daySummery,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontFamily: 'Bebas',
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const DashSeparator(),
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) => const ListTile(),
-                  itemCount: 3,
-                ),
-              ),
-              const DashSeparator(),
-              Container(
-                width: double.maxFinite,
-                height: MediaQuery.of(context).size.height * 0.1,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      t.total,
-                      style: TextStyle(
-                        fontFamily: 'Bebas',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    Text(
-                      '${endOfDayData['collection']} ${t.egp}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+        return const SummeryWidget();
       },
     );
   }
@@ -222,6 +164,7 @@ class DialogBuilder {
     String message,
   ) {
     var t = AppLocalizations.of(context)!;
+    final isAdmin = Provider.of<Auth>(context, listen: false).isAdmin;
 
     showDialog(
       context: context,
@@ -244,17 +187,27 @@ class DialogBuilder {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          _dialogTextButton(
-            () {
-              hideOpenDialog();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-              Provider.of<Auth>(context, listen: false).logout();
-            },
-            t.okay,
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor,
-          )
+          isAdmin
+              ? _dialogTextButton(
+                  () {
+                    hideOpenDialog();
+                    showEndOfDaySummery();
+                  },
+                  t.next,
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColor,
+                )
+              : _dialogTextButton(
+                  () {
+                    hideOpenDialog();
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
+                    Provider.of<Auth>(context, listen: false).logout();
+                  },
+                  t.okay,
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColor,
+                )
         ],
       ),
     );
@@ -293,6 +246,109 @@ class DialogBuilder {
           color: textColorCheck ? Colors.white : Theme.of(context).primaryColor,
         ),
       ),
+    );
+  }
+}
+
+class SummeryWidget extends StatefulWidget {
+  const SummeryWidget({
+    super.key,
+  });
+
+  @override
+  State<SummeryWidget> createState() => _SummeryWidgetState();
+}
+
+class _SummeryWidgetState extends State<SummeryWidget> {
+  var _isLoading = false;
+  var _isInit = true;
+  late Map<String, String> summeryMap;
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      Provider.of<Payments>(context).getEndOfDaySummeryPayments().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      }).catchError((error) {
+        DialogBuilder(context).showErrorDialog(error.toString());
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
+    var t = AppLocalizations.of(context)!;
+
+    final summeryData = Provider.of<Payments>(context).getSummery;
+
+    return SizedBox(
+      height: deviceSize.height * 0.8,
+      width: deviceSize.width,
+      child: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
+              children: [
+                Text(
+                  t.daySummery,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontFamily: 'Bebas',
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const DashSeparator(),
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (context, index) => ListTile(
+                      title: Text(
+                        '${t.shift} ${summeryData['shift']} ${summeryData[index]['type']}',
+                      ),
+                      trailing: Text('${summeryData[index]['value']}'),
+                    ),
+                    itemCount: summeryData.length,
+                  ),
+                ),
+                const DashSeparator(),
+                Container(
+                  width: double.maxFinite,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        t.total,
+                        style: TextStyle(
+                          fontFamily: 'Bebas',
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      Text(
+                        ' ${t.egp}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

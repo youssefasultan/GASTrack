@@ -1,11 +1,12 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../helpers/data/constants.dart';
-import '../providers/product.dart';
+import '../models/product.dart';
+import '../providers/auth.dart';
 
 class ProductListTile extends StatelessWidget {
   ProductListTile({super.key});
@@ -28,25 +29,23 @@ class ProductListTile extends StatelessWidget {
         ((reading - product.lastReading) * product.unitPrice);
   }
 
-  void showWarning(BuildContext context, String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        backgroundColor: redColor,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context);
+    final isAdmin = Provider.of<Auth>(context, listen: false).isAdmin;
     t = AppLocalizations.of(context)!;
     ThemeData themeData = Theme.of(context);
+
+    TextEditingController lastReadingController =
+        TextEditingController(text: product.lastReading.toString());
 
     TextEditingController readingController = TextEditingController(
         text: product.enteredReading == 0.0
             ? ''
             : product.enteredReading.toString());
+
+    TextEditingController lastAmountController =
+        TextEditingController(text: product.lastAmount.toString());
 
     TextEditingController amountController = TextEditingController(
         text: product.enteredAmount == 0.0
@@ -91,15 +90,30 @@ class ProductListTile extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Text(
-                      '${product.lastReading} ${getUom(product.measuringUnit)}',
-                      textAlign: TextAlign.center,
-                      key: UniqueKey(),
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: redColor,
+                  child: Focus(
+                    onFocusChange: (value) {
+                      if (!value) {
+                        product.lastReading =
+                            double.parse(lastReadingController.text);
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                          ),
+                          hintText: getUom(product.measuringUnit),
+                        ),
+                        textAlign: TextAlign.center,
+                        controller: lastReadingController,
+                        keyboardType: TextInputType.number,
+                        key: UniqueKey(),
+                        enabled: isAdmin,
+                        onSubmitted: (value) {
+                          product.lastReading = double.parse(value);
+                        },
                       ),
                     ),
                   ),
@@ -111,7 +125,8 @@ class ProductListTile extends StatelessWidget {
                           readingController.text.isNotEmpty &&
                           double.parse(readingController.text) <
                               product.lastReading) {
-                        showWarning(context, t.readingError);
+                        DialogBuilder(context).showSnackBar(t.readingError);
+                        readingController.clear();
                       } else if (!value) {
                         product.enteredReading =
                             double.parse(readingController.text);
@@ -119,26 +134,30 @@ class ProductListTile extends StatelessWidget {
                             product.enteredReading - product.lastReading;
                       }
                     },
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                          ),
+                          hintText: getUom(product.measuringUnit),
                         ),
-                        hintText: getUom(product.measuringUnit),
+                        textAlign: TextAlign.center,
+                        controller: readingController,
+                        keyboardType: TextInputType.number,
+                        key: UniqueKey(),
+                        onSubmitted: (value) {
+                          if (double.parse(value) < product.lastReading) {
+                            DialogBuilder(context).showSnackBar(t.readingError);
+                            readingController.clear();
+                          } else {
+                            product.enteredReading = double.parse(value);
+                            product.quantity =
+                                product.enteredReading - product.lastReading;
+                          }
+                        },
                       ),
-                      textAlign: TextAlign.center,
-                      controller: readingController,
-                      keyboardType: TextInputType.number,
-                      key: UniqueKey(),
-                      onSubmitted: (value) {
-                        if (double.parse(value) < product.lastReading) {
-                          showWarning(context, t.readingError);
-                        } else {
-                          product.enteredReading = double.parse(value);
-                          product.quantity =
-                              product.enteredReading - product.lastReading;
-                        }
-                      },
                     ),
                   ),
                 )
@@ -163,15 +182,30 @@ class ProductListTile extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Text(
-                      '${product.lastAmount} ${t.egp}',
-                      textAlign: TextAlign.center,
-                      key: UniqueKey(),
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: redColor,
+                  child: Focus(
+                    onFocusChange: (value) {
+                      if (!value) {
+                        product.lastAmount =
+                            double.parse(lastAmountController.text);
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                          ),
+                          hintText: getUom(product.measuringUnit),
+                        ),
+                        textAlign: TextAlign.center,
+                        controller: lastAmountController,
+                        keyboardType: TextInputType.number,
+                        key: UniqueKey(),
+                        enabled: isAdmin,
+                        onSubmitted: (value) {
+                          product.lastAmount = double.parse(value);
+                        },
                       ),
                     ),
                   ),
@@ -182,14 +216,17 @@ class ProductListTile extends StatelessWidget {
                       if (!value &&
                           double.parse(amountController.text) <
                               product.lastAmount) {
-                        showWarning(context, t.readingError);
+                        DialogBuilder(context).showSnackBar(t.readingError);
+                        amountController.clear();
                       } else if (!value &&
                           amountValidation(
-                              product,
-                              double.parse(amountController.text),
-                              double.parse(readingController.text))) {
-                        showWarning(context,
+                            product,
+                            double.parse(amountController.text),
+                            double.parse(readingController.text),
+                          )) {
+                        DialogBuilder(context).showSnackBar(
                             '${t.amountError} ${product.equipmentDesc}');
+
                         amountController.text =
                             product.enteredAmount.toString();
                       } else if (!value) {
@@ -197,33 +234,37 @@ class ProductListTile extends StatelessWidget {
                             double.parse(amountController.text);
                       }
                     },
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                          ),
+                          hintText: t.egp,
                         ),
-                        hintText: t.egp,
+                        textAlign: TextAlign.center,
+                        controller: amountController,
+                        keyboardType: TextInputType.number,
+                        key: UniqueKey(),
+                        onSubmitted: (value) {
+                          if (double.parse(value) < product.lastAmount) {
+                            DialogBuilder(context).showSnackBar(t.readingError);
+                            amountController.clear();
+                          } else if (amountValidation(
+                              product,
+                              double.parse(amountController.text),
+                              double.parse(readingController.text))) {
+                            DialogBuilder(context).showSnackBar(
+                                '${t.amountError} ${product.equipmentDesc}');
+                            amountController.text =
+                                product.enteredAmount.toString();
+                          } else {
+                            product.enteredAmount =
+                                double.parse(amountController.text);
+                          }
+                        },
                       ),
-                      textAlign: TextAlign.center,
-                      controller: amountController,
-                      keyboardType: TextInputType.number,
-                      key: UniqueKey(),
-                      onSubmitted: (value) {
-                        if (double.parse(value) < product.lastAmount) {
-                          showWarning(context, t.readingError);
-                        } else if (amountValidation(
-                            product,
-                            double.parse(amountController.text),
-                            double.parse(readingController.text))) {
-                          showWarning(context,
-                              '${t.amountError} ${product.equipmentDesc}');
-                          amountController.text =
-                              product.enteredAmount.toString();
-                        } else {
-                          product.enteredAmount =
-                              double.parse(amountController.text);
-                        }
-                      },
                     ),
                   ),
                 )

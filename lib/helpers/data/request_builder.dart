@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import '../../models/http_exception.dart';
-import '../../providers/payment.dart';
-import '../../providers/product.dart';
-import '../../providers/tank.dart';
+import '../../models/payment.dart';
+import '../../models/product.dart';
+import '../../models/tank.dart';
 import 'shared.dart';
 
 class RequestBuilder {

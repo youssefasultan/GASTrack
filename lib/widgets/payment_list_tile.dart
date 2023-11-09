@@ -4,7 +4,7 @@ import 'package:gas_track/widgets/coupon_list_tile.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
-import '../providers/payment.dart';
+import '../models/payment.dart';
 import '../providers/payments.dart';
 
 class PaymentTile extends StatefulWidget {
