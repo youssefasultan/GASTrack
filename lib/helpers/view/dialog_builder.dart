@@ -9,9 +9,12 @@ import '../data/constants.dart';
 import 'dash_separator.dart';
 
 class DialogBuilder {
-  DialogBuilder(this.context);
+  DialogBuilder(this.context) {
+    t = AppLocalizations.of(context)!;
+  }
 
   final BuildContext context;
+  late AppLocalizations t;
 
   void showLoadingIndicator(String text) {
     showDialog(
@@ -43,8 +46,6 @@ class DialogBuilder {
   }
 
   void showConfirmationDialog() {
-    var t = AppLocalizations.of(context)!;
-
     final paymentData = Provider.of<Payments>(context, listen: false);
 
     final deviceSize = MediaQuery.of(context).size;
@@ -117,8 +118,25 @@ class DialogBuilder {
   Future<dynamic> showEndOfDaySummery() {
     return showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (_) {
-        return const SummeryWidget();
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            const SummeryWidget(),
+            _dialogTextButton(
+              () {
+                hideOpenDialog();
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
+                Provider.of<Auth>(context, listen: false).logout();
+              },
+              t.confirm,
+              Theme.of(context).primaryColor,
+              Theme.of(context).primaryColor,
+            )
+          ],
+        );
       },
     );
   }
@@ -126,8 +144,6 @@ class DialogBuilder {
   void showErrorDialog(
     String message,
   ) {
-    var t = AppLocalizations.of(context)!;
-
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -163,7 +179,6 @@ class DialogBuilder {
   void showSuccessDialog(
     String message,
   ) {
-    var t = AppLocalizations.of(context)!;
     final isAdmin = Provider.of<Auth>(context, listen: false).isAdmin;
 
     showDialog(
@@ -262,7 +277,7 @@ class SummeryWidget extends StatefulWidget {
 class _SummeryWidgetState extends State<SummeryWidget> {
   var _isLoading = false;
   var _isInit = true;
-  late Map<String, String> summeryMap;
+  late AppLocalizations t;
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -282,15 +297,31 @@ class _SummeryWidgetState extends State<SummeryWidget> {
     super.didChangeDependencies();
   }
 
+  String getTitle(String paymentType) {
+    switch (paymentType) {
+      case 'Coupon':
+        return t.coupon;
+      case 'Visa':
+        return t.card;
+      case 'Cash':
+        return t.cash;
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    var t = AppLocalizations.of(context)!;
+    t = AppLocalizations.of(context)!;
 
-    final summeryData = Provider.of<Payments>(context).getSummery;
+    final summeryData = Provider.of<Payments>(context, listen: false);
+
+    final summeryItems = summeryData.getSummery;
+    final summryTotal = summeryData.calculateTotalSummery();
 
     return SizedBox(
-      height: deviceSize.height * 0.8,
+      height: deviceSize.height * 0.7,
       width: deviceSize.width,
       child: _isLoading
           ? const Center(
@@ -298,53 +329,75 @@ class _SummeryWidgetState extends State<SummeryWidget> {
             )
           : Column(
               children: [
-                Text(
-                  t.daySummery,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontFamily: 'Bebas',
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.all(7.0),
+                  child: Text(
+                    t.daySummery,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontFamily: 'Bebas',
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const DashSeparator(),
                 Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (context, index) => ListTile(
-                      title: Text(
-                        '${t.shift} ${summeryData['shift']} ${summeryData[index]['type']}',
+                  child: ListView(
+                    children: [
+                      DataTable(
+                        columns: [
+                          DataColumn(label: Text(t.shift)),
+                          DataColumn(label: Text(t.payment)),
+                          DataColumn(label: Text(t.amount))
+                        ],
+                        rows: summeryItems
+                            .map((e) => DataRow(
+                                  cells: [
+                                    DataCell(Text(e.shift)),
+                                    DataCell(Text(getTitle(e.paymentType))),
+                                    DataCell(Text(e.value.toString())),
+                                  ],
+                                ))
+                            .toList(),
                       ),
-                      trailing: Text('${summeryData[index]['value']}'),
-                    ),
-                    itemCount: summeryData.length,
+                    ],
                   ),
                 ),
                 const DashSeparator(),
                 Container(
                   width: double.maxFinite,
-                  height: MediaQuery.of(context).size.height * 0.1,
+                  height: MediaQuery.of(context).size.height * 0.2,
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8.0, vertical: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        t.total,
-                        style: TextStyle(
-                          fontFamily: 'Bebas',
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${t.total} ${getTitle(summryTotal.keys.elementAt(index))}',
+                              style: TextStyle(
+                                fontFamily: 'Bebas',
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            Text(
+                              '${summryTotal.values.elementAt(index)} ${t.egp}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      Text(
-                        ' ${t.egp}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                    ],
+                      );
+                    },
+                    itemCount: summryTotal.length,
                   ),
                 ),
               ],

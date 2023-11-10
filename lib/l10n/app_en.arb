@@ -30,7 +30,7 @@
   "error" : "Error",
   "payment" : "Payment",
   "cash" : "Cash",
-  "card" : "Card",
+  "card" : "Visa",
   "coupon" : "Coupon",
   "uploading" : "Uploading",
   "plesaeWait" : "Please Wait..",

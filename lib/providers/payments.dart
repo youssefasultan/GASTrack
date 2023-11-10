@@ -6,12 +6,13 @@ import 'package:provider/provider.dart';
 import '../helpers/data/request_builder.dart';
 import '../helpers/data/shared.dart';
 import '../models/payment.dart';
+import '../models/summery.dart';
 import 'products.dart';
 
 class Payments with ChangeNotifier {
   List<Payment> _paymentsItems = [];
   double _total = 0.0;
-  Map<String, dynamic> _summery = {};
+  List<Summery> _summery = [];
 
   Payments(double totalSales) {
     _total = totalSales;
@@ -25,7 +26,7 @@ class Payments with ChangeNotifier {
     return _total;
   }
 
-  Map<String, dynamic> get getSummery {
+  List<Summery> get getSummery {
     return _summery;
   }
 
@@ -39,15 +40,43 @@ class Payments with ChangeNotifier {
     var responseData = json.decode(response.body);
     var extractedData = responseData['d']['results'] as List<dynamic>;
 
-    _summery = extractedData.map((e) => {
-          {
-            'shift': e['Shift'],
-            'type': e['PaymentTextEg'],
-            'value': e['PaymentValue'],
-          }
-        }) as Map<String, dynamic>;
+    final loadedSummery = extractedData.map((e) {
+      return Summery(
+        shift: e['Shift'],
+        paymentType: e['PaymentTextEg'],
+        value: double.parse(e['PaymentValue']),
+      );
+    }).toList();
+
+    _summery = loadedSummery;
 
     notifyListeners();
+  }
+
+  Map<String, double> calculateTotalSummery() {
+    var totalCash = 0.0;
+    var totalCard = 0.0;
+    var totalCoupon = 0.0;
+    for (var payment in _summery) {
+      switch (payment.paymentType) {
+        case 'Visa':
+          totalCard += payment.value;
+          break;
+        case 'Cash':
+          totalCash += payment.value;
+          break;
+
+        case 'Coupon:':
+          totalCoupon += payment.value;
+          break;
+      }
+    }
+
+    return {
+      'Cash': totalCash,
+      'Visa': totalCard,
+      'Coupon': totalCoupon,
+    };
   }
 
   Future<void> fetchPayments(String shiftType) async {
