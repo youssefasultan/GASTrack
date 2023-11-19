@@ -29,20 +29,23 @@ class _HangingUnitListTileState extends State<HangingUnitListTile> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: Text(hangingUnit.equipment),
         expandedAlignment: Alignment.center,
         collapsedBackgroundColor: themeData.primaryColorLight,
         backgroundColor: themeData.primaryColorLight,
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20))),
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
+        ),
         collapsedShape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20))),
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
+        ),
         children: [
-          AnimatedContainer(
+          SizedBox(
             width: double.infinity,
-            height: 200,
-            duration: const Duration(seconds: 1),
-            curve: Curves.linear,
+            height: 230,
             child: ListView.builder(
               itemBuilder: (context, index) => ChangeNotifierProvider.value(
                 value: hangingUnit.hoseList[index],

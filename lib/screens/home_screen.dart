@@ -119,15 +119,18 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 const UserCard(),
                 if (shiftType == 'G')
-                  Expanded(
-                      child: ListView.builder(
-                    itemBuilder: (context, index) =>
-                        ChangeNotifierProvider.value(
-                      value: hangingUnits[index],
-                      child: const HoseListTile(),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 230,
+                    child: ListView.builder(
+                      itemBuilder: (context, index) =>
+                          ChangeNotifierProvider.value(
+                        value: hangingUnits[index],
+                        child: const HoseListTile(),
+                      ),
+                      itemCount: hangingUnits.length,
                     ),
-                    itemCount: hangingUnits.length,
-                  ))
+                  )
                 else
                   Expanded(
                     child: Column(
