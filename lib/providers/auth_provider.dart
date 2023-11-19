@@ -7,7 +7,7 @@ import '../helpers/data/request_builder.dart';
 import '../helpers/data/shared.dart';
 import '../models/http_exception.dart';
 
-class Auth with ChangeNotifier {
+class AuthProvider with ChangeNotifier {
   String? deviceId;
   // user data
   String? _location;

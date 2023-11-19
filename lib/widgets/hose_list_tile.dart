@@ -1,18 +1,15 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../models/product.dart';
-import '../providers/auth.dart';
+import '../helpers/view/dialog_builder.dart';
+import '../models/hose.dart';
+import '../providers/auth_provider.dart';
 
-class ProductListTile extends StatelessWidget {
-  ProductListTile({super.key});
-  late AppLocalizations t;
+class HoseListTile extends StatelessWidget {
+  const HoseListTile({super.key});
 
-  String getUom(String mesruementUnit) {
+  String getUom(String mesruementUnit, AppLocalizations t) {
     switch (mesruementUnit) {
       case 'L':
         return t.liter;
@@ -24,53 +21,49 @@ class ProductListTile extends StatelessWidget {
     }
   }
 
-  bool amountValidation(Product product, double amount, double reading) {
-    return (amount - product.lastAmount) !=
-        ((reading - product.lastReading) * product.unitPrice);
+  bool amountValidation(Hose hose, double amount, double reading) {
+    return (amount - hose.lastAmount) !=
+        ((reading - hose.lastReading) * hose.unitPrice);
   }
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
-    final isAdmin = Provider.of<Auth>(context, listen: false).isAdmin;
-    t = AppLocalizations.of(context)!;
+    final hose = Provider.of<Hose>(context);
+    final isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
+    AppLocalizations t = AppLocalizations.of(context)!;
     ThemeData themeData = Theme.of(context);
 
     TextEditingController lastReadingController =
-        TextEditingController(text: product.lastReading.toString());
+        TextEditingController(text: hose.lastReading.toString());
 
     TextEditingController readingController = TextEditingController(
-        text: product.enteredReading == 0.0
-            ? ''
-            : product.enteredReading.toString());
+        text: hose.enteredReading == 0.0 ? '' : hose.enteredReading.toString());
 
     TextEditingController lastAmountController =
-        TextEditingController(text: product.lastAmount.toString());
+        TextEditingController(text: hose.lastAmount.toString());
 
     TextEditingController amountController = TextEditingController(
-        text: product.enteredAmount == 0.0
-            ? ''
-            : product.enteredAmount.toString());
+        text: hose.enteredAmount == 0.0 ? '' : hose.enteredAmount.toString());
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
       child: ExpansionTile(
         key: UniqueKey(),
         title: Text(
-          product.equipmentDesc,
+          hose.measuringPointDesc,
           style: TextStyle(
             fontFamily: 'Bebas',
             color: themeData.primaryColor,
           ),
         ),
-        subtitle: Text(product.materialDesc),
+        subtitle: Text(hose.materialDesc),
         collapsedBackgroundColor: themeData.primaryColorLight,
-        backgroundColor: themeData.primaryColorLight,
+        backgroundColor: Colors.white,
         expandedAlignment: Alignment.center,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20))),
         collapsedShape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(50))),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
         children: [
           Padding(
             padding:
@@ -93,7 +86,7 @@ class ProductListTile extends StatelessWidget {
                   child: Focus(
                     onFocusChange: (value) {
                       if (!value) {
-                        product.lastReading =
+                        hose.lastReading =
                             double.parse(lastReadingController.text);
                       }
                     },
@@ -104,7 +97,7 @@ class ProductListTile extends StatelessWidget {
                           border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(50)),
                           ),
-                          hintText: getUom(product.measuringUnit),
+                          hintText: getUom(hose.measuringUnit, t),
                         ),
                         textAlign: TextAlign.center,
                         controller: lastReadingController,
@@ -112,7 +105,7 @@ class ProductListTile extends StatelessWidget {
                         key: UniqueKey(),
                         enabled: isAdmin,
                         onSubmitted: (value) {
-                          product.lastReading = double.parse(value);
+                          hose.lastReading = double.parse(value);
                         },
                       ),
                     ),
@@ -124,14 +117,13 @@ class ProductListTile extends StatelessWidget {
                       if (!value &&
                           readingController.text.isNotEmpty &&
                           double.parse(readingController.text) <
-                              product.lastReading) {
+                              hose.lastReading) {
                         DialogBuilder(context).showSnackBar(t.readingError);
                         readingController.clear();
                       } else if (!value) {
-                        product.enteredReading =
+                        hose.enteredReading =
                             double.parse(readingController.text);
-                        product.quantity =
-                            product.enteredReading - product.lastReading;
+                        hose.quantity = hose.enteredReading - hose.lastReading;
                       }
                     },
                     child: Padding(
@@ -141,20 +133,20 @@ class ProductListTile extends StatelessWidget {
                           border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(50)),
                           ),
-                          hintText: getUom(product.measuringUnit),
+                          hintText: getUom(hose.measuringUnit, t),
                         ),
                         textAlign: TextAlign.center,
                         controller: readingController,
                         keyboardType: TextInputType.number,
                         key: UniqueKey(),
                         onSubmitted: (value) {
-                          if (double.parse(value) < product.lastReading) {
+                          if (double.parse(value) < hose.lastReading) {
                             DialogBuilder(context).showSnackBar(t.readingError);
                             readingController.clear();
                           } else {
-                            product.enteredReading = double.parse(value);
-                            product.quantity =
-                                product.enteredReading - product.lastReading;
+                            hose.enteredReading = double.parse(value);
+                            hose.quantity =
+                                hose.enteredReading - hose.lastReading;
                           }
                         },
                       ),
@@ -185,7 +177,7 @@ class ProductListTile extends StatelessWidget {
                   child: Focus(
                     onFocusChange: (value) {
                       if (!value) {
-                        product.lastAmount =
+                        hose.lastAmount =
                             double.parse(lastAmountController.text);
                       }
                     },
@@ -196,7 +188,7 @@ class ProductListTile extends StatelessWidget {
                           border: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(50)),
                           ),
-                          hintText: getUom(product.measuringUnit),
+                          hintText: getUom(hose.measuringUnit, t),
                         ),
                         textAlign: TextAlign.center,
                         controller: lastAmountController,
@@ -204,7 +196,7 @@ class ProductListTile extends StatelessWidget {
                         key: UniqueKey(),
                         enabled: isAdmin,
                         onSubmitted: (value) {
-                          product.lastAmount = double.parse(value);
+                          hose.lastAmount = double.parse(value);
                         },
                       ),
                     ),
@@ -215,22 +207,21 @@ class ProductListTile extends StatelessWidget {
                     onFocusChange: (value) {
                       if (!value &&
                           double.parse(amountController.text) <
-                              product.lastAmount) {
+                              hose.lastAmount) {
                         DialogBuilder(context).showSnackBar(t.readingError);
                         amountController.clear();
                       } else if (!value &&
                           amountValidation(
-                            product,
+                            hose,
                             double.parse(amountController.text),
                             double.parse(readingController.text),
                           )) {
                         DialogBuilder(context).showSnackBar(
-                            '${t.amountError} ${product.equipmentDesc}');
+                            '${t.amountError} ${hose.measuringPointDesc}');
 
-                        amountController.text =
-                            product.enteredAmount.toString();
+                        amountController.text = hose.enteredAmount.toString();
                       } else if (!value) {
-                        product.enteredAmount =
+                        hose.enteredAmount =
                             double.parse(amountController.text);
                       }
                     },
@@ -248,19 +239,19 @@ class ProductListTile extends StatelessWidget {
                         keyboardType: TextInputType.number,
                         key: UniqueKey(),
                         onSubmitted: (value) {
-                          if (double.parse(value) < product.lastAmount) {
+                          if (double.parse(value) < hose.lastAmount) {
                             DialogBuilder(context).showSnackBar(t.readingError);
                             amountController.clear();
                           } else if (amountValidation(
-                              product,
+                              hose,
                               double.parse(amountController.text),
                               double.parse(readingController.text))) {
                             DialogBuilder(context).showSnackBar(
-                                '${t.amountError} ${product.equipmentDesc}');
+                                '${t.amountError} ${hose.measuringPointDesc}');
                             amountController.text =
-                                product.enteredAmount.toString();
+                                hose.enteredAmount.toString();
                           } else {
-                            product.enteredAmount =
+                            hose.enteredAmount =
                                 double.parse(amountController.text);
                           }
                         },

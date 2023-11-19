@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/data/constants.dart';
-import '../providers/payments.dart';
+import '../providers/payments_provider.dart';
 
 class PaymentCard extends StatelessWidget {
   const PaymentCard({
@@ -12,7 +12,7 @@ class PaymentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var paymentData = Provider.of<Payments>(context);
+    var paymentData = Provider.of<PaymentsProvider>(context);
     var t = AppLocalizations.of(context)!;
 
     return Container(

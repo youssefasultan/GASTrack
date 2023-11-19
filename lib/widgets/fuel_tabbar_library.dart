@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/products.dart';
-import 'product_list_tile.dart';
+import '../providers/hanging_unit_provider.dart';
+import 'Hanging_unit_list_tile.dart';
 import 'tank_list_tile.dart';
 
 class FuelTabBarLibrary extends StatefulWidget {
@@ -19,8 +19,8 @@ class FuelTabBarLibrary extends StatefulWidget {
 class _FuelTabBarLibraryState extends State<FuelTabBarLibrary> {
   @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<Products>(context);
-    final productsList = productsData.getProducts;
+    final productsData = Provider.of<HangingUnitsProvider>(context);
+    final hangingUnitList = productsData.getHangingUnits;
     final tanksList = productsData.getTanks;
 
     return Expanded(
@@ -29,10 +29,10 @@ class _FuelTabBarLibraryState extends State<FuelTabBarLibrary> {
         children: [
           ListView.builder(
             itemBuilder: (context, index) => ChangeNotifierProvider.value(
-              value: productsList[index],
-              child: ProductListTile(),
+              value: hangingUnitList[index],
+              child: const HangingUnitListTile(),
             ),
-            itemCount: productsList.length,
+            itemCount: hangingUnitList.length,
           ),
           ListView.builder(
             itemBuilder: (context, index) => ChangeNotifierProvider.value(

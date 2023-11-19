@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import '../helpers/data/constants.dart';
 import '../helpers/data/shared.dart';
 import '../models/http_exception.dart';
-import '../providers/auth.dart';
 import '../helpers/view/dialog_builder.dart';
+import '../providers/auth_provider.dart';
 
 class AuthCard extends StatefulWidget {
   const AuthCard({super.key});
@@ -66,14 +66,14 @@ class _AuthCardState extends State<AuthCard>
           }
 
           // call login
-          await Provider.of<Auth>(context, listen: false).login(
+          await Provider.of<AuthProvider>(context, listen: false).login(
             _authData['username']!,
             _authData['password']!,
             _authData['shiftType']!,
           );
         } else if (_authMode == AuthMode.Admin) {
           // call register
-          await Provider.of<Auth>(context, listen: false).register(
+          await Provider.of<AuthProvider>(context, listen: false).register(
             _authData['username']!,
             _authData['password']!,
             _authData['url']!,

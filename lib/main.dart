@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gas_track/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'helpers/data/constants.dart';
 import './screens/home_screen.dart';
 import './screens/auth_screen.dart';
-import './providers/auth.dart';
-import 'providers/payments.dart';
-import 'providers/products.dart';
+import 'providers/payments_provider.dart';
+import 'providers/hanging_unit_provider.dart';
 import 'screens/payment_screen.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -36,18 +36,20 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => Auth(),
+          create: (_) => AuthProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => Products(),
+          create: (_) => HangingUnitsProvider(),
         ),
-        ChangeNotifierProxyProvider<Products, Payments>(
-          create: (context) => Payments(
-              Provider.of<Products>(context, listen: false).getTotalSales),
-          update: (context, value, previous) => Payments(value.getTotalSales),
+        ChangeNotifierProxyProvider<HangingUnitsProvider, PaymentsProvider>(
+          create: (context) => PaymentsProvider(
+              Provider.of<HangingUnitsProvider>(context, listen: false)
+                  .getTotalSales),
+          update: (context, value, previous) =>
+              PaymentsProvider(value.getTotalSales),
         ),
       ],
-      child: Consumer<Auth>(
+      child: Consumer<AuthProvider>(
         builder: (context, auth, child) => MaterialApp(
           onGenerateTitle: (context) {
             return AppLocalizations.of(context)!.appTitle;

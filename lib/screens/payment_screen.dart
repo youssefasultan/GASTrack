@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gas_track/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
-import '../providers/payments.dart';
+import '../providers/payments_provider.dart';
 import '../helpers/view/dialog_builder.dart';
 import '../widgets/payment_card.dart';
 import '../widgets/payment_list_tile.dart';
@@ -22,14 +22,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   void didChangeDependencies() {
-    final auth = Provider.of<Auth>(context, listen: false);
+    final auth = Provider.of<AuthProvider>(context, listen: false);
 
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
 
-      Provider.of<Payments>(context).fetchPayments(auth.getShiftType).then((_) {
+      Provider.of<PaymentsProvider>(context)
+          .fetchPayments(auth.getShiftType)
+          .then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -47,7 +49,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     var t = AppLocalizations.of(context)!;
     ThemeData themeData = Theme.of(context);
 
-    final paymentsData = Provider.of<Payments>(context);
+    final paymentsData = Provider.of<PaymentsProvider>(context);
     final paymentMethods = paymentsData.getPaymentsMethods;
 
     return Scaffold(
@@ -70,7 +72,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               if (value == 'logout') {
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                Provider.of<Auth>(context, listen: false).logout();
+                Provider.of<AuthProvider>(context, listen: false).logout();
               }
             },
             itemBuilder: (_) => [

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:gas_track/widgets/coupon_list_tile.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
 import '../models/payment.dart';
-import '../providers/payments.dart';
+import '../providers/auth_provider.dart';
+import '../providers/payments_provider.dart';
+import 'coupon_list_tile.dart';
 
 class PaymentTile extends StatefulWidget {
   const PaymentTile({super.key});
@@ -49,8 +49,8 @@ class _PaymentTileState extends State<PaymentTile> {
     ThemeData themeData = Theme.of(context);
 
     final payment = Provider.of<Payment>(context);
-    final payments = Provider.of<Payments>(context);
-    final auth = Provider.of<Auth>(context, listen: false);
+    final payments = Provider.of<PaymentsProvider>(context);
+    final auth = Provider.of<AuthProvider>(context, listen: false);
 
     TextEditingController amountController =
         TextEditingController(text: payment.amount.toString());

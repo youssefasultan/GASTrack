@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../../models/http_exception.dart';
 import '../../models/payment.dart';
-import '../../models/product.dart';
+import '../../models/hanging_unit.dart';
 import '../../models/tank.dart';
 import 'shared.dart';
 
@@ -32,7 +32,7 @@ class RequestBuilder {
     );
   }
 
-  Future<bool> postShiftRequest(List<Product> productList,
+  Future<bool> postShiftRequest(List<HangingUnit> productList,
       List<Payment> paymentList, List<Tank> tankList, double total) async {
     int responseCode;
     try {
@@ -71,8 +71,13 @@ class RequestBuilder {
     _cookie = response.headers['set-cookie']?.split(',')[1];
   }
 
-  Future<int> _upload(String token, String cookie, List<Product> productList,
-      List<Payment> paymentList, double total, List<Tank> tankList) async {
+  Future<int> _upload(
+      String token,
+      String cookie,
+      List<HangingUnit> productList,
+      List<Payment> paymentList,
+      double total,
+      List<Tank> tankList) async {
     var settings = await Shared.getSettings();
     var userData = await Shared.getUserdata();
 
@@ -111,14 +116,14 @@ class RequestBuilder {
                     .padLeft(6, '0'),
                 'Equipment': pro.equipment,
                 'ObjectNumber': pro.objectNumber,
-                'MeasuringPoint': '${pro.measuringPoint}',
-                'Measurmntrangeunit': pro.measuringUnit,
-                'Material': pro.material,
-                'Quantity': '${pro.quantity}',
-                'ExpQuantity': '${pro.enteredReading}',
-                'Uoms': pro.measuringUnit,
-                'PricingUnit': '${pro.unitPrice}',
-                'ExpAmount': '${pro.enteredAmount}',
+                // 'MeasuringPoint': '${pro.measuringPoint}',
+                // 'Measurmntrangeunit': pro.measuringUnit,
+                // 'Material': pro.material,
+                // 'Quantity': '${pro.quantity}',
+                // 'ExpQuantity': '${pro.enteredReading}',
+                // 'Uoms': pro.measuringUnit,
+                // 'PricingUnit': '${pro.unitPrice}',
+                // 'ExpAmount': '${pro.enteredAmount}',
                 'Currency': 'EGP',
               })
           .toList(),

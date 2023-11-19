@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../providers/auth.dart';
-import '../../providers/payments.dart';
-import '../../providers/products.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/payments_provider.dart';
+import '../../providers/hanging_unit_provider.dart';
 import '../data/constants.dart';
 import 'dash_separator.dart';
 
@@ -46,7 +46,7 @@ class DialogBuilder {
   }
 
   void showConfirmationDialog() {
-    final paymentData = Provider.of<Payments>(context, listen: false);
+    final paymentData = Provider.of<PaymentsProvider>(context, listen: false);
 
     final deviceSize = MediaQuery.of(context).size;
 
@@ -129,7 +129,7 @@ class DialogBuilder {
                 hideOpenDialog();
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                Provider.of<Auth>(context, listen: false).logout();
+                Provider.of<AuthProvider>(context, listen: false).logout();
               },
               t.confirm,
               Theme.of(context).primaryColor,
@@ -179,7 +179,7 @@ class DialogBuilder {
   void showSuccessDialog(
     String message,
   ) {
-    final isAdmin = Provider.of<Auth>(context, listen: false).isAdmin;
+    final isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
 
     showDialog(
       context: context,
@@ -217,7 +217,7 @@ class DialogBuilder {
                     hideOpenDialog();
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                    Provider.of<Auth>(context, listen: false).logout();
+                    Provider.of<AuthProvider>(context, listen: false).logout();
                   },
                   t.okay,
                   Theme.of(context).primaryColor,
@@ -285,7 +285,9 @@ class _SummeryWidgetState extends State<SummeryWidget> {
         _isLoading = true;
       });
 
-      Provider.of<Payments>(context).getEndOfDaySummeryPayments().then((_) {
+      Provider.of<PaymentsProvider>(context)
+          .getEndOfDaySummeryPayments()
+          .then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -315,8 +317,7 @@ class _SummeryWidgetState extends State<SummeryWidget> {
     final deviceSize = MediaQuery.of(context).size;
     t = AppLocalizations.of(context)!;
 
-    final summeryData = Provider.of<Payments>(context, listen: false);
-
+    final summeryData = Provider.of<PaymentsProvider>(context, listen: false);
     final summeryItems = summeryData.getSummery;
     final summryTotal = summeryData.calculateTotalSummery();
 
@@ -414,11 +415,13 @@ class ConfirmationWarining extends StatelessWidget {
     var t = AppLocalizations.of(context)!;
     final size = MediaQuery.of(context).size;
 
-    final shiftType = Provider.of<Auth>(context, listen: false).getShiftType;
-    final productsData = Provider.of<Products>(context, listen: false);
-    final productsList = productsData.getProducts;
-    final tankList = productsData.getTanks;
-    final paymentData = Provider.of<Payments>(context, listen: false);
+    final shiftType =
+        Provider.of<AuthProvider>(context, listen: false).getShiftType;
+    final hangingUnitsData =
+        Provider.of<HangingUnitsProvider>(context, listen: false);
+    final productsList = hangingUnitsData.getHoseList;
+    final tankList = hangingUnitsData.getTanks;
+    final paymentData = Provider.of<PaymentsProvider>(context, listen: false);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -441,7 +444,7 @@ class ConfirmationWarining extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (context, index) => ListTile(
               title: Text(
-                productsList[index].equipmentDesc,
+                productsList[index].measuringPointDesc,
                 style: const TextStyle(
                   fontSize: 15,
                   fontFamily: 'Bebas',

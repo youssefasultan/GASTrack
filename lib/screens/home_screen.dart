@@ -4,9 +4,9 @@ import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:gas_track/widgets/fuel_tabbar_library.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
-import '../providers/products.dart';
-import '../widgets/product_list_tile.dart';
+import '../providers/auth_provider.dart';
+import '../providers/hanging_unit_provider.dart';
+import '../widgets/hose_list_tile.dart';
 import '../widgets/user_card.dart';
 import 'payment_screen.dart';
 
@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen>
         _isLoading = true;
       });
 
-      Provider.of<Products>(context).fetchProducts().then((_) {
+      Provider.of<HangingUnitsProvider>(context).fetchProducts().then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -53,11 +53,12 @@ class _HomeScreenState extends State<HomeScreen>
     var t = AppLocalizations.of(context)!;
     ThemeData themeData = Theme.of(context);
 
-    final productsData = Provider.of<Products>(context);
+    final hangingUnitsData = Provider.of<HangingUnitsProvider>(context);
 
-    final products = productsData.getProducts;
+    final hangingUnits = hangingUnitsData.getHangingUnits;
 
-    final shiftType = Provider.of<Auth>(context, listen: false).getShiftType;
+    final shiftType =
+        Provider.of<AuthProvider>(context, listen: false).getShiftType;
 
     return Scaffold(
       appBar: AppBar(
@@ -83,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen>
               if (value == 'logout') {
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                Provider.of<Auth>(context, listen: false).logout();
+                Provider.of<AuthProvider>(context, listen: false).logout();
               }
             },
             itemBuilder: (_) => [
@@ -122,10 +123,10 @@ class _HomeScreenState extends State<HomeScreen>
                       child: ListView.builder(
                     itemBuilder: (context, index) =>
                         ChangeNotifierProvider.value(
-                      value: products[index],
-                      child: ProductListTile(),
+                      value: hangingUnits[index],
+                      child: const HoseListTile(),
                     ),
-                    itemCount: products.length,
+                    itemCount: hangingUnits.length,
                   ))
                 else
                   Expanded(
@@ -144,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen>
                           indicatorSize: TabBarIndicatorSize.tab,
                           onTap: (value) {
                             if (value == 1) {
-                              productsData.calculateTankQuantity();
+                              hangingUnitsData.calculateTankQuantity();
                             }
                           },
                         ),
@@ -161,13 +162,13 @@ class _HomeScreenState extends State<HomeScreen>
           size: 35.0,
         ),
         onPressed: () {
-          productsData.calculateTotal();
-          var product = productsData.validateProducts();
-          if (productsData.getTotalSales == 0.0) {
+          hangingUnitsData.calculateTotal();
+          var hose = hangingUnitsData.validateProducts();
+          if (hangingUnitsData.getTotalSales == 0.0) {
             DialogBuilder(context).showErrorDialog(t.totalError);
-          } else if (product != null) {
+          } else if (hose != null) {
             DialogBuilder(context)
-                .showErrorDialog('${t.amountError} ${product.equipmentDesc}');
+                .showErrorDialog('${t.amountError} ${hose.measuringPointDesc}');
           } else {
             Navigator.of(context).pushNamed(PaymentScreen.routeName);
           }

@@ -7,14 +7,14 @@ import '../helpers/data/request_builder.dart';
 import '../helpers/data/shared.dart';
 import '../models/payment.dart';
 import '../models/summery.dart';
-import 'products.dart';
+import 'hanging_unit_provider.dart';
 
-class Payments with ChangeNotifier {
+class PaymentsProvider with ChangeNotifier {
   List<Payment> _paymentsItems = [];
   double _total = 0.0;
   List<Summery> _summery = [];
 
-  Payments(double totalSales) {
+  PaymentsProvider(double totalSales) {
     _total = totalSales;
   }
 
@@ -160,8 +160,9 @@ class Payments with ChangeNotifier {
 
   Future<bool> uploadShift(BuildContext context) async {
     try {
-      final productsData = Provider.of<Products>(context, listen: false);
-      final productsList = productsData.getProducts;
+      final productsData =
+          Provider.of<HangingUnitsProvider>(context, listen: false);
+      final productsList = productsData.getHangingUnits;
       final tankList = productsData.getTanks;
       return await RequestBuilder()
           .postShiftRequest(productsList, _paymentsItems, tankList, _total);

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../models/payment.dart';
-import '../providers/payments.dart';
+import '../providers/payments_provider.dart';
 
 class CouponListTile extends StatefulWidget {
   const CouponListTile({super.key});
@@ -18,7 +18,7 @@ class _CouponListTileState extends State<CouponListTile> {
     ThemeData themeData = Theme.of(context);
 
     final coupon = Provider.of<CouponData>(context);
-    final payments = Provider.of<Payments>(context, listen: false);
+    final payments = Provider.of<PaymentsProvider>(context, listen: false);
 
     TextEditingController couponCountController =
         TextEditingController(text: coupon.count.toString());
