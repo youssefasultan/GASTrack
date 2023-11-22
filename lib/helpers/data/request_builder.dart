@@ -32,14 +32,14 @@ class RequestBuilder {
     );
   }
 
-  Future<bool> postShiftRequest(List<HangingUnit> productList,
+  Future<bool> postShiftRequest(List<HangingUnit> hangingUnitsList,
       List<Payment> paymentList, List<Tank> tankList, double total) async {
     int responseCode;
     try {
       await _getToken();
 
       responseCode = await _upload(
-          _token!, _cookie!, productList, paymentList, total, tankList);
+          _token!, _cookie!, hangingUnitsList, paymentList, total, tankList);
     } catch (error) {
       throw HttpException(error.toString());
     }
@@ -95,18 +95,6 @@ class RequestBuilder {
     final url = Uri.parse(
         "https://${settings['ip']}:44301/sap/opu/odata/SAP/YGASOLINA_SRV/St_GASOKSet");
 
-    List<Map<String, String>> getJsonObjects() {
-      List<Map<String, String>> result = [];
-
-      for (var hangingUnit in hangingUnitsList) {
-        for (var hose in hangingUnit.toJson()) {
-          result.add(hose);
-        }
-      }
-
-      return result;
-    }
-
     var body = json.encode({
       'ShiftDate': '${userData['shiftDate']}',
       'Shift': '${userData['shiftNo']}',
@@ -117,7 +105,7 @@ class RequestBuilder {
       'TotalAmount': '$total',
       'Currency': 'EGP',
       'BillingDoc': '',
-      'GasokToGasop': getJsonObjects(),
+      'GasokToGasop': getJsonObjects(hangingUnitsList),
       'GasokToGasov': paymentList
           .map((pay) => {
                 'Mandt': '',
@@ -152,5 +140,15 @@ class RequestBuilder {
     );
 
     return response.statusCode;
+  }
+
+  List<Map<String, String>> getJsonObjects(List<HangingUnit> hangingUnitsList) {
+    List<Map<String, String>> result = [];
+
+    for (var hangingUnit in hangingUnitsList) {
+      result.addAll(hangingUnit.toJson());
+    }
+
+    return result;
   }
 }

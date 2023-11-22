@@ -162,10 +162,10 @@ class PaymentsProvider with ChangeNotifier {
     try {
       final productsData =
           Provider.of<HangingUnitsProvider>(context, listen: false);
-      final productsList = productsData.getHangingUnits;
+      final hangingUnitsList = productsData.getHangingUnits;
       final tankList = productsData.getTanks;
       return await RequestBuilder()
-          .postShiftRequest(productsList, _paymentsItems, tankList, _total);
+          .postShiftRequest(hangingUnitsList, _paymentsItems, tankList, _total);
     } catch (error) {
       rethrow;
     }
