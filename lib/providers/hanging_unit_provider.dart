@@ -51,6 +51,10 @@ class HangingUnitsProvider with ChangeNotifier {
                 equipmentDesc: element['EquipmentDescription'],
                 objectNumber: element['ObjectNumber'],
                 equipment: element['Equipment'],
+                shiftLoc: userData['funLoc']!,
+                shiftDate: userData['shiftDate']!,
+                shiftNo: userData['shiftNo']!,
+                shiftType: userData['shiftType']!,
               ))
           .toList();
 
@@ -65,6 +69,7 @@ class HangingUnitsProvider with ChangeNotifier {
                 measuringPoint: int.parse(e['MeasuringPoint']),
                 measuringPointDesc: e['MeasuringPointDesc'],
                 equipmentId: e['Equipment'],
+                index: extractedData.indexOf(e),
               ))
           .toList();
       _hoseList = loadedHose;

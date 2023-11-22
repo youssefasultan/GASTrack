@@ -13,18 +13,21 @@ class Hose with ChangeNotifier {
   final int measuringPoint;
   final String measuringUnit;
   final String measuringPointDesc;
+  final int index;
 
-  Hose(
-      {required this.material,
-      required this.materialDesc,
-      required this.lastReading,
-      required this.lastAmount,
-      this.enteredReading = 0.0,
-      this.quantity = 0.0,
-      this.enteredAmount = 0.0,
-      required this.unitPrice,
-      required this.measuringUnit,
-      required this.measuringPoint,
-      required this.measuringPointDesc,
-      required this.equipmentId});
+  Hose({
+    required this.material,
+    required this.materialDesc,
+    required this.lastReading,
+    required this.lastAmount,
+    this.enteredReading = 0.0,
+    this.quantity = 0.0,
+    this.enteredAmount = 0.0,
+    required this.unitPrice,
+    required this.measuringUnit,
+    required this.measuringPoint,
+    required this.measuringPointDesc,
+    required this.equipmentId,
+    required this.index,
+  });
 }

@@ -33,7 +33,7 @@ class _TankListTileState extends State<TankListTile> {
           fontWeight: FontWeight.bold,
           fontFamily: 'Bebas',
         ),
-        subtitle: Text('${t.amount} : ${tank.quantity}'),
+        
         trailing: SizedBox(
           width: MediaQuery.of(context).size.width * 0.5,
           child: Focus(

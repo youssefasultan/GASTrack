@@ -72,12 +72,13 @@ class RequestBuilder {
   }
 
   Future<int> _upload(
-      String token,
-      String cookie,
-      List<HangingUnit> productList,
-      List<Payment> paymentList,
-      double total,
-      List<Tank> tankList) async {
+    String token,
+    String cookie,
+    List<HangingUnit> hangingUnitsList,
+    List<Payment> paymentList,
+    double total,
+    List<Tank> tankList,
+  ) async {
     var settings = await Shared.getSettings();
     var userData = await Shared.getUserdata();
 
@@ -94,6 +95,18 @@ class RequestBuilder {
     final url = Uri.parse(
         "https://${settings['ip']}:44301/sap/opu/odata/SAP/YGASOLINA_SRV/St_GASOKSet");
 
+    List<Map<String, String>> getJsonObjects() {
+      List<Map<String, String>> result = [];
+
+      for (var hangingUnit in hangingUnitsList) {
+        for (var hose in hangingUnit.toJson()) {
+          result.add(hose);
+        }
+      }
+
+      return result;
+    }
+
     var body = json.encode({
       'ShiftDate': '${userData['shiftDate']}',
       'Shift': '${userData['shiftNo']}',
@@ -104,29 +117,7 @@ class RequestBuilder {
       'TotalAmount': '$total',
       'Currency': 'EGP',
       'BillingDoc': '',
-      'GasokToGasop': productList
-          .map((pro) => {
-                'Mandt': '',
-                'ShiftLocation': '${userData['funLoc']}',
-                'ShiftDate': '${userData['shiftDate']}',
-                'Shift': '${userData['shiftNo']}',
-                'ShiftType': '${userData['shiftType']}',
-                'GasShiftItem': ((productList.indexOf(pro) + 1) * 10)
-                    .toString()
-                    .padLeft(6, '0'),
-                'Equipment': pro.equipment,
-                'ObjectNumber': pro.objectNumber,
-                // 'MeasuringPoint': '${pro.measuringPoint}',
-                // 'Measurmntrangeunit': pro.measuringUnit,
-                // 'Material': pro.material,
-                // 'Quantity': '${pro.quantity}',
-                // 'ExpQuantity': '${pro.enteredReading}',
-                // 'Uoms': pro.measuringUnit,
-                // 'PricingUnit': '${pro.unitPrice}',
-                // 'ExpAmount': '${pro.enteredAmount}',
-                'Currency': 'EGP',
-              })
-          .toList(),
+      'GasokToGasop': getJsonObjects(),
       'GasokToGasov': paymentList
           .map((pay) => {
                 'Mandt': '',

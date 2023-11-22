@@ -46,223 +46,232 @@ class HoseListTile extends StatelessWidget {
         text: hose.enteredAmount == 0.0 ? '' : hose.enteredAmount.toString());
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-      child: ExpansionTile(
-        key: UniqueKey(),
-        title: Text(
-          hose.measuringPointDesc,
-          style: TextStyle(
-            fontFamily: 'Bebas',
-            color: themeData.primaryColor,
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
           ),
         ),
-        subtitle: Text(hose.materialDesc),
-        collapsedBackgroundColor: themeData.primaryColorLight,
-        backgroundColor: Colors.white,
-        expandedAlignment: Alignment.center,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-        collapsedShape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-        children: [
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(
-                  width: 75,
-                  child: Text(
-                    t.reading,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    hose.measuringPointDesc,
                     style: TextStyle(
-                      fontFamily: 'Bebas',
                       fontSize: 16,
-                      color: Theme.of(context).primaryColor,
+                      color: themeData.primaryColor,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Focus(
-                    onFocusChange: (value) {
-                      if (!value) {
-                        hose.lastReading =
-                            double.parse(lastReadingController.text);
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                          ),
-                          hintText: getUom(hose.measuringUnit, t),
-                        ),
-                        textAlign: TextAlign.center,
-                        controller: lastReadingController,
-                        keyboardType: TextInputType.number,
-                        key: UniqueKey(),
-                        enabled: isAdmin,
-                        onSubmitted: (value) {
-                          hose.lastReading = double.parse(value);
-                        },
+                  Text(hose.materialDesc),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 75,
+                    child: Text(
+                      t.amount,
+                      style: TextStyle(
+                        fontFamily: 'Bebas',
+                        fontSize: 16,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Focus(
-                    onFocusChange: (value) {
-                      if (!value &&
-                          readingController.text.isNotEmpty &&
-                          double.parse(readingController.text) <
-                              hose.lastReading) {
-                        DialogBuilder(context).showSnackBar(t.readingError);
-                        readingController.clear();
-                      } else if (!value) {
-                        hose.enteredReading =
-                            double.parse(readingController.text);
-                        hose.quantity = hose.enteredReading - hose.lastReading;
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
+                  Expanded(
+                    child: Focus(
+                      onFocusChange: (value) {
+                        if (!value) {
+                          hose.lastAmount =
+                              double.parse(lastAmountController.text);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                            ),
+                            hintText: getUom(hose.measuringUnit, t),
                           ),
-                          hintText: getUom(hose.measuringUnit, t),
+                          textAlign: TextAlign.center,
+                          controller: lastAmountController,
+                          keyboardType: TextInputType.number,
+                          key: UniqueKey(),
+                          enabled: isAdmin,
+                          onSubmitted: (value) {
+                            hose.lastAmount = double.parse(value);
+                          },
                         ),
-                        textAlign: TextAlign.center,
-                        controller: readingController,
-                        keyboardType: TextInputType.number,
-                        key: UniqueKey(),
-                        onSubmitted: (value) {
-                          if (double.parse(value) < hose.lastReading) {
-                            DialogBuilder(context).showSnackBar(t.readingError);
-                            readingController.clear();
-                          } else {
-                            hose.enteredReading = double.parse(value);
-                            hose.quantity =
-                                hose.enteredReading - hose.lastReading;
-                          }
-                        },
                       ),
                     ),
                   ),
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(
-                  width: 75,
-                  child: Text(
-                    t.amount,
-                    style: TextStyle(
-                      fontFamily: 'Bebas',
-                      fontSize: 16,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Focus(
-                    onFocusChange: (value) {
-                      if (!value) {
-                        hose.lastAmount =
-                            double.parse(lastAmountController.text);
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                          ),
-                          hintText: getUom(hose.measuringUnit, t),
-                        ),
-                        textAlign: TextAlign.center,
-                        controller: lastAmountController,
-                        keyboardType: TextInputType.number,
-                        key: UniqueKey(),
-                        enabled: isAdmin,
-                        onSubmitted: (value) {
-                          hose.lastAmount = double.parse(value);
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Focus(
-                    onFocusChange: (value) {
-                      if (!value &&
-                          double.parse(amountController.text) <
-                              hose.lastAmount) {
-                        DialogBuilder(context).showSnackBar(t.readingError);
-                        amountController.clear();
-                      } else if (!value &&
-                          amountValidation(
-                            hose,
-                            double.parse(amountController.text),
-                            double.parse(readingController.text),
-                          )) {
-                        DialogBuilder(context).showSnackBar(
-                            '${t.amountError} ${hose.measuringPointDesc}');
-
-                        amountController.text = hose.enteredAmount.toString();
-                      } else if (!value) {
-                        hose.enteredAmount =
-                            double.parse(amountController.text);
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                          ),
-                          hintText: t.egp,
-                        ),
-                        textAlign: TextAlign.center,
-                        controller: amountController,
-                        keyboardType: TextInputType.number,
-                        key: UniqueKey(),
-                        onSubmitted: (value) {
-                          if (double.parse(value) < hose.lastAmount) {
-                            DialogBuilder(context).showSnackBar(t.readingError);
-                            amountController.clear();
-                          } else if (amountValidation(
+                  Expanded(
+                    child: Focus(
+                      onFocusChange: (value) {
+                        if (!value &&
+                            double.parse(amountController.text) <=
+                                hose.lastAmount) {
+                          DialogBuilder(context).showSnackBar(t.readingError);
+                          amountController.clear();
+                        } else if (!value &&
+                            amountValidation(
                               hose,
                               double.parse(amountController.text),
-                              double.parse(readingController.text))) {
-                            DialogBuilder(context).showSnackBar(
-                                '${t.amountError} ${hose.measuringPointDesc}');
-                            amountController.text =
-                                hose.enteredAmount.toString();
-                          } else {
-                            hose.enteredAmount =
-                                double.parse(amountController.text);
-                          }
-                        },
+                              double.parse(readingController.text),
+                            )) {
+                          DialogBuilder(context).showSnackBar(
+                              '${t.amountError} ${hose.measuringPointDesc}');
+
+                          amountController.text = hose.enteredAmount.toString();
+                        } else if (!value) {
+                          hose.enteredAmount =
+                              double.parse(amountController.text);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                            ),
+                            hintText: t.egp,
+                          ),
+                          textAlign: TextAlign.center,
+                          controller: amountController,
+                          keyboardType: TextInputType.number,
+                          key: UniqueKey(),
+                          onSubmitted: (value) {
+                            if (double.parse(value) <= hose.lastAmount) {
+                              DialogBuilder(context)
+                                  .showSnackBar(t.readingError);
+                              amountController.clear();
+                            } else if (amountValidation(
+                                hose,
+                                double.parse(amountController.text),
+                                double.parse(readingController.text))) {
+                              DialogBuilder(context).showSnackBar(
+                                  '${t.amountError} ${hose.measuringPointDesc}');
+                              amountController.text =
+                                  hose.enteredAmount.toString();
+                            } else {
+                              hose.enteredAmount =
+                                  double.parse(amountController.text);
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 75,
+                    child: Text(
+                      t.reading,
+                      style: TextStyle(
+                        fontFamily: 'Bebas',
+                        fontSize: 16,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ),
-                )
-              ],
-            ),
+                  Expanded(
+                    child: Focus(
+                      onFocusChange: (value) {
+                        if (!value) {
+                          hose.lastReading =
+                              double.parse(lastReadingController.text);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                            ),
+                            hintText: getUom(hose.measuringUnit, t),
+                          ),
+                          textAlign: TextAlign.center,
+                          controller: lastReadingController,
+                          keyboardType: TextInputType.number,
+                          key: UniqueKey(),
+                          enabled: isAdmin,
+                          onSubmitted: (value) {
+                            hose.lastReading = double.parse(value);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Focus(
+                      onFocusChange: (value) {
+                        if (!value &&
+                            readingController.text.isNotEmpty &&
+                            double.parse(readingController.text) <=
+                                hose.lastReading) {
+                          DialogBuilder(context).showSnackBar(t.readingError);
+                          readingController.clear();
+                        } else if (!value) {
+                          hose.enteredReading =
+                              double.parse(readingController.text);
+                          hose.quantity =
+                              hose.enteredReading - hose.lastReading;
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                            ),
+                            hintText: getUom(hose.measuringUnit, t),
+                          ),
+                          textAlign: TextAlign.center,
+                          controller: readingController,
+                          keyboardType: TextInputType.number,
+                          key: UniqueKey(),
+                          onSubmitted: (value) {
+                            if (double.parse(value) <= hose.lastReading) {
+                              DialogBuilder(context)
+                                  .showSnackBar(t.readingError);
+                              readingController.clear();
+                            } else {
+                              hose.enteredReading = double.parse(value);
+                              hose.quantity =
+                                  hose.enteredReading - hose.lastReading;
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

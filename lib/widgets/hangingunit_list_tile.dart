@@ -45,8 +45,9 @@ class _HangingUnitListTileState extends State<HangingUnitListTile> {
         children: [
           SizedBox(
             width: double.infinity,
-            height: 230,
+            height: 450,
             child: ListView.builder(
+              itemExtent: 250,
               itemBuilder: (context, index) => ChangeNotifierProvider.value(
                 value: hangingUnit.hoseList[index],
                 child: const HoseListTile(),
