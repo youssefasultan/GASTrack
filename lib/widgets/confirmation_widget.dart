@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../helpers/view/dash_separator.dart';
+import 'dash_separator.dart';
 import '../providers/auth_provider.dart';
 import '../providers/hanging_unit_provider.dart';
 import '../providers/payments_provider.dart';
