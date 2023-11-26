@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../models/payment.dart';
 import '../providers/payments_provider.dart';
@@ -16,12 +17,16 @@ class _CouponListTileState extends State<CouponListTile> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
+    var t = AppLocalizations.of(context)!;
 
     final coupon = Provider.of<CouponData>(context);
     final payments = Provider.of<PaymentsProvider>(context, listen: false);
 
-    TextEditingController couponCountController =
-        TextEditingController(text: coupon.count.toString());
+    TextEditingController couponCountController = TextEditingController(
+        text: coupon.count == 0 ? '' : coupon.count.toString());
+
+    TextEditingController couponValueController = TextEditingController(
+        text: coupon.value == 0 ? '' : coupon.value.toString());
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
       child: Row(
@@ -32,7 +37,7 @@ class _CouponListTileState extends State<CouponListTile> {
             coupon.coupon,
             style: TextStyle(
               color: themeData.primaryColor,
-              fontSize: 18,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -43,8 +48,40 @@ class _CouponListTileState extends State<CouponListTile> {
               fontSize: 15,
             ),
           ),
+          if (coupon.coupon == 'CTESTB1')
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: Focus(
+                onFocusChange: (value) {
+                  if (!value) {
+                    setState(() {
+                      coupon.value = double.parse(couponValueController.text);
+                    });
+                  }
+                },
+                child: TextField(
+                  key: Key(coupon.coupon),
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(40)),
+                    ),
+                    hintText: t.value,
+                  ),
+                  controller: couponValueController,
+                  onSubmitted: (value) {
+                    setState(() {
+                      coupon.value = double.parse(couponValueController.text);
+                    });
+                  },
+                ),
+              ),
+            ),
           SizedBox(
-            width: MediaQuery.of(context).size.width * 0.4,
+            width: coupon.coupon == 'CTESTB1'
+                ? MediaQuery.of(context).size.width * 0.25
+                : MediaQuery.of(context).size.width * 0.3,
             child: Focus(
               onFocusChange: (value) {
                 if (!value) {
@@ -68,10 +105,11 @@ class _CouponListTileState extends State<CouponListTile> {
                   FilteringTextInputFormatter.digitsOnly
                 ],
                 textAlign: TextAlign.center,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(40)),
                   ),
+                  hintText: t.count,
                 ),
                 onSubmitted: (value) {
                   setState(() {

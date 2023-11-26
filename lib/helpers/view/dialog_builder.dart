@@ -39,6 +39,7 @@ class DialogBuilder {
       SnackBar(
         content: Text(msg),
         backgroundColor: redColor,
+        duration: const Duration(milliseconds: 500),
       ),
     );
   }

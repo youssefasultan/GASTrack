@@ -99,18 +99,15 @@ class HangingUnitsProvider with ChangeNotifier {
   }
 
   List<dynamic> getUniqueObjects(List<dynamic> jsonList, String key) {
-    Set<String> uniqueKeys = {};
-    List<dynamic> uniqueObjects = [];
-
-    for (var jsonObject in jsonList) {
-      var keyValue = jsonObject[key].toString();
-      if (!uniqueKeys.contains(keyValue)) {
-        uniqueKeys.add(keyValue);
-        uniqueObjects.add(jsonObject);
-      }
-    }
-
-    return uniqueObjects;
+    return jsonList.fold<List<dynamic>>(
+      [],
+      (acc, obj) {
+        if (!acc.any((item) => item[key] == obj[key])) {
+          acc.add(obj);
+        }
+        return acc;
+      },
+    );
   }
 
   void calculateTankQuantity() {

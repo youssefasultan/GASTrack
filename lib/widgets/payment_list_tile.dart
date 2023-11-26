@@ -52,8 +52,8 @@ class _PaymentTileState extends State<PaymentTile> {
     final payments = Provider.of<PaymentsProvider>(context);
     final auth = Provider.of<AuthProvider>(context, listen: false);
 
-    TextEditingController amountController =
-        TextEditingController(text: payment.amount.toString());
+    TextEditingController amountController = TextEditingController(
+        text: payment.amount == 0 ? '' : payment.amount.toString());
 
     if (auth.getShiftType == 'G' && payment is Coupon) {
       return Padding(
@@ -129,6 +129,7 @@ class _PaymentTileState extends State<PaymentTile> {
                   border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),
+                  hintText: t.egp,
                 ),
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,

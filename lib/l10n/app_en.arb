@@ -51,6 +51,8 @@
   "next" : "Next",
   "daySummery" : "Day Summery",
   "dispenser":"Dispenser",
-  "tank": "Tanks"
+  "tank": "Tanks",
+  "value": "value",
+  "count": "count"
 
 }

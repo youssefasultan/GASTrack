@@ -43,17 +43,15 @@ class _HangingUnitListTileState extends State<HangingUnitListTile> {
           ),
         ),
         children: [
-          SizedBox(
-            width: double.infinity,
-            height: 450,
-            child: ListView.builder(
-              itemExtent: 250,
-              itemBuilder: (context, index) => ChangeNotifierProvider.value(
-                value: hangingUnit.hoseList[index],
-                child: const HoseListTile(),
-              ),
-              itemCount: hangingUnit.hoseList.length,
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemExtent: 250,
+            itemBuilder: (context, index) => ChangeNotifierProvider.value(
+              value: hangingUnit.hoseList[index],
+              child: const HoseListTile(),
             ),
+            itemCount: hangingUnit.hoseList.length,
           )
         ],
       ),

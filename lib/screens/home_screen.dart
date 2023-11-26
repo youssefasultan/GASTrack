@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
 import '../providers/hanging_unit_provider.dart';
-import '../widgets/hose_list_tile.dart';
+import '../widgets/hangingunit_list_tile.dart';
 import '../widgets/user_card.dart';
 import 'payment_screen.dart';
 
@@ -119,16 +119,18 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 const UserCard(),
                 if (shiftType == 'G')
-                  SizedBox(
-                    width: double.infinity,
-                    height: 230,
-                    child: ListView.builder(
-                      itemBuilder: (context, index) =>
-                          ChangeNotifierProvider.value(
-                        value: hangingUnits[index],
-                        child: const HoseListTile(),
+                  Expanded(
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 450,
+                      child: ListView.builder(
+                        itemBuilder: (context, index) =>
+                            ChangeNotifierProvider.value(
+                          value: hangingUnits[index],
+                          child: const HangingUnitListTile(),
+                        ),
+                        itemCount: hangingUnits.length,
                       ),
-                      itemCount: hangingUnits.length,
                     ),
                   )
                 else

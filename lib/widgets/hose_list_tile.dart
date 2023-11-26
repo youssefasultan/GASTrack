@@ -22,8 +22,9 @@ class HoseListTile extends StatelessWidget {
   }
 
   bool amountValidation(Hose hose, double amount, double reading) {
-    return (amount - hose.lastAmount) !=
-        ((reading - hose.lastReading) * hose.unitPrice);
+    final diff = (reading - hose.lastReading) * hose.unitPrice;
+    final expectedAmount = hose.lastAmount + diff;
+    return amount != expectedAmount;
   }
 
   @override
@@ -71,6 +72,97 @@ class HoseListTile extends StatelessWidget {
                     ),
                   ),
                   Text(hose.materialDesc),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 75,
+                    child: Text(
+                      t.reading,
+                      style: TextStyle(
+                        fontFamily: 'Bebas',
+                        fontSize: 16,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Focus(
+                      onFocusChange: (value) {
+                        if (!value) {
+                          hose.lastReading =
+                              double.parse(lastReadingController.text);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                            ),
+                            hintText: getUom(hose.measuringUnit, t),
+                          ),
+                          textAlign: TextAlign.center,
+                          controller: lastReadingController,
+                          keyboardType: TextInputType.number,
+                          key: UniqueKey(),
+                          enabled: isAdmin,
+                          onSubmitted: (value) {
+                            hose.lastReading = double.parse(value);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Focus(
+                      onFocusChange: (value) {
+                        if (!value &&
+                            readingController.text.isNotEmpty &&
+                            double.parse(readingController.text) <=
+                                hose.lastReading) {
+                          DialogBuilder(context).showSnackBar(t.readingError);
+                          readingController.clear();
+                        } else if (!value) {
+                          hose.enteredReading =
+                              double.parse(readingController.text);
+                          hose.quantity =
+                              hose.enteredReading - hose.lastReading;
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                            ),
+                            hintText: getUom(hose.measuringUnit, t),
+                          ),
+                          textAlign: TextAlign.center,
+                          controller: readingController,
+                          keyboardType: TextInputType.number,
+                          key: UniqueKey(),
+                          onSubmitted: (value) {
+                            if (double.parse(value) <= hose.lastReading) {
+                              DialogBuilder(context)
+                                  .showSnackBar(t.readingError);
+                              readingController.clear();
+                            } else {
+                              hose.enteredReading = double.parse(value);
+                              hose.quantity =
+                                  hose.enteredReading - hose.lastReading;
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
               Row(
@@ -170,97 +262,6 @@ class HoseListTile extends StatelessWidget {
                             } else {
                               hose.enteredAmount =
                                   double.parse(amountController.text);
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    width: 75,
-                    child: Text(
-                      t.reading,
-                      style: TextStyle(
-                        fontFamily: 'Bebas',
-                        fontSize: 16,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Focus(
-                      onFocusChange: (value) {
-                        if (!value) {
-                          hose.lastReading =
-                              double.parse(lastReadingController.text);
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50)),
-                            ),
-                            hintText: getUom(hose.measuringUnit, t),
-                          ),
-                          textAlign: TextAlign.center,
-                          controller: lastReadingController,
-                          keyboardType: TextInputType.number,
-                          key: UniqueKey(),
-                          enabled: isAdmin,
-                          onSubmitted: (value) {
-                            hose.lastReading = double.parse(value);
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Focus(
-                      onFocusChange: (value) {
-                        if (!value &&
-                            readingController.text.isNotEmpty &&
-                            double.parse(readingController.text) <=
-                                hose.lastReading) {
-                          DialogBuilder(context).showSnackBar(t.readingError);
-                          readingController.clear();
-                        } else if (!value) {
-                          hose.enteredReading =
-                              double.parse(readingController.text);
-                          hose.quantity =
-                              hose.enteredReading - hose.lastReading;
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50)),
-                            ),
-                            hintText: getUom(hose.measuringUnit, t),
-                          ),
-                          textAlign: TextAlign.center,
-                          controller: readingController,
-                          keyboardType: TextInputType.number,
-                          key: UniqueKey(),
-                          onSubmitted: (value) {
-                            if (double.parse(value) <= hose.lastReading) {
-                              DialogBuilder(context)
-                                  .showSnackBar(t.readingError);
-                              readingController.clear();
-                            } else {
-                              hose.enteredReading = double.parse(value);
-                              hose.quantity =
-                                  hose.enteredReading - hose.lastReading;
                             }
                           },
                         ),
