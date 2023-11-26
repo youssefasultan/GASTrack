@@ -48,7 +48,7 @@ class _CouponListTileState extends State<CouponListTile> {
               fontSize: 15,
             ),
           ),
-          if (coupon.coupon == 'CTESTB1')
+          if (coupon.businessPartner.isNotEmpty)
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.25,
               child: Focus(
@@ -79,7 +79,7 @@ class _CouponListTileState extends State<CouponListTile> {
               ),
             ),
           SizedBox(
-            width: coupon.coupon == 'CTESTB1'
+            width: coupon.businessPartner.isNotEmpty
                 ? MediaQuery.of(context).size.width * 0.25
                 : MediaQuery.of(context).size.width * 0.3,
             child: Focus(

@@ -160,24 +160,27 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
               ],
             ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.payment,
-          color: themeData.primaryColor,
-          size: 35.0,
+      floatingActionButton: Visibility(
+        visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
+        child: FloatingActionButton(
+          child: Icon(
+            Icons.payment,
+            color: themeData.primaryColor,
+            size: 35.0,
+          ),
+          onPressed: () {
+            hangingUnitsData.calculateTotal();
+            var hose = hangingUnitsData.validateProducts();
+            if (hangingUnitsData.getTotalSales == 0.0) {
+              DialogBuilder(context).showErrorDialog(t.totalError);
+            } else if (hose != null) {
+              DialogBuilder(context).showErrorDialog(
+                  '${t.amountError} ${hose.measuringPointDesc}');
+            } else {
+              Navigator.of(context).pushNamed(PaymentScreen.routeName);
+            }
+          },
         ),
-        onPressed: () {
-          hangingUnitsData.calculateTotal();
-          var hose = hangingUnitsData.validateProducts();
-          if (hangingUnitsData.getTotalSales == 0.0) {
-            DialogBuilder(context).showErrorDialog(t.totalError);
-          } else if (hose != null) {
-            DialogBuilder(context)
-                .showErrorDialog('${t.amountError} ${hose.measuringPointDesc}');
-          } else {
-            Navigator.of(context).pushNamed(PaymentScreen.routeName);
-          }
-        },
       ),
     );
   }

@@ -136,6 +136,7 @@ class PaymentsProvider with ChangeNotifier {
               couponDesc: element['CouponsDesc'],
               value: double.parse(element['Value']),
               currency: element['Currency'],
+              businessPartner: element['BusinessPartner']
             ),
           );
         }

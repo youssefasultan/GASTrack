@@ -18,11 +18,13 @@ class CouponData with ChangeNotifier {
   int count;
   double amount;
   String currency;
+  String businessPartner;
   CouponData({
     required this.coupon,
     required this.couponDesc,
     required this.value,
     required this.currency,
+    required this.businessPartner,
     this.amount = 0.0,
     this.count = 0,
   });

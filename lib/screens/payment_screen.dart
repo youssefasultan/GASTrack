@@ -118,18 +118,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ),
               ],
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (paymentsData.validatePayments()) {
-            DialogBuilder(context).showErrorDialog(t.totalError);
-          } else {
-            DialogBuilder(context).showConfirmationDialog();
-          }
-        },
-        child: Icon(
-          Icons.upload,
-          size: 35,
-          color: themeData.primaryColor,
+      floatingActionButton: Visibility(
+        visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
+        child: FloatingActionButton(
+          onPressed: () {
+            if (paymentsData.validatePayments()) {
+              DialogBuilder(context).showErrorDialog(t.totalError);
+            } else {
+              DialogBuilder(context).showConfirmationDialog();
+            }
+          },
+          child: Icon(
+            Icons.upload,
+            size: 35,
+            color: themeData.primaryColor,
+          ),
         ),
       ),
     );
