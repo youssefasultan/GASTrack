@@ -135,17 +135,14 @@ class HangingUnitsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Hose? validateProducts() {
+  List<Hose?> validateProducts() {
     final itemsWithIncorrectAmount = _hoseList
-        .where(
-            (item) => item.enteredReading != 0.0 && item.enteredAmount != 0.0)
+        .where((item) => item.enteredReading != 0.0)
         .where((item) =>
             (item.enteredReading - item.lastReading) * item.unitPrice !=
             (item.enteredAmount - item.lastAmount))
         .toList();
 
-    return itemsWithIncorrectAmount.isEmpty
-        ? null
-        : itemsWithIncorrectAmount.first;
+    return itemsWithIncorrectAmount.isEmpty ? [] : itemsWithIncorrectAmount;
   }
 }

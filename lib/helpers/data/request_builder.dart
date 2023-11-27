@@ -131,6 +131,18 @@ class RequestBuilder {
                 'Uoms': 'L',
               })
           .toList(),
+      'GasokToGasoc': getCouponData(paymentList)
+          .map((e) => {
+                'ShiftLocation': '${userData['funLoc']}',
+                'ShiftDate': '${userData['shiftDate']}',
+                'Shift': '${userData['shiftNo']}',
+                'ShiftType': '${userData['shiftType']}',
+                'Coupons': e.coupon,
+                'CouponsValue': '${e.value}',
+                'PaymentCurrency': 'EGP',
+                'CouponsQty': e.count,
+              })
+          .toList(),
     });
 
     final response = await http.post(
@@ -148,6 +160,22 @@ class RequestBuilder {
     for (var hangingUnit in hangingUnitsList) {
       result.addAll(hangingUnit.toJson());
     }
+
+    return result;
+  }
+
+  List<CouponData> getCouponData(List<Payment> paymentList) {
+    Coupon? coupon;
+    List<CouponData> result = [];
+
+    for (var payment in paymentList) {
+      if (payment is Coupon) {
+        coupon = payment;
+        break;
+      }
+    }
+
+    result.addAll(coupon!.couponsList);
 
     return result;
   }

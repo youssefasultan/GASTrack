@@ -170,12 +170,12 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           onPressed: () {
             hangingUnitsData.calculateTotal();
-            var hose = hangingUnitsData.validateProducts();
+            var invalidHoses = hangingUnitsData.validateProducts();
             if (hangingUnitsData.getTotalSales == 0.0) {
               DialogBuilder(context).showErrorDialog(t.totalError);
-            } else if (hose != null) {
+            } else if (invalidHoses.isNotEmpty) {
               DialogBuilder(context).showErrorDialog(
-                  '${t.amountError} ${hose.measuringPointDesc}');
+                  '${t.amountError} \n ${invalidHoses.map((e) => e!.measuringPointDesc).toList().join(', ')}');
             } else {
               Navigator.of(context).pushNamed(PaymentScreen.routeName);
             }
