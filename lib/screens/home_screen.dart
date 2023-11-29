@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/helpers/view/dialog_builder.dart';
-import 'package:gas_track/widgets/fuel_tabbar_library.dart';
+import 'package:gas_track/widgets/home_widgets/fuel_tabbar_library.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
 import '../providers/hanging_unit_provider.dart';
-import '../widgets/hangingunit_list_tile.dart';
-import '../widgets/user_card.dart';
+import '../widgets/home_widgets/hangingunit_list_tile.dart';
+import '../widgets/home_widgets/user_card.dart';
 import 'payment_screen.dart';
 
 class HomeScreen extends StatefulWidget {

@@ -4,8 +4,8 @@ import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../models/payment.dart';
-import '../providers/payments_provider.dart';
+import '../../models/payment.dart';
+import '../../providers/payments_provider.dart';
 
 class CouponListTile extends StatefulWidget {
   const CouponListTile({super.key});

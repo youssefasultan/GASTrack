@@ -5,9 +5,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/payments_provider.dart';
 
-import '../../widgets/confirmation_widget.dart';
-import '../../widgets/loading_indicator.dart';
-import '../../widgets/summery_widget.dart';
+import '../../widgets/dialog_widgets/confirmation_widget.dart';
+import '../../widgets/dialog_widgets/loading_indicator.dart';
+import '../../widgets/dialog_widgets/summery_widget.dart';
 import '../data/constants.dart';
 
 class DialogBuilder {

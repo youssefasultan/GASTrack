@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/payments_provider.dart';
 import '../helpers/view/dialog_builder.dart';
-import '../widgets/payment_card.dart';
-import '../widgets/payment_list_tile.dart';
+import '../widgets/payment_widgets/payment_card.dart';
+import '../widgets/payment_widgets/payment_list_tile.dart';
 
 class PaymentScreen extends StatefulWidget {
   static const routeName = '/payment';

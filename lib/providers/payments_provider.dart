@@ -13,9 +13,14 @@ class PaymentsProvider with ChangeNotifier {
   List<Payment> _paymentsItems = [];
   double _total = 0.0;
   List<Summery> _summery = [];
+  Map<String, double> _summeryTotals = {};
 
   PaymentsProvider(double totalSales) {
     _total = totalSales;
+  }
+
+  Map<String, double> get getSummeryTotals {
+    return _summeryTotals;
   }
 
   List<Payment> get getPaymentsMethods {
@@ -47,6 +52,8 @@ class PaymentsProvider with ChangeNotifier {
         value: double.parse(e['PaymentValue']),
       );
     }).toList();
+
+    _summeryTotals = calculateTotalSummery();
 
     _summery = loadedSummery;
 
