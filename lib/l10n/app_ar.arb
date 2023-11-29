@@ -53,7 +53,8 @@
   "dispenser":"موزع",
   "tank": "خزان",
   "value" : "القيمه",
-  "count" : "عدد"
+  "count" : "عدد",
+  "couponValueError" : "من فضلك ادخل القيمه"
 
 
 }

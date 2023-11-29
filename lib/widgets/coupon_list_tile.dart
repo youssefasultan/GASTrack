@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -55,7 +56,11 @@ class _CouponListTileState extends State<CouponListTile> {
                 onFocusChange: (value) {
                   if (!value) {
                     setState(() {
-                      coupon.value = double.parse(couponValueController.text);
+                      if (couponValueController.text.isNotEmpty) {
+                        coupon.value = double.parse(couponValueController.text);
+                      } else {
+                        coupon.value = 0;
+                      }
                     });
                   }
                 },
@@ -72,7 +77,11 @@ class _CouponListTileState extends State<CouponListTile> {
                   controller: couponValueController,
                   onSubmitted: (value) {
                     setState(() {
-                      coupon.value = double.parse(couponValueController.text);
+                      if (value.isEmpty) {
+                        coupon.value = double.parse(couponValueController.text);
+                      } else {
+                        coupon.value = 0;
+                      }
                     });
                   },
                 ),
@@ -85,11 +94,21 @@ class _CouponListTileState extends State<CouponListTile> {
             child: Focus(
               onFocusChange: (value) {
                 if (!value) {
-                  setState(() {
-                    coupon.count = int.parse(couponCountController.text);
-                    coupon.amount = coupon.value * coupon.count;
-                  });
-                  payments.calculateCouponTotal();
+                  if (coupon.businessPartner.isNotEmpty && coupon.value == 0) {
+                    couponCountController.clear();
+                    DialogBuilder(context).showSnackBar(t.couponValueError);
+                  } else {
+                    setState(() {
+                      if (couponCountController.text.isEmpty) {
+                        coupon.count = 0;
+                        couponCountController.clear();
+                      } else {
+                        coupon.count = int.parse(couponCountController.text);
+                      }
+                      coupon.amount = coupon.value * coupon.count;
+                    });
+                    payments.calculateCouponTotal();
+                  }
                 } else if (coupon.count == 0) {
                   couponCountController.clear();
                 }
@@ -112,11 +131,21 @@ class _CouponListTileState extends State<CouponListTile> {
                   hintText: t.count,
                 ),
                 onSubmitted: (value) {
-                  setState(() {
-                    coupon.count = int.parse(value);
-                    coupon.amount = coupon.value * coupon.count;
-                  });
-                  payments.calculateCouponTotal();
+                  if (coupon.businessPartner.isNotEmpty && coupon.value == 0) {
+                    couponCountController.clear();
+                    DialogBuilder(context).showSnackBar(t.couponValueError);
+                  } else {
+                    setState(() {
+                      if (couponCountController.text.isEmpty) {
+                        coupon.count = 0;
+                        couponCountController.clear();
+                      } else {
+                        coupon.count = int.parse(value);
+                      }
+                      coupon.amount = coupon.value * coupon.count;
+                    });
+                    payments.calculateCouponTotal();
+                  }
                 },
               ),
             ),

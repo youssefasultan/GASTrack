@@ -74,6 +74,7 @@ class HoseListTile extends StatelessWidget {
                   Text(hose.materialDesc),
                 ],
               ),
+              // Reading row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -88,12 +89,17 @@ class HoseListTile extends StatelessWidget {
                       ),
                     ),
                   ),
+                  //last reading textfeild
                   Expanded(
                     child: Focus(
                       onFocusChange: (value) {
                         if (!value) {
-                          hose.lastReading =
-                              double.parse(lastReadingController.text);
+                          if (lastReadingController.text.isNotEmpty) {
+                            hose.lastReading =
+                                double.parse(lastReadingController.text);
+                          } else {
+                            hose.lastReading = 0;
+                          }
                         }
                       },
                       child: Padding(
@@ -112,26 +118,36 @@ class HoseListTile extends StatelessWidget {
                           key: UniqueKey(),
                           enabled: isAdmin,
                           onSubmitted: (value) {
-                            hose.lastReading = double.parse(value);
+                            if (value.isNotEmpty) {
+                              hose.lastReading = double.parse(value);
+                            } else {
+                              hose.lastReading = 0;
+                            }
                           },
                         ),
                       ),
                     ),
                   ),
+                  //current reading tf
                   Expanded(
                     child: Focus(
                       onFocusChange: (value) {
-                        if (!value &&
-                            readingController.text.isNotEmpty &&
-                            double.parse(readingController.text) <=
+                        if (!value) {
+                          if (readingController.text.isEmpty) {
+                            hose.enteredReading = 0;
+                          } else {
+                            if (double.parse(readingController.text) <=
                                 hose.lastReading) {
-                          DialogBuilder(context).showSnackBar(t.readingError);
-                          readingController.clear();
-                        } else if (!value) {
-                          hose.enteredReading =
-                              double.parse(readingController.text);
-                          hose.quantity =
-                              hose.enteredReading - hose.lastReading;
+                              DialogBuilder(context)
+                                  .showSnackBar(t.readingError);
+                              readingController.clear();
+                            } else {
+                              hose.enteredReading =
+                                  double.parse(readingController.text);
+                              hose.quantity =
+                                  hose.enteredReading - hose.lastReading;
+                            }
+                          }
                         }
                       },
                       child: Padding(
@@ -149,14 +165,18 @@ class HoseListTile extends StatelessWidget {
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
                           onSubmitted: (value) {
-                            if (double.parse(value) <= hose.lastReading) {
-                              DialogBuilder(context)
-                                  .showSnackBar(t.readingError);
-                              readingController.clear();
+                            if (value.isEmpty) {
+                              hose.enteredReading = 0;
                             } else {
-                              hose.enteredReading = double.parse(value);
-                              hose.quantity =
-                                  hose.enteredReading - hose.lastReading;
+                              if (double.parse(value) <= hose.lastReading) {
+                                DialogBuilder(context)
+                                    .showSnackBar(t.readingError);
+                                readingController.clear();
+                              } else {
+                                hose.enteredReading = double.parse(value);
+                                hose.quantity =
+                                    hose.enteredReading - hose.lastReading;
+                              }
                             }
                           },
                         ),
@@ -165,6 +185,7 @@ class HoseListTile extends StatelessWidget {
                   )
                 ],
               ),
+              // Amount Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -179,12 +200,17 @@ class HoseListTile extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // last amount tf
                   Expanded(
                     child: Focus(
                       onFocusChange: (value) {
                         if (!value) {
-                          hose.lastAmount =
-                              double.parse(lastAmountController.text);
+                          if (lastAmountController.text.isNotEmpty) {
+                            hose.lastAmount =
+                                double.parse(lastAmountController.text);
+                          } else {
+                            hose.lastAmount = 0;
+                          }
                         }
                       },
                       child: Padding(
@@ -209,27 +235,33 @@ class HoseListTile extends StatelessWidget {
                       ),
                     ),
                   ),
+                  //current amount tf
                   Expanded(
                     child: Focus(
                       onFocusChange: (value) {
-                        if (!value &&
-                            double.parse(amountController.text) <=
+                        if (!value) {
+                          if (amountController.text.isEmpty) {
+                            hose.enteredAmount = 0;
+                          } else {
+                            if (double.parse(amountController.text) <=
                                 hose.lastAmount) {
-                          DialogBuilder(context).showSnackBar(t.readingError);
-                          amountController.clear();
-                        } else if (!value &&
-                            amountValidation(
+                              DialogBuilder(context)
+                                  .showSnackBar(t.readingError);
+                              amountController.clear();
+                            } else if (amountValidation(
                               hose,
                               double.parse(amountController.text),
                               double.parse(readingController.text),
                             )) {
-                          DialogBuilder(context).showSnackBar(
-                              '${t.amountError} ${hose.measuringPointDesc}');
+                              DialogBuilder(context).showSnackBar(
+                                  '${t.amountError} ${hose.measuringPointDesc}');
 
-                          amountController.text = hose.enteredAmount.toString();
-                        } else if (!value) {
-                          hose.enteredAmount =
-                              double.parse(amountController.text);
+                              amountController.clear();
+                            } else {
+                              hose.enteredAmount =
+                                  double.parse(amountController.text);
+                            }
+                          }
                         }
                       },
                       child: Padding(
@@ -247,21 +279,26 @@ class HoseListTile extends StatelessWidget {
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
                           onSubmitted: (value) {
-                            if (double.parse(value) <= hose.lastAmount) {
-                              DialogBuilder(context)
-                                  .showSnackBar(t.readingError);
-                              amountController.clear();
-                            } else if (amountValidation(
-                                hose,
-                                double.parse(amountController.text),
-                                double.parse(readingController.text))) {
-                              DialogBuilder(context).showSnackBar(
-                                  '${t.amountError} ${hose.measuringPointDesc}');
-                              amountController.text =
-                                  hose.enteredAmount.toString();
+                            if (value.isEmpty) {
+                              hose.enteredAmount = 0;
                             } else {
-                              hose.enteredAmount =
-                                  double.parse(amountController.text);
+                              if (double.parse(value) <= hose.lastAmount) {
+                                DialogBuilder(context)
+                                    .showSnackBar(t.readingError);
+                                amountController.clear();
+                              } else if (amountValidation(
+                                hose,
+                                double.parse(value),
+                                double.parse(readingController.text),
+                              )) {
+                                DialogBuilder(context).showSnackBar(
+                                    '${t.amountError} ${hose.measuringPointDesc}');
+
+                                amountController.text =
+                                    hose.enteredAmount.toString();
+                              } else {
+                                hose.enteredAmount = double.parse(value);
+                              }
                             }
                           },
                         ),

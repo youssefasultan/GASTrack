@@ -175,7 +175,10 @@ class RequestBuilder {
       }
     }
 
-    result.addAll(coupon!.couponsList);
+    var usedCoupons =
+        coupon!.couponsList.where((element) => element.count != 0).toList();
+
+    result.addAll(usedCoupons);
 
     return result;
   }

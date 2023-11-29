@@ -66,7 +66,7 @@ class PaymentsProvider with ChangeNotifier {
           totalCash += payment.value;
           break;
 
-        case 'Coupon:':
+        case 'Coupon':
           totalCoupon += payment.value;
           break;
       }
@@ -132,12 +132,11 @@ class PaymentsProvider with ChangeNotifier {
         for (var element in extractedData) {
           coupon!.couponsList.add(
             CouponData(
-              coupon: element['Coupons'],
-              couponDesc: element['CouponsDesc'],
-              value: double.parse(element['Value']),
-              currency: element['Currency'],
-              businessPartner: element['BusinessPartner']
-            ),
+                coupon: element['Coupons'],
+                couponDesc: element['CouponsDesc'],
+                value: double.parse(element['Value']),
+                currency: element['Currency'],
+                businessPartner: element['BusinessPartner']),
           );
         }
       }

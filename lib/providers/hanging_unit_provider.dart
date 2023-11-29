@@ -45,57 +45,74 @@ class HangingUnitsProvider with ChangeNotifier {
         throw ArgumentError("No Equipments Found.");
       }
 
-      final loadedHangingUnits = getUniqueObjects(extractedData, 'Equipment')
-          .map((element) => HangingUnit(
-                [],
-                equipmentDesc: element['EquipmentDescription'],
-                objectNumber: element['ObjectNumber'],
-                equipment: element['Equipment'],
-                shiftLoc: userData['funLoc']!,
-                shiftDate: userData['shiftDate']!,
-                shiftNo: userData['shiftNo']!,
-                shiftType: userData['shiftType']!,
-              ))
-          .toList();
+      addHangingUnits(extractedData, userData);
 
-      final loadedHose = extractedData
-          .map((e) => Hose(
-                material: e['Material'],
-                materialDesc: e['MaterialDesc'],
-                lastReading: double.parse(e['LastRead']),
-                lastAmount: double.parse(e['LastAmount']),
-                unitPrice: double.parse(e['PricingUnit']),
-                measuringUnit: e['Measurmntrangeunit'],
-                measuringPoint: int.parse(e['MeasuringPoint']),
-                measuringPointDesc: e['MeasuringPointDesc'],
-                equipmentId: e['Equipment'],
-                index: extractedData.indexOf(e),
-              ))
-          .toList();
-      _hoseList = loadedHose;
+      addHoses(extractedData);
 
-      for (var hangingUnit in loadedHangingUnits) {
-        for (var hose in loadedHose) {
-          if (hangingUnit.equipment == hose.equipmentId) {
-            hangingUnit.hoseList.add(hose);
-          }
-        }
-      }
-
-      _hangingUnitItems = loadedHangingUnits;
+      matchHoseToHangingUnit();
 
       if (userData['shiftType'] == 'F') {
-        final loadedTanks = getUniqueObjects(extractedData, 'Material')
-            .map((product) => Tank(material: product['Material']))
-            .toList();
-
-        _tanks = loadedTanks;
+        addTanks(extractedData);
       }
 
       notifyListeners();
     } catch (error) {
       rethrow;
     }
+  }
+
+  void matchHoseToHangingUnit() {
+    for (var hangingUnit in _hangingUnitItems) {
+      for (var hose in _hoseList) {
+        if (hangingUnit.equipment == hose.equipmentId) {
+          hangingUnit.hoseList.add(hose);
+        }
+      }
+    }
+  }
+
+  void addTanks(List<dynamic> extractedData) {
+    final loadedTanks = getUniqueObjects(extractedData, 'Material')
+        .map((product) => Tank(material: product['Material']))
+        .toList();
+
+    _tanks = loadedTanks;
+  }
+
+  void addHoses(List<dynamic> extractedData) {
+    final loadedHose = extractedData
+        .map((e) => Hose(
+              material: e['Material'],
+              materialDesc: e['MaterialDesc'],
+              lastReading: double.parse(e['LastRead']),
+              lastAmount: double.parse(e['LastAmount']),
+              unitPrice: double.parse(e['PricingUnit']),
+              measuringUnit: e['Measurmntrangeunit'],
+              measuringPoint: int.parse(e['MeasuringPoint']),
+              measuringPointDesc: e['MeasuringPointDesc'],
+              equipmentId: e['Equipment'],
+              index: extractedData.indexOf(e),
+            ))
+        .toList();
+    _hoseList = loadedHose;
+  }
+
+  void addHangingUnits(
+      List<dynamic> extractedData, Map<String, String> userData) {
+    final loadedHangingUnits = getUniqueObjects(extractedData, 'Equipment')
+        .map((element) => HangingUnit(
+              [],
+              equipmentDesc: element['EquipmentDescription'],
+              objectNumber: element['ObjectNumber'],
+              equipment: element['Equipment'],
+              shiftLoc: userData['funLoc']!,
+              shiftDate: userData['shiftDate']!,
+              shiftNo: userData['shiftNo']!,
+              shiftType: userData['shiftType']!,
+            ))
+        .toList();
+
+    _hangingUnitItems = loadedHangingUnits;
   }
 
   List<dynamic> getUniqueObjects(List<dynamic> jsonList, String key) {

@@ -113,7 +113,12 @@ class _PaymentTileState extends State<PaymentTile> {
                   amountController.clear();
                 } else if (!value) {
                   setState(() {
-                    payment.amount = double.parse(amountController.text);
+                    if (amountController.text.isEmpty) {
+                      payment.amount = 0;
+                      amountController.clear();
+                    } else {
+                      payment.amount = double.parse(amountController.text);
+                    }
                   });
 
                   payments.calculateCash();
@@ -137,7 +142,12 @@ class _PaymentTileState extends State<PaymentTile> {
                 enabled: payment.icon != 'CASH',
                 onSubmitted: (value) {
                   setState(() {
-                    payment.amount = double.parse(value);
+                    if (value.isEmpty) {
+                      payment.amount = 0;
+                      amountController.clear();
+                    } else {
+                      payment.amount = double.parse(value);
+                    }
                   });
                   payments.calculateCash();
                 },

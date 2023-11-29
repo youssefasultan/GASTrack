@@ -53,6 +53,7 @@
   "dispenser":"Dispenser",
   "tank": "Tanks",
   "value": "value",
-  "count": "count"
+  "count": "count",
+  "couponValueError" : "Please Enter Coupon Value"
 
 }
