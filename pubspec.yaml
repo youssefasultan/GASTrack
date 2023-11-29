@@ -12,7 +12,7 @@ dependencies:
   flutter_localizations: 
     sdk: flutter
   provider: ^6.0.5
-  http: ^0.13.5
+  http: ^1.1.0
   intl: ^0.18.1
   shared_preferences: ^2.2.1
 
@@ -23,6 +23,13 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.3.4
+  integration_test:
+    sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test: ^1.24.3
+  mockito: ^5.4.3
+  build_runner: ^2.4.6
 
 flutter_launcher_icons:
   image_path: "assets/images/icon.png"
