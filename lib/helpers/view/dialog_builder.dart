@@ -50,7 +50,6 @@ class DialogBuilder {
 
   void showConfirmationDialog() {
     final paymentData = Provider.of<PaymentsProvider>(context, listen: false);
-
     final deviceSize = MediaQuery.of(context).size;
 
     showModalBottomSheet(

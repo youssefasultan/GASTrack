@@ -103,17 +103,19 @@ class PaymentsProvider with ChangeNotifier {
         final icon = element['Icon'];
         final isCoupon = icon == 'COUPON';
 
-        if (shiftType == 'G' && isCoupon) {
-          loadedPayments.add(Coupon(
-            icon: icon,
-            paymentType: paymentType,
-          ));
-        } else if (shiftType == 'G' && !isCoupon) {
-          loadedPayments.add(Payment(
-            icon: icon,
-            paymentType: paymentType,
-          ));
-        } else if (!isCoupon) {
+        if (isCoupon) {
+          if (shiftType == 'G') {
+            loadedPayments.add(Coupon(
+              icon: icon,
+              paymentType: paymentType,
+            ));
+          } else {
+            loadedPayments.add(Payment(
+              icon: icon,
+              paymentType: paymentType,
+            ));
+          }
+        } else {
           loadedPayments.add(Payment(
             icon: icon,
             paymentType: paymentType,
@@ -150,12 +152,14 @@ class PaymentsProvider with ChangeNotifier {
 
       _paymentsItems = loadedPayments;
 
-      // make cash payment at the end of payment list
+      // make cash payment at the end of payment list and set cash amount to total as default
       final Payment cashPayment = _paymentsItems
           .where(
             (element) => element.icon == 'CASH',
           )
           .first;
+
+      cashPayment.amount = _total;
       _paymentsItems.remove(cashPayment);
       _paymentsItems.add(cashPayment);
 
@@ -178,7 +182,7 @@ class PaymentsProvider with ChangeNotifier {
     }
   }
 
-  void calculateCouponTotal() {
+  bool calculateCouponTotal() {
     for (var payment in _paymentsItems) {
       if (payment is Coupon) {
         payment.amount =
@@ -186,11 +190,15 @@ class PaymentsProvider with ChangeNotifier {
       }
     }
 
-    calculateCash();
-    notifyListeners();
+    if (calculateCash()) {
+      notifyListeners();
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  void calculateCash() {
+  bool calculateCash() {
     double totalVisaCoupon = _paymentsItems
         .where((p) => p.icon != 'CASH')
         .fold(0, (sum, p) => sum + p.amount);
@@ -198,10 +206,16 @@ class PaymentsProvider with ChangeNotifier {
     for (var p in _paymentsItems) {
       if (p.icon == 'CASH') {
         p.amount = _total - totalVisaCoupon;
+
+        if (p.amount < 0) {
+          return false;
+        }
       }
     }
 
     notifyListeners();
+
+    return true;
   }
 
   bool validatePayments() {

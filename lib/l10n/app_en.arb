@@ -54,6 +54,7 @@
   "tank": "Tanks",
   "value": "value",
   "count": "count",
-  "couponValueError" : "Please Enter Coupon Value"
+  "couponValueError" : "Please Enter Coupon Value",
+  "cashOverFlowError" : "Please Check Entries"
 
 }

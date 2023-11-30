@@ -18,27 +18,27 @@ final LinearGradient linerGradient = LinearGradient(
   end: Alignment.bottomRight,
   stops: const [0, 1],
 );
-
-class GradientText extends StatelessWidget {
-  const GradientText(
-    this.text, {super.key, 
-    required this.gradient,
-    this.style,
-  });
-
-  final String text;
-  final TextStyle? style;
-  final Gradient gradient;
-
-  @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      blendMode: BlendMode.srcIn,
-      shaderCallback: (bounds) => gradient.createShader(
-        Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-      ),
-      child: Text(text, style: style),
-    );
-  }
-}
-
+//TODO: complete and map theme data
+final ThemeData myTheme = ThemeData(
+  hintColor: Colors.black38,
+  fontFamily: 'Bebas',
+  textTheme:  TextTheme(
+    titleLarge: TextStyle(
+      fontSize: 35,
+      fontWeight: FontWeight.bold,
+      color: blueColor,
+    ),
+    titleMedium: TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      color: blueColor,
+    ),
+    titleSmall:  TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      color: blueColor,
+    ),
+  ),
+  colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
+      .copyWith(background: Colors.white),
+);

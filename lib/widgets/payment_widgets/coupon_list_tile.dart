@@ -98,19 +98,23 @@ class _CouponListTileState extends State<CouponListTile> {
                     couponCountController.clear();
                     DialogBuilder(context).showSnackBar(t.couponValueError);
                   } else {
+                    final count = couponCountController.text.isEmpty
+                        ? 0
+                        : int.parse(couponCountController.text);
                     setState(() {
-                      if (couponCountController.text.isEmpty) {
-                        coupon.count = 0;
-                        couponCountController.clear();
-                      } else {
-                        coupon.count = int.parse(couponCountController.text);
-                      }
+                      coupon.count = count;
                       coupon.amount = coupon.value * coupon.count;
                     });
-                    payments.calculateCouponTotal();
+
+                    if (!payments.calculateCouponTotal()) {
+                      setState(() {
+                        coupon.amount = 0;
+                        coupon.count = 0;
+                      });
+                      payments.calculateCouponTotal();
+                      DialogBuilder(context).showSnackBar(t.cashOverFlowError);
+                    }
                   }
-                } else if (coupon.count == 0) {
-                  couponCountController.clear();
                 }
               },
               child: TextField(
@@ -135,16 +139,19 @@ class _CouponListTileState extends State<CouponListTile> {
                     couponCountController.clear();
                     DialogBuilder(context).showSnackBar(t.couponValueError);
                   } else {
+                    final count = value.isEmpty ? 0 : int.parse(value);
                     setState(() {
-                      if (couponCountController.text.isEmpty) {
-                        coupon.count = 0;
-                        couponCountController.clear();
-                      } else {
-                        coupon.count = int.parse(value);
-                      }
+                      coupon.count = count;
                       coupon.amount = coupon.value * coupon.count;
                     });
-                    payments.calculateCouponTotal();
+                    if (!payments.calculateCouponTotal()) {
+                      setState(() {
+                        coupon.amount = 0;
+                        coupon.count = 0;
+                      });
+                      payments.calculateCouponTotal();
+                      DialogBuilder(context).showSnackBar(t.cashOverFlowError);
+                    }
                   }
                 },
               ),

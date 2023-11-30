@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/payment.dart';
@@ -107,21 +108,23 @@ class _PaymentTileState extends State<PaymentTile> {
             width: MediaQuery.of(context).size.width * 0.6,
             child: Focus(
               onFocusChange: (value) {
-                if (value &&
-                    amountController.text.isNotEmpty &&
-                    double.parse(amountController.text) == 0.0) {
-                  amountController.clear();
-                } else if (!value) {
+                if (!value) {
                   setState(() {
                     if (amountController.text.isEmpty) {
                       payment.amount = 0;
-                      amountController.clear();
                     } else {
                       payment.amount = double.parse(amountController.text);
                     }
                   });
 
-                  payments.calculateCash();
+                  if (!payments.calculateCash()) {
+                    setState(() {
+                      payment.amount = 0;
+                    });
+                    payments.calculateCash();
+
+                    DialogBuilder(context).showSnackBar(t.cashOverFlowError);
+                  }
                 }
               },
               child: TextField(
@@ -144,12 +147,17 @@ class _PaymentTileState extends State<PaymentTile> {
                   setState(() {
                     if (value.isEmpty) {
                       payment.amount = 0;
-                      amountController.clear();
                     } else {
                       payment.amount = double.parse(value);
                     }
                   });
-                  payments.calculateCash();
+                  if (!payments.calculateCash()) {
+                    setState(() {
+                      payment.amount = 0;
+                    });
+                    payments.calculateCash();
+                    DialogBuilder(context).showSnackBar(t.cashOverFlowError);
+                  }
                 },
               ),
             ),
