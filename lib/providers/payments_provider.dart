@@ -152,6 +152,10 @@ class PaymentsProvider with ChangeNotifier {
 
       _paymentsItems = loadedPayments;
 
+      if (shiftType == 'F') {
+        _paymentsItems.removeWhere((element) => element.icon == 'COUPON');
+      }
+
       // make cash payment at the end of payment list and set cash amount to total as default
       final Payment cashPayment = _paymentsItems
           .where(

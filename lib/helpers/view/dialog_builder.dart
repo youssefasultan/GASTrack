@@ -8,7 +8,7 @@ import '../../providers/payments_provider.dart';
 import '../../widgets/dialog_widgets/confirmation_widget.dart';
 import '../../widgets/dialog_widgets/loading_indicator.dart';
 import '../../widgets/dialog_widgets/summery_widget.dart';
-import '../data/constants.dart';
+import 'ui_constants.dart';
 
 class DialogBuilder {
   DialogBuilder(this.context) {

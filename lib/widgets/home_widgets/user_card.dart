@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/data/constants.dart';
+import '../../helpers/view/ui_constants.dart';
 import '../../providers/auth_provider.dart';
 
 class UserCard extends StatelessWidget {
@@ -14,6 +14,7 @@ class UserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final userSettings = Provider.of<AuthProvider>(context, listen: false);
     var t = AppLocalizations.of(context)!;
+    // ThemeData themeData = Theme.of(context);
 
     return Container(
       width: double.infinity,

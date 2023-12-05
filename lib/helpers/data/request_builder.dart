@@ -174,11 +174,12 @@ class RequestBuilder {
         break;
       }
     }
+    if (coupon != null) {
+      var usedCoupons =
+          coupon.couponsList.where((element) => element.count != 0).toList();
 
-    var usedCoupons =
-        coupon!.couponsList.where((element) => element.count != 0).toList();
-
-    result.addAll(usedCoupons);
+      result.addAll(usedCoupons);
+    }
 
     return result;
   }

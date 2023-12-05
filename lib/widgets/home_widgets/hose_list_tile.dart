@@ -65,11 +65,7 @@ class HoseListTile extends StatelessWidget {
                 children: [
                   Text(
                     hose.measuringPointDesc,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: themeData.primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: themeData.textTheme.titleSmall,
                   ),
                   Text(hose.materialDesc),
                 ],
@@ -82,11 +78,7 @@ class HoseListTile extends StatelessWidget {
                     width: 75,
                     child: Text(
                       t.reading,
-                      style: TextStyle(
-                        fontFamily: 'Bebas',
-                        fontSize: 16,
-                        color: Theme.of(context).primaryColor,
-                      ),
+                      style: themeData.textTheme.bodyMedium,
                     ),
                   ),
                   //last reading textfeild
@@ -193,11 +185,7 @@ class HoseListTile extends StatelessWidget {
                     width: 75,
                     child: Text(
                       t.amount,
-                      style: TextStyle(
-                        fontFamily: 'Bebas',
-                        fontSize: 16,
-                        color: Theme.of(context).primaryColor,
-                      ),
+                      style: themeData.textTheme.bodyMedium,
                     ),
                   ),
                   // last amount tf

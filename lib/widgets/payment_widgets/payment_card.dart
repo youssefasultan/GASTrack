@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/data/constants.dart';
+import '../../helpers/view/ui_constants.dart';
 import '../../providers/payments_provider.dart';
 
 class PaymentCard extends StatelessWidget {
@@ -14,7 +14,7 @@ class PaymentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     var paymentData = Provider.of<PaymentsProvider>(context);
     var t = AppLocalizations.of(context)!;
-
+    // ThemeData themeData = Theme.of(context);
     return Container(
       width: double.infinity,
       height: 150,

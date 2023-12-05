@@ -57,6 +57,7 @@ class _SummeryWidgetState extends State<SummeryWidget> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     t = AppLocalizations.of(context)!;
+    // ThemeData themeData = Theme.of(context);
 
     final summeryData = Provider.of<PaymentsProvider>(context, listen: false);
     final summeryItems = summeryData.getSummery;

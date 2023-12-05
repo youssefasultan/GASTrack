@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'helpers/data/constants.dart';
+import 'helpers/view/ui_constants.dart';
 import './screens/home_screen.dart';
 import './screens/auth_screen.dart';
 import 'providers/payments_provider.dart';

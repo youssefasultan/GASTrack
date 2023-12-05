@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/data/constants.dart';
+import '../../helpers/data/data_constants.dart';
 import '../../helpers/data/shared.dart';
 import '../../models/http_exception.dart';
 import '../../helpers/view/dialog_builder.dart';
@@ -18,7 +18,7 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard>
     with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  AuthMode _authMode = AuthMode.Login;
+  AuthMode _authMode = AuthMode.login;
 
   final Map<String, String> _authData = {
     'username': '',
@@ -60,7 +60,7 @@ class _AuthCardState extends State<AuthCard>
       });
 
       try {
-        if (_authMode == AuthMode.Login) {
+        if (_authMode == AuthMode.login) {
           if (settings['ip']!.isEmpty) {
             throw HttpException(t!.notRegestered);
           }
@@ -71,7 +71,7 @@ class _AuthCardState extends State<AuthCard>
             _authData['password']!,
             _authData['shiftType']!,
           );
-        } else if (_authMode == AuthMode.Admin) {
+        } else if (_authMode == AuthMode.admin) {
           // call register
           await Provider.of<AuthProvider>(context, listen: false).register(
             _authData['username']!,
@@ -96,9 +96,9 @@ class _AuthCardState extends State<AuthCard>
   void _switchAuthMode() async {
     var settings = await Shared.getSettings();
     // switch between Auth Mode
-    if (_authMode == AuthMode.Login) {
+    if (_authMode == AuthMode.login) {
       setState(() {
-        _authMode = AuthMode.Admin;
+        _authMode = AuthMode.admin;
       });
       if (settings['ip']!.isNotEmpty && settings['ip'] != 'null') {
         _usernameController.text = settings['username']!;
@@ -107,7 +107,7 @@ class _AuthCardState extends State<AuthCard>
       }
     } else {
       setState(() {
-        _authMode = AuthMode.Login;
+        _authMode = AuthMode.login;
       });
 
       _usernameController.clear();
@@ -148,6 +148,7 @@ class _AuthCardState extends State<AuthCard>
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     var t = AppLocalizations.of(context);
+    ThemeData themeData = Theme.of(context);
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -194,13 +195,13 @@ class _AuthCardState extends State<AuthCard>
                     _authData['password'] = value!;
                   },
                 ),
-                _authMode == AuthMode.Admin
+                _authMode == AuthMode.admin
                     ? TextFormField(
-                        enabled: _authMode == AuthMode.Admin,
+                        enabled: _authMode == AuthMode.admin,
                         decoration: InputDecoration(labelText: t.url),
                         controller: _urlController,
                         validator: (value) {
-                          if (value!.isEmpty && _authMode == AuthMode.Admin) {
+                          if (value!.isEmpty && _authMode == AuthMode.admin) {
                             return t.enterUrl;
                           }
                           return null;
@@ -241,11 +242,11 @@ class _AuthCardState extends State<AuthCard>
                         ),
                       ),
                       backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).primaryColor,
+                        themeData.primaryColor,
                       ),
                     ),
                     child: Text(
-                      _authMode == AuthMode.Login ? t.login : t.register,
+                      _authMode == AuthMode.login ? t.login : t.register,
                       style: TextStyle(
                         color: Theme.of(context)
                             .primaryTextTheme

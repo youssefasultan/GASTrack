@@ -13,8 +13,8 @@ class ConfirmationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
+    // ThemeData themeData = Theme.of(context);
     final size = MediaQuery.of(context).size;
-
     final shiftType =
         Provider.of<AuthProvider>(context, listen: false).getShiftType;
     final hangingUnitsData =
