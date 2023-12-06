@@ -55,7 +55,9 @@
   "value" : "القيمه",
   "count" : "عدد",
   "couponValueError" : "من فضلك ادخل القيمه",
-  "cashOverFlowError" : "من فضلك تأكد من القيم المدخله"
+  "cashOverFlowError" : "من فضلك تأكد من القيم المدخله",
+  "scan" : "مسح",
+  "scanError" : "حدث خطأ أثناء مسح النص"
 
 
 }

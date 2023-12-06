@@ -55,6 +55,8 @@
   "value": "value",
   "count": "count",
   "couponValueError" : "Please Enter Coupon Value",
-  "cashOverFlowError" : "Please Check Entries"
+  "cashOverFlowError" : "Please Check Entries",
+  "scan" : "Scan",
+  "scanError" : "Error Occured while Scanning Text"
 
 }
