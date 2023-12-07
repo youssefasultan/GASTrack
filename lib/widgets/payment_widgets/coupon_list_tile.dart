@@ -58,10 +58,20 @@ class _CouponListTileState extends State<CouponListTile> {
                     setState(() {
                       if (couponValueController.text.isNotEmpty) {
                         coupon.value = double.parse(couponValueController.text);
+                        coupon.amount = coupon.value * coupon.count;
                       } else {
                         coupon.value = 0;
                       }
                     });
+
+                    if (!payments.calculateCouponTotal()) {
+                      setState(() {
+                        coupon.amount = 0;
+                        coupon.count = 0;
+                      });
+                      payments.calculateCouponTotal();
+                      DialogBuilder(context).showSnackBar(t.cashOverFlowError);
+                    }
                   }
                 },
                 child: TextField(
@@ -79,10 +89,20 @@ class _CouponListTileState extends State<CouponListTile> {
                     setState(() {
                       if (value.isEmpty) {
                         coupon.value = double.parse(couponValueController.text);
+                        coupon.amount = coupon.value * coupon.count;
                       } else {
                         coupon.value = 0;
                       }
                     });
+
+                    if (!payments.calculateCouponTotal()) {
+                      setState(() {
+                        coupon.amount = 0;
+                        coupon.count = 0;
+                      });
+                      payments.calculateCouponTotal();
+                      DialogBuilder(context).showSnackBar(t.cashOverFlowError);
+                    }
                   },
                 ),
               ),

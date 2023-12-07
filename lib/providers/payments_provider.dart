@@ -52,10 +52,8 @@ class PaymentsProvider with ChangeNotifier {
         value: double.parse(e['PaymentValue']),
       );
     }).toList();
-
-    _summeryTotals = calculateTotalSummery();
-
     _summery = loadedSummery;
+    _summeryTotals = calculateTotalSummery();
 
     notifyListeners();
   }
@@ -65,15 +63,15 @@ class PaymentsProvider with ChangeNotifier {
     var totalCard = 0.0;
     var totalCoupon = 0.0;
     for (var payment in _summery) {
-      switch (payment.paymentType) {
-        case 'Visa':
+      switch (payment.paymentType.toLowerCase()) {
+        case 'visa':
           totalCard += payment.value;
           break;
-        case 'Cash':
+        case 'cash':
           totalCash += payment.value;
           break;
 
-        case 'Coupon':
+        case 'coupon':
           totalCoupon += payment.value;
           break;
       }
