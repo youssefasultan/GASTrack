@@ -108,7 +108,7 @@ class HoseListTile extends StatelessWidget {
                           controller: lastReadingController,
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
-                          enabled: false,
+                          readOnly: true,
                           onSubmitted: (value) {
                             if (value.isNotEmpty) {
                               hose.lastReading = double.parse(value);
@@ -215,7 +215,7 @@ class HoseListTile extends StatelessWidget {
                           controller: lastAmountController,
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
-                          enabled: false,
+                          readOnly: true,
                           onSubmitted: (value) {
                             hose.lastAmount = double.parse(value);
                           },
