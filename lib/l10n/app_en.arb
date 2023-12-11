@@ -55,6 +55,9 @@
   "value": "value",
   "count": "count",
   "couponValueError" : "Please Enter Coupon Value",
-  "cashOverFlowError" : "Please Check Entries"
+  "cashOverFlowError" : "Please Check Entries",
+  "adminHome" : "Admin Home",
+  "enterDate" : "Enter Date",
+  "search": "Search"
 
 }

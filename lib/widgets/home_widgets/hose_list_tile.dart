@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../helpers/view/dialog_builder.dart';
 import '../../models/hose.dart';
-import '../../providers/auth_provider.dart';
+
 
 class HoseListTile extends StatelessWidget {
   const HoseListTile({super.key});
@@ -30,7 +30,7 @@ class HoseListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hose = Provider.of<Hose>(context);
-    final isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
+   
     AppLocalizations t = AppLocalizations.of(context)!;
     ThemeData themeData = Theme.of(context);
 
@@ -108,7 +108,7 @@ class HoseListTile extends StatelessWidget {
                           controller: lastReadingController,
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
-                          enabled: isAdmin,
+                          enabled: false,
                           onSubmitted: (value) {
                             if (value.isNotEmpty) {
                               hose.lastReading = double.parse(value);
@@ -215,7 +215,7 @@ class HoseListTile extends StatelessWidget {
                           controller: lastAmountController,
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
-                          enabled: isAdmin,
+                          enabled: false,
                           onSubmitted: (value) {
                             hose.lastAmount = double.parse(value);
                           },

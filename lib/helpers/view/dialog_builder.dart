@@ -23,8 +23,8 @@ class DialogBuilder {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return WillPopScope(
-            onWillPop: () async => false,
+        return PopScope(
+            onPopInvoked: (didPop) => false,
             child: AlertDialog(
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8.0))),
@@ -170,8 +170,6 @@ class DialogBuilder {
   void showSuccessDialog(
     String message,
   ) {
-    final isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
-
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -193,29 +191,28 @@ class DialogBuilder {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          isAdmin
-              ? _dialogTextButton(
-                  () {
-                    hideOpenDialog();
-                    showEndOfDaySummery();
-                  },
-                  t.next,
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor,
-                )
-              : _dialogTextButton(
-                  () {
-                    hideOpenDialog();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                    Provider.of<AuthProvider>(context, listen: false).logout();
-                  },
-                  t.okay,
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor,
-                )
+          _dialogTextButton(
+            () {
+              hideOpenDialog();
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
+              Provider.of<AuthProvider>(context, listen: false).logout();
+            },
+            t.okay,
+            Theme.of(context).primaryColor,
+            Theme.of(context).primaryColor,
+          )
         ],
       ),
+    );
+  }
+
+  Future<DateTime?> showDatePickerDialog() async {
+    return await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
     );
   }
 

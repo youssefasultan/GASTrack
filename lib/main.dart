@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/providers/auth_provider.dart';
+import 'package:gas_track/screens/admin/admin_home_screen.dart';
 import 'package:provider/provider.dart';
 
-
-import './screens/home_screen.dart';
-import './screens/auth_screen.dart';
+import 'screens/user/home_screen.dart';
+import 'screens/auth_screen.dart';
 import './helpers/view/ui_constants.dart';
 import './providers/payments_provider.dart';
 import './providers/hanging_unit_provider.dart';
-import './screens/payment_screen.dart';
+import 'screens/user/payment_screen.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -74,7 +74,11 @@ class MainApp extends StatelessWidget {
               secondary: redColor,
             ),
           ),
-          home: auth.isAuth ? const HomeScreen() : const AuthScreen(),
+          home: auth.isAuth
+              ? auth.isAdmin
+                  ? const AdminHomeScreen()
+                  : const HomeScreen()
+              : const AuthScreen(),
           routes: {
             HomeScreen.routeName: (context) => const HomeScreen(),
             PaymentScreen.routeName: (context) => const PaymentScreen(),
