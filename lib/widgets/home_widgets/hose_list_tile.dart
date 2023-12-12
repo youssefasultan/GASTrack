@@ -5,7 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../helpers/view/dialog_builder.dart';
 import '../../models/hose.dart';
 
-
 class HoseListTile extends StatelessWidget {
   const HoseListTile({super.key});
 
@@ -30,7 +29,7 @@ class HoseListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hose = Provider.of<Hose>(context);
-   
+
     AppLocalizations t = AppLocalizations.of(context)!;
     ThemeData themeData = Theme.of(context);
 
@@ -60,14 +59,41 @@ class HoseListTile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    hose.measuringPointDesc,
-                    style: themeData.textTheme.titleSmall,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        hose.measuringPointDesc,
+                        style: themeData.textTheme.titleSmall!
+                            .copyWith(color: themeData.primaryColor),
+                      ),
+                      Text(hose.materialDesc),
+                    ],
                   ),
-                  Text(hose.materialDesc),
+                  hose.inActiveFlag
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: Text(
+                            t.inActive,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: Text(
+                            t.active,
+                            style: const TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        )
                 ],
               ),
               // Reading row
@@ -108,7 +134,7 @@ class HoseListTile extends StatelessWidget {
                           controller: lastReadingController,
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
-                          readOnly: true,
+                          enabled: false,
                           onSubmitted: (value) {
                             if (value.isNotEmpty) {
                               hose.lastReading = double.parse(value);
@@ -156,6 +182,7 @@ class HoseListTile extends StatelessWidget {
                           controller: readingController,
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
+                          enabled: !hose.inActiveFlag,
                           onSubmitted: (value) {
                             if (value.isEmpty) {
                               hose.enteredReading = 0;
@@ -215,7 +242,7 @@ class HoseListTile extends StatelessWidget {
                           controller: lastAmountController,
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
-                          readOnly: true,
+                          enabled: false,
                           onSubmitted: (value) {
                             hose.lastAmount = double.parse(value);
                           },
@@ -266,6 +293,7 @@ class HoseListTile extends StatelessWidget {
                           controller: amountController,
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
+                          enabled: !hose.inActiveFlag,
                           onSubmitted: (value) {
                             if (value.isEmpty) {
                               hose.enteredAmount = 0;

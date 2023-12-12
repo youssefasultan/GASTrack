@@ -58,6 +58,8 @@
   "cashOverFlowError" : "Please Check Entries",
   "adminHome" : "Admin Home",
   "enterDate" : "Enter Date",
-  "search": "Search"
+  "search": "Search",
+  "active" : "Active",
+  "inActive" : "Inactive"
 
 }

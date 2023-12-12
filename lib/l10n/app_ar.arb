@@ -58,7 +58,9 @@
   "cashOverFlowError" : "من فضلك تأكد من القيم المدخله",
   "adminHome" : "الصفحه الرئيسية للمسؤل",
   "enterDate" : "أدخل التاريخ",
-  "search": "بحث"
+  "search": "بحث",
+  "active" : "ناشط",
+  "inActive" : "غير نشط"
 
 
 }
