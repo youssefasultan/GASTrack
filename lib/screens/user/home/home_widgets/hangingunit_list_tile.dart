@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/hanging_unit.dart';
+import '../../../../models/hanging_unit.dart';
 import 'hose_list_tile.dart';
 
 class HangingUnitListTile extends StatefulWidget {

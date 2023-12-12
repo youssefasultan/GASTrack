@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import '../ui_widgets/dash_separator.dart';
-import '../../helpers/view/dialog_builder.dart';
-import '../../providers/payments_provider.dart';
+import '../../ui/dash_separator.dart';
+import '../dialog_builder.dart';
+import '../../../../providers/payments_provider.dart';
 
 class SummeryWidget extends StatefulWidget {
   const SummeryWidget({

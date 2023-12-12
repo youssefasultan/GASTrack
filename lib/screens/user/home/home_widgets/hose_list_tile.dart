@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../helpers/view/dialog_builder.dart';
-import '../../models/hose.dart';
+import '../../../../helpers/view/dialog/dialog_builder.dart';
+import '../../../../models/hose.dart';
 
 class HoseListTile extends StatelessWidget {
   const HoseListTile({super.key});

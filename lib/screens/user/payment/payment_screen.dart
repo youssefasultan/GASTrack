@@ -3,10 +3,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/payments_provider.dart';
-import '../../helpers/view/dialog_builder.dart';
-import '../../widgets/payment_widgets/payment_card.dart';
-import '../../widgets/payment_widgets/payment_list_tile.dart';
+import '../../../providers/payments_provider.dart';
+import '../../../helpers/view/dialog/dialog_builder.dart';
+import 'payment_widgets/payment_card.dart';
+import 'payment_widgets/payment_list_tile.dart';
 
 class PaymentScreen extends StatefulWidget {
   static const routeName = '/payment';

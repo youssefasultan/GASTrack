@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:gas_track/helpers/view/dialog_builder.dart';
+import 'package:gas_track/helpers/view/dialog/dialog_builder.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/payment.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/payments_provider.dart';
+import '../../../../models/payment.dart';
+import '../../../../providers/auth_provider.dart';
+import '../../../../providers/payments_provider.dart';
 import 'coupon_list_tile.dart';
 
 class PaymentTile extends StatefulWidget {

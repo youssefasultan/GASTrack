@@ -3,13 +3,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:provider/provider.dart';
 
-import '../../helpers/view/dialog_builder.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/hanging_unit_provider.dart';
-import '../../widgets/home_widgets/fuel_tabbar_library.dart';
-import '../../widgets/home_widgets/hangingunit_list_tile.dart';
-import '../../widgets/home_widgets/user_card.dart';
-import 'payment_screen.dart';
+import '../../../helpers/view/dialog/dialog_builder.dart';
+import '../../../providers/auth_provider.dart';
+import '../../../providers/hanging_unit_provider.dart';
+import 'home_widgets/fuel_tabbar_library.dart';
+import 'home_widgets/hangingunit_list_tile.dart';
+import 'home_widgets/user_card.dart';
+import '../payment/payment_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
