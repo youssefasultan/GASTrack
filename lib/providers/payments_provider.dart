@@ -62,6 +62,7 @@ class PaymentsProvider with ChangeNotifier {
     var totalCash = 0.0;
     var totalCard = 0.0;
     var totalCoupon = 0.0;
+    var totalUnpaid = 0.0;
     for (var payment in _summery) {
       switch (payment.paymentType.toLowerCase()) {
         case 'visa':
@@ -74,6 +75,9 @@ class PaymentsProvider with ChangeNotifier {
         case 'coupon':
           totalCoupon += payment.value;
           break;
+        case 'card':
+          totalUnpaid += payment.value;
+          break;
       }
     }
 
@@ -81,6 +85,7 @@ class PaymentsProvider with ChangeNotifier {
       'Cash': totalCash,
       'Visa': totalCard,
       'Coupon': totalCoupon,
+      'Unpaid Coupons': totalUnpaid,
     };
   }
 
@@ -100,13 +105,27 @@ class PaymentsProvider with ChangeNotifier {
         final paymentType = element['PaymentType'];
         final icon = element['Icon'];
         final isCoupon = icon == 'COUPON';
+        final isCard = icon == 'CARD';
 
-        if (isCoupon) {
-          if (shiftType == 'G') {
-            loadedPayments.add(Coupon(
-              icon: icon,
-              paymentType: paymentType,
-            ));
+        if (shiftType == 'G') {
+          if (isCoupon) {
+            loadedPayments.insert(
+              0,
+              Coupon(
+                icon: icon,
+                paymentType: paymentType,
+                couponsList: [],
+              ),
+            );
+          } else if (isCard) {
+            loadedPayments.insert(
+              1,
+              UnpaidCoupon(
+                icon: icon,
+                paymentType: paymentType,
+                couponsList: [],
+              ),
+            );
           } else {
             loadedPayments.add(Payment(
               icon: icon,
@@ -129,29 +148,47 @@ class PaymentsProvider with ChangeNotifier {
         extractedData = responseData['d']['results'] as List<dynamic>;
 
         Coupon? coupon;
+        UnpaidCoupon? unpaidCoupon;
 
         for (var payment in loadedPayments) {
           if (payment is Coupon) {
             coupon = payment;
-            break;
+          } else if (payment is UnpaidCoupon) {
+            unpaidCoupon = payment;
           }
         }
+
         for (var element in extractedData) {
-          coupon!.couponsList.add(
-            CouponData(
-                coupon: element['Coupons'],
-                couponDesc: element['CouponsDesc'],
-                value: double.parse(element['Value']),
-                currency: element['Currency'],
-                businessPartner: element['BusinessPartner']),
-          );
+          bool isUnPaidCoupon =
+              element['BusinessPartner'].toString().isNotEmpty;
+
+          if (isUnPaidCoupon) {
+            unpaidCoupon!.couponsList.add(
+              CouponData(
+                  coupon: element['Coupons'],
+                  couponDesc: element['CouponsDesc'],
+                  value: double.parse(element['Value']),
+                  currency: element['Currency'],
+                  businessPartner: element['BusinessPartner']),
+            );
+          } else {
+            coupon!.couponsList.add(
+              CouponData(
+                  coupon: element['Coupons'],
+                  couponDesc: element['CouponsDesc'],
+                  value: double.parse(element['Value']),
+                  currency: element['Currency'],
+                  businessPartner: element['BusinessPartner']),
+            );
+          }
         }
       }
 
       _paymentsItems = loadedPayments;
 
       if (shiftType == 'F') {
-        _paymentsItems.removeWhere((element) => element.icon == 'COUPON');
+        _paymentsItems.removeWhere(
+            (element) => element.icon == 'COUPON' || element.icon == 'CARD');
       }
 
       // make cash payment at the end of payment list and set cash amount to total as default
@@ -187,6 +224,9 @@ class PaymentsProvider with ChangeNotifier {
   bool calculateCouponTotal() {
     for (var payment in _paymentsItems) {
       if (payment is Coupon) {
+        payment.amount =
+            payment.couponsList.fold(0.0, (sum, coupon) => sum + coupon.amount);
+      } else if (payment is UnpaidCoupon) {
         payment.amount =
             payment.couponsList.fold(0.0, (sum, coupon) => sum + coupon.amount);
       }

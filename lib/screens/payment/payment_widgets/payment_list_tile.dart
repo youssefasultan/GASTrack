@@ -3,9 +3,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/payment.dart';
-import '../../providers/auth_provider.dart';
-import '../../providers/payments_provider.dart';
+import '../../../models/payment.dart';
+import '../../../providers/auth_provider.dart';
+import '../../../providers/payments_provider.dart';
 import 'coupon_list_tile.dart';
 
 class PaymentTile extends StatefulWidget {
@@ -26,6 +26,8 @@ class _PaymentTileState extends State<PaymentTile> {
         return t.card;
       case 'CASH':
         return t.cash;
+      case 'CARD':
+        return t.unpaidCoupons;
       default:
         return '';
     }
@@ -39,6 +41,8 @@ class _PaymentTileState extends State<PaymentTile> {
         return Icons.payment;
       case 'CASH':
         return Icons.monetization_on_sharp;
+      case 'CARD':
+        return Icons.no_accounts_rounded;
       default:
         return null;
     }
@@ -62,7 +66,41 @@ class _PaymentTileState extends State<PaymentTile> {
         child: ExpansionTile(
           key: Key(payment.paymentType),
           title: Text(
-            t.coupon,
+            getTitle(payment.icon),
+            style: TextStyle(
+              fontFamily: 'Bebas',
+              color: Theme.of(context).primaryColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: themeData.primaryColorLight,
+          collapsedBackgroundColor: themeData.primaryColorLight,
+          expandedAlignment: Alignment.center,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          collapsedShape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(50))),
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: payment.couponsList.length,
+              itemBuilder: (context, index) => ChangeNotifierProvider.value(
+                value: payment.couponsList[index],
+                child: const CouponListTile(),
+              ),
+            )
+          ],
+        ),
+      );
+    } else if (auth.getShiftType == 'G' && payment is UnpaidCoupon) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+        child: ExpansionTile(
+          key: Key(payment.paymentType),
+          title: Text(
+            getTitle(payment.icon),
             style: TextStyle(
               fontFamily: 'Bebas',
               color: Theme.of(context).primaryColor,

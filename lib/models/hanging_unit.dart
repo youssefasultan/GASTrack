@@ -40,10 +40,12 @@ class HangingUnit with ChangeNotifier {
           'Measurmntrangeunit': hose.measuringUnit,
           'Material': hose.material,
           'Quantity': '${hose.quantity}',
-          'ExpQuantity': '${hose.enteredReading}',
+          'ExpQuantity':
+              '${hose.enteredReading == 0.0 ? hose.lastReading : hose.enteredReading}',
           'Uoms': hose.measuringUnit,
           'PricingUnit': '${hose.unitPrice}',
-          'ExpAmount': '${hose.enteredAmount}',
+          'ExpAmount':
+              '${hose.enteredAmount == 0.0 ? hose.lastAmount : hose.enteredAmount}',
           'Currency': 'EGP',
         },
       );

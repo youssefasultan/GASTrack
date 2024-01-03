@@ -166,18 +166,27 @@ class RequestBuilder {
 
   List<CouponData> getCouponData(List<Payment> paymentList) {
     Coupon? coupon;
+    UnpaidCoupon? unpaidCoupon;
     List<CouponData> result = [];
 
     for (var payment in paymentList) {
       if (payment is Coupon) {
         coupon = payment;
-        break;
+      } else if (payment is UnpaidCoupon) {
+        unpaidCoupon = payment;
       }
     }
     if (coupon != null) {
       var usedCoupons =
           coupon.couponsList.where((element) => element.count != 0).toList();
 
+      result.addAll(usedCoupons);
+    }
+
+    if (unpaidCoupon != null) {
+      var usedCoupons = unpaidCoupon.couponsList
+          .where((element) => element.count != 0)
+          .toList();
       result.addAll(usedCoupons);
     }
 

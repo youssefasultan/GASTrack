@@ -4,8 +4,8 @@ import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../models/payment.dart';
-import '../../providers/payments_provider.dart';
+import '../../../models/payment.dart';
+import '../../../providers/payments_provider.dart';
 
 class CouponListTile extends StatefulWidget {
   const CouponListTile({super.key});
@@ -115,7 +115,6 @@ class _CouponListTileState extends State<CouponListTile> {
               onFocusChange: (value) {
                 if (!value) {
                   if (coupon.businessPartner.isNotEmpty && coupon.value == 0) {
-                    couponCountController.clear();
                     DialogBuilder(context).showSnackBar(t.couponValueError);
                   } else {
                     final count = couponCountController.text.isEmpty
@@ -156,7 +155,6 @@ class _CouponListTileState extends State<CouponListTile> {
                 ),
                 onSubmitted: (value) {
                   if (coupon.businessPartner.isNotEmpty && coupon.value == 0) {
-                    couponCountController.clear();
                     DialogBuilder(context).showSnackBar(t.couponValueError);
                   } else {
                     final count = value.isEmpty ? 0 : int.parse(value);

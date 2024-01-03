@@ -31,9 +31,18 @@ class CouponData with ChangeNotifier {
 }
 
 class Coupon extends Payment {
-  List<CouponData> couponsList = [];
+  List<CouponData> couponsList;
   Coupon({
     required super.icon,
     required super.paymentType,
+    required this.couponsList,
   });
+}
+
+class UnpaidCoupon extends Payment {
+  List<CouponData> couponsList;
+  UnpaidCoupon(
+      {required super.icon,
+      required super.paymentType,
+      required this.couponsList});
 }

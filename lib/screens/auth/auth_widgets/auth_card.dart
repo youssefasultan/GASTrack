@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/data/data_constants.dart';
-import '../../helpers/data/shared.dart';
-import '../../models/http_exception.dart';
-import '../../helpers/view/dialog_builder.dart';
-import '../../providers/auth_provider.dart';
+import '../../../helpers/data/data_constants.dart';
+import '../../../helpers/data/shared.dart';
+import '../../../models/http_exception.dart';
+import '../../../helpers/view/dialog_builder.dart';
+import '../../../providers/auth_provider.dart';
 
 class AuthCard extends StatefulWidget {
   const AuthCard({super.key});

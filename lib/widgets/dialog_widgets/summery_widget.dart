@@ -41,13 +41,15 @@ class _SummeryWidgetState extends State<SummeryWidget> {
   }
 
   String getTitle(String paymentType) {
-    switch (paymentType) {
-      case 'Coupon':
+    switch (paymentType.toLowerCase()) {
+      case 'coupon':
         return t.coupon;
-      case 'Visa':
+      case 'visa':
         return t.card;
-      case 'Cash':
+      case 'cash':
         return t.cash;
+      case 'unpaid coupons':
+        return t.unpaidCoupons;
       default:
         return '';
     }
@@ -111,7 +113,7 @@ class _SummeryWidgetState extends State<SummeryWidget> {
                 const DashSeparator(),
                 Container(
                   width: double.maxFinite,
-                  height: MediaQuery.of(context).size.height * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8.0, vertical: 8.0),
                   child: ListView.builder(
