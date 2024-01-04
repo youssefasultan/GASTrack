@@ -55,7 +55,10 @@
   "value" : "القيمه",
   "count" : "عدد",
   "couponValueError" : "من فضلك ادخل القيمه",
-  "cashOverFlowError" : "من فضلك تأكد من القيم المدخله"
+  "cashOverFlowError" : "من فضلك تأكد من القيم المدخله",
+  "unpaidCoupons" : "كبونات غير مدفوعه",
+  "active" : "Active",
+  "inActive" : "Inactive"
 
 
 }

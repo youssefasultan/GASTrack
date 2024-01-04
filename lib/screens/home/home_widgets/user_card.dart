@@ -2,13 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-<<<<<<< HEAD:lib/screens/home/home_widgets/user_card.dart
-import '../../../helpers/view/ui_constants.dart';
+import '../../../helpers/view/ui/ui_constants.dart';
 import '../../../providers/auth_provider.dart';
-=======
-import '../../../../helpers/view/ui/ui_constants.dart';
-import '../../../../providers/auth_provider.dart';
->>>>>>> 33ceacaadc489c1297489ee0afdef038ac9beab3:lib/screens/user/home/home_widgets/user_card.dart
 
 class UserCard extends StatelessWidget {
   const UserCard({

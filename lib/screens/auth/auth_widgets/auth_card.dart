@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../../../helpers/data/data_constants.dart';
 import '../../../helpers/data/shared.dart';
+import '../../../helpers/view/dialog/dialog_builder.dart';
 import '../../../models/http_exception.dart';
-import '../../../helpers/view/dialog_builder.dart';
 import '../../../providers/auth_provider.dart';
 
 class AuthCard extends StatefulWidget {

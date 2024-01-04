@@ -2,14 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-<<<<<<< HEAD:lib/screens/home/home_widgets/hose_list_tile.dart
-import '../../../helpers/view/dialog_builder.dart';
+import '../../../helpers/view/dialog/dialog_builder.dart';
 import '../../../models/hose.dart';
-import '../../../providers/auth_provider.dart';
-=======
-import '../../../../helpers/view/dialog/dialog_builder.dart';
-import '../../../../models/hose.dart';
->>>>>>> 33ceacaadc489c1297489ee0afdef038ac9beab3:lib/screens/user/home/home_widgets/hose_list_tile.dart
 
 class HoseListTile extends StatelessWidget {
   const HoseListTile({super.key});

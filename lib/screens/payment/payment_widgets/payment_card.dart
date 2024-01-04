@@ -2,13 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-<<<<<<< HEAD:lib/screens/payment/payment_widgets/payment_card.dart
-import '../../../helpers/view/ui_constants.dart';
+import '../../../helpers/view/ui/ui_constants.dart';
 import '../../../providers/payments_provider.dart';
-=======
-import '../../../../helpers/view/ui/ui_constants.dart';
-import '../../../../providers/payments_provider.dart';
->>>>>>> 33ceacaadc489c1297489ee0afdef038ac9beab3:lib/screens/user/payment/payment_widgets/payment_card.dart
 
 class PaymentCard extends StatelessWidget {
   const PaymentCard({

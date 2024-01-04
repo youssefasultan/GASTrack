@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-<<<<<<< HEAD:lib/screens/home/home_widgets/fuel_tabbar_library.dart
 import '../../../providers/hanging_unit_provider.dart';
-=======
-import '../../../../providers/hanging_unit_provider.dart';
->>>>>>> 33ceacaadc489c1297489ee0afdef038ac9beab3:lib/screens/user/home/home_widgets/fuel_tabbar_library.dart
 import 'hangingunit_list_tile.dart';
 import 'tank_list_tile.dart';
 

@@ -1,21 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-<<<<<<< HEAD:lib/screens/home/home_screen.dart
-import 'package:gas_track/helpers/view/dialog_builder.dart';
 import 'package:gas_track/screens/home/home_widgets/fuel_tabbar_library.dart';
 import 'package:provider/provider.dart';
 
+import '../../helpers/view/dialog/dialog_builder.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/hanging_unit_provider.dart';
-=======
-
-import 'package:provider/provider.dart';
-
-import '../../../helpers/view/dialog/dialog_builder.dart';
-import '../../../providers/auth_provider.dart';
-import '../../../providers/hanging_unit_provider.dart';
-import 'home_widgets/fuel_tabbar_library.dart';
->>>>>>> 33ceacaadc489c1297489ee0afdef038ac9beab3:lib/screens/user/home/home_screen.dart
 import 'home_widgets/hangingunit_list_tile.dart';
 import 'home_widgets/user_card.dart';
 import '../payment/payment_screen.dart';
