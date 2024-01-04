@@ -75,7 +75,7 @@ class PaymentsProvider with ChangeNotifier {
         case 'coupon':
           totalCoupon += payment.value;
           break;
-        case 'card':
+        case 'unpaid coupons':
           totalUnpaid += payment.value;
           break;
       }

@@ -53,6 +53,7 @@ class _CouponListTileState extends State<CouponListTile> {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.25,
               child: Focus(
+                canRequestFocus: true,
                 onFocusChange: (value) {
                   if (!value) {
                     setState(() {
@@ -75,7 +76,7 @@ class _CouponListTileState extends State<CouponListTile> {
                   }
                 },
                 child: TextField(
-                  key: Key(coupon.coupon),
+                  key: const Key('value'),
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
@@ -137,7 +138,7 @@ class _CouponListTileState extends State<CouponListTile> {
                 }
               },
               child: TextField(
-                key: Key(coupon.coupon),
+                key: const Key('count'),
                 controller: couponCountController,
                 keyboardType: TextInputType.number,
                 inputFormatters: [

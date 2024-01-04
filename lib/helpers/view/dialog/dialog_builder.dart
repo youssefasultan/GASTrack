@@ -170,6 +170,7 @@ class DialogBuilder {
   void showSuccessDialog(
     String message,
   ) {
+    final isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -191,17 +192,27 @@ class DialogBuilder {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          _dialogTextButton(
-            () {
-              hideOpenDialog();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-              Provider.of<AuthProvider>(context, listen: false).logout();
-            },
-            t.okay,
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor,
-          )
+          isAdmin
+              ? _dialogTextButton(
+                  () {
+                    hideOpenDialog();
+                    showEndOfDaySummery();
+                  },
+                  t.next,
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColor,
+                )
+              : _dialogTextButton(
+                  () {
+                    hideOpenDialog();
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
+                    Provider.of<AuthProvider>(context, listen: false).logout();
+                  },
+                  t.okay,
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColor,
+                )
         ],
       ),
     );
