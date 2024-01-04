@@ -57,6 +57,11 @@
   "couponValueError" : "Please Enter Coupon Value",
   "cashOverFlowError" : "Please Check Entries",
   "calibration" : "calibration",
-  "unpaidCoupons" : "Unpaid coupons"
+  "unpaidCoupons" : "Unpaid coupons",
+  "adminHome" : "Admin Home",
+  "enterDate" : "Enter Date",
+  "search": "Search",
+  "active" : "Active",
+  "inActive" : "Inactive"
 
 }

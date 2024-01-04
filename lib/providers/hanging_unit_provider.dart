@@ -92,6 +92,7 @@ class HangingUnitsProvider with ChangeNotifier {
               measuringPointDesc: e['MeasuringPointDesc'],
               equipmentId: e['Equipment'],
               index: extractedData.indexOf(e),
+              inActiveFlag: e['InactiveFlag'] as bool,
             ))
         .toList();
     _hoseList = loadedHose;

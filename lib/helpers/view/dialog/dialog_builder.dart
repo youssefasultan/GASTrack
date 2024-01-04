@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../providers/auth_provider.dart';
-import '../../providers/payments_provider.dart';
+import '../../../providers/auth_provider.dart';
+import '../../../providers/payments_provider.dart';
 
-import '../../widgets/dialog_widgets/confirmation_widget.dart';
-import '../../widgets/dialog_widgets/loading_indicator.dart';
-import '../../widgets/dialog_widgets/summery_widget.dart';
-import 'ui_constants.dart';
+import 'dialog_widgets/confirmation_widget.dart';
+import 'dialog_widgets/loading_indicator.dart';
+import 'dialog_widgets/summery_widget.dart';
+import '../ui/ui_constants.dart';
 
 class DialogBuilder {
   DialogBuilder(this.context) {
@@ -170,8 +170,6 @@ class DialogBuilder {
   void showSuccessDialog(
     String message,
   ) {
-    final isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
-
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -193,29 +191,28 @@ class DialogBuilder {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          isAdmin
-              ? _dialogTextButton(
-                  () {
-                    hideOpenDialog();
-                    showEndOfDaySummery();
-                  },
-                  t.next,
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor,
-                )
-              : _dialogTextButton(
-                  () {
-                    hideOpenDialog();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                    Provider.of<AuthProvider>(context, listen: false).logout();
-                  },
-                  t.okay,
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor,
-                )
+          _dialogTextButton(
+            () {
+              hideOpenDialog();
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
+              Provider.of<AuthProvider>(context, listen: false).logout();
+            },
+            t.okay,
+            Theme.of(context).primaryColor,
+            Theme.of(context).primaryColor,
+          )
         ],
       ),
+    );
+  }
+
+  Future<DateTime?> showDatePickerDialog() async {
+    return await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
     );
   }
 

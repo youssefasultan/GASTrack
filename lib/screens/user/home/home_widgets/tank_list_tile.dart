@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-<<<<<<< HEAD:lib/screens/home/home_widgets/tank_list_tile.dart
-import '../../../models/tank.dart';
-=======
 import '../../../../models/tank.dart';
->>>>>>> 33ceacaadc489c1297489ee0afdef038ac9beab3:lib/screens/user/home/home_widgets/tank_list_tile.dart
 
 class TankListTile extends StatefulWidget {
   const TankListTile({super.key});

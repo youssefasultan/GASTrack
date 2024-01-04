@@ -14,6 +14,7 @@ class Hose with ChangeNotifier {
   final String measuringUnit;
   final String measuringPointDesc;
   final int index;
+  final bool inActiveFlag;
 
   Hose({
     required this.material,
@@ -29,5 +30,6 @@ class Hose with ChangeNotifier {
     required this.measuringPointDesc,
     required this.equipmentId,
     required this.index,
+    required this.inActiveFlag,
   });
 }

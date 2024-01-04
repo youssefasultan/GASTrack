@@ -3,13 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-<<<<<<< HEAD:lib/screens/payment/payment_screen.dart
-import '../../providers/payments_provider.dart';
-import '../../helpers/view/dialog_builder.dart';
-=======
 import '../../../providers/payments_provider.dart';
 import '../../../helpers/view/dialog/dialog_builder.dart';
->>>>>>> 33ceacaadc489c1297489ee0afdef038ac9beab3:lib/screens/user/payment/payment_screen.dart
 import 'payment_widgets/payment_card.dart';
 import 'payment_widgets/payment_list_tile.dart';
 
