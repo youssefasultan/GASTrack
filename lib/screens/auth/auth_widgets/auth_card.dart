@@ -150,112 +150,115 @@ class _AuthCardState extends State<AuthCard>
     var t = AppLocalizations.of(context);
     ThemeData themeData = Theme.of(context);
 
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      elevation: 8.0,
-      child: Container(
-        height: 320,
-        width: deviceSize.width * 0.75,
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(labelText: t!.username),
-                  keyboardType: TextInputType.name,
-                  controller: _usernameController,
-                  enabled: _isLoading ? false : true,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return t.invalidUsername;
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _authData['username'] = value!;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: t.password),
-                  obscureText: true,
-                  controller: _passwordController,
-                  enabled: _isLoading ? false : true,
-                  validator: (value) {
-                    if (value!.isEmpty || value.length < 5) {
-                      return t.shortPassword;
-                    }
-
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _authData['password'] = value!;
-                  },
-                ),
-                _authMode == AuthMode.admin
-                    ? TextFormField(
-                        enabled: _authMode == AuthMode.admin,
-                        decoration: InputDecoration(labelText: t.url),
-                        controller: _urlController,
-                        validator: (value) {
-                          if (value!.isEmpty && _authMode == AuthMode.admin) {
-                            return t.enterUrl;
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _authData['url'] = value!;
-                        },
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.only(
-                          top: 20.0,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            customRadioButton(t.fuel, 'F'),
-                            customRadioButton(t.gas, 'G'),
-                          ],
-                        )),
-                const SizedBox(
-                  height: 20,
-                ),
-                if (_isLoading)
-                  const CircularProgressIndicator()
-                else
-                  ElevatedButton(
-                    onPressed: _submit,
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      padding: MaterialStateProperty.all<EdgeInsets>(
-                        const EdgeInsets.symmetric(
-                          horizontal: 30.0,
-                          vertical: 8.0,
-                        ),
-                      ),
-                      backgroundColor: MaterialStateProperty.all(
-                        themeData.primaryColor,
-                      ),
-                    ),
-                    child: Text(
-                      _authMode == AuthMode.login ? t.login : t.register,
-                      style: TextStyle(
-                        color: Theme.of(context)
-                            .primaryTextTheme
-                            .labelLarge
-                            ?.color,
-                      ),
-                    ),
+    return SingleChildScrollView(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        elevation: 8.0,
+        child: Container(
+          height: 320,
+          width: deviceSize.width * 0.75,
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(labelText: t!.username),
+                    keyboardType: TextInputType.name,
+                    controller: _usernameController,
+                    enabled: _isLoading ? false : true,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return t.invalidUsername;
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _authData['username'] = value!;
+                    },
                   ),
-              ],
+                  TextFormField(
+                    decoration: InputDecoration(labelText: t.password),
+                    obscureText: true,
+                    controller: _passwordController,
+                    enabled: _isLoading ? false : true,
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 5) {
+                        return t.shortPassword;
+                      }
+
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _authData['password'] = value!;
+                    },
+                  ),
+                  _authMode == AuthMode.admin
+                      ? TextFormField(
+                          enabled: _authMode == AuthMode.admin,
+                          decoration: InputDecoration(labelText: t.url),
+                          controller: _urlController,
+                          validator: (value) {
+                            if (value!.isEmpty && _authMode == AuthMode.admin) {
+                              return t.enterUrl;
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _authData['url'] = value!;
+                          },
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(
+                            top: 20.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              customRadioButton(t.fuel, 'F'),
+                              customRadioButton(t.gas, 'G'),
+                            ],
+                          )),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  if (_isLoading)
+                    const CircularProgressIndicator()
+                  else
+                    ElevatedButton(
+                      onPressed: _submit,
+                      style: ButtonStyle(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                          const EdgeInsets.symmetric(
+                            horizontal: 30.0,
+                            vertical: 8.0,
+                          ),
+                        ),
+                        backgroundColor: MaterialStateProperty.all(
+                          themeData.primaryColor,
+                        ),
+                      ),
+                      child: Text(
+                        _authMode == AuthMode.login ? t.login : t.register,
+                        style: TextStyle(
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .labelLarge
+                              ?.color,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),

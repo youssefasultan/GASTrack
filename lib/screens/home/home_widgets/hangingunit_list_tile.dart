@@ -46,7 +46,7 @@ class _HangingUnitListTileState extends State<HangingUnitListTile> {
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemExtent: 250,
+            
             itemBuilder: (context, index) => ChangeNotifierProvider.value(
               value: hangingUnit.hoseList[index],
               child: const HoseListTile(),

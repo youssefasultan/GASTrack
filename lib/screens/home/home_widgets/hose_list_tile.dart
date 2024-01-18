@@ -30,7 +30,9 @@ class HoseListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hose = Provider.of<Hose>(context);
-    final isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
+    final authData = Provider.of<AuthProvider>(context, listen: false);
+    final isAdmin = authData.isAdmin;
+    final shiftType = authData.getShiftType;
 
     AppLocalizations t = AppLocalizations.of(context)!;
     ThemeData themeData = Theme.of(context);
@@ -136,7 +138,9 @@ class HoseListTile extends StatelessWidget {
                           controller: lastReadingController,
                           keyboardType: TextInputType.number,
                           key: UniqueKey(),
-                          enabled: isAdmin || !hose.inActiveFlag,
+                          enabled: isAdmin || shiftType == 'F'
+                              ? !hose.inActiveFlag
+                              : false,
                           onSubmitted: (value) {
                             if (value.isNotEmpty) {
                               hose.lastReading = double.parse(value);
@@ -207,124 +211,125 @@ class HoseListTile extends StatelessWidget {
                 ],
               ),
               // Amount Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    width: 75,
-                    child: Text(
-                      t.amount,
-                      style: themeData.textTheme.bodyMedium,
+              if (shiftType == 'G')
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      width: 75,
+                      child: Text(
+                        t.amount,
+                        style: themeData.textTheme.bodyMedium,
+                      ),
                     ),
-                  ),
-                  // last amount tf
-                  Expanded(
-                    child: Focus(
-                      onFocusChange: (value) {
-                        if (!value) {
-                          if (lastAmountController.text.isNotEmpty) {
-                            hose.lastAmount =
-                                double.parse(lastAmountController.text);
-                          } else {
-                            hose.lastAmount = 0;
+                    // last amount tf
+                    Expanded(
+                      child: Focus(
+                        onFocusChange: (value) {
+                          if (!value) {
+                            if (lastAmountController.text.isNotEmpty) {
+                              hose.lastAmount =
+                                  double.parse(lastAmountController.text);
+                            } else {
+                              hose.lastAmount = 0;
+                            }
                           }
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50)),
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50)),
+                              ),
+                              hintText: getUom(hose.measuringUnit, t),
                             ),
-                            hintText: getUom(hose.measuringUnit, t),
+                            textAlign: TextAlign.center,
+                            controller: lastAmountController,
+                            keyboardType: TextInputType.number,
+                            key: UniqueKey(),
+                            enabled: isAdmin || !hose.inActiveFlag,
+                            onSubmitted: (value) {
+                              hose.lastAmount = double.parse(value);
+                            },
                           ),
-                          textAlign: TextAlign.center,
-                          controller: lastAmountController,
-                          keyboardType: TextInputType.number,
-                          key: UniqueKey(),
-                          enabled: isAdmin || !hose.inActiveFlag,
-                          onSubmitted: (value) {
-                            hose.lastAmount = double.parse(value);
-                          },
                         ),
                       ),
                     ),
-                  ),
-                  //current amount tf
-                  Expanded(
-                    child: Focus(
-                      onFocusChange: (value) {
-                        if (!value) {
-                          if (amountController.text.isEmpty) {
-                            hose.enteredAmount = 0;
-                          } else {
-                            if (double.parse(amountController.text) <=
-                                hose.lastAmount) {
-                              DialogBuilder(context)
-                                  .showSnackBar(t.readingError);
-                              amountController.clear();
-                            } else if (amountValidation(
-                              hose,
-                              double.parse(amountController.text),
-                              double.parse(readingController.text),
-                            )) {
-                              DialogBuilder(context).showSnackBar(
-                                  '${t.amountError} ${hose.measuringPointDesc}');
-
-                              amountController.clear();
-                            } else {
-                              hose.enteredAmount =
-                                  double.parse(amountController.text);
-                            }
-                          }
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50)),
-                            ),
-                            hintText: t.egp,
-                          ),
-                          textAlign: TextAlign.center,
-                          controller: amountController,
-                          keyboardType: TextInputType.number,
-                          key: UniqueKey(),
-                          enabled: !hose.inActiveFlag,
-                          onSubmitted: (value) {
-                            if (value.isEmpty) {
+                    //current amount tf
+                    Expanded(
+                      child: Focus(
+                        onFocusChange: (value) {
+                          if (!value) {
+                            if (amountController.text.isEmpty) {
                               hose.enteredAmount = 0;
                             } else {
-                              if (double.parse(value) <= hose.lastAmount) {
+                              if (double.parse(amountController.text) <=
+                                  hose.lastAmount) {
                                 DialogBuilder(context)
                                     .showSnackBar(t.readingError);
                                 amountController.clear();
                               } else if (amountValidation(
                                 hose,
-                                double.parse(value),
+                                double.parse(amountController.text),
                                 double.parse(readingController.text),
                               )) {
                                 DialogBuilder(context).showSnackBar(
                                     '${t.amountError} ${hose.measuringPointDesc}');
 
-                                amountController.text =
-                                    hose.enteredAmount.toString();
+                                amountController.clear();
                               } else {
-                                hose.enteredAmount = double.parse(value);
+                                hose.enteredAmount =
+                                    double.parse(amountController.text);
                               }
                             }
-                          },
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50)),
+                              ),
+                              hintText: t.egp,
+                            ),
+                            textAlign: TextAlign.center,
+                            controller: amountController,
+                            keyboardType: TextInputType.number,
+                            key: UniqueKey(),
+                            enabled: !hose.inActiveFlag,
+                            onSubmitted: (value) {
+                              if (value.isEmpty) {
+                                hose.enteredAmount = 0;
+                              } else {
+                                if (double.parse(value) <= hose.lastAmount) {
+                                  DialogBuilder(context)
+                                      .showSnackBar(t.readingError);
+                                  amountController.clear();
+                                } else if (amountValidation(
+                                  hose,
+                                  double.parse(value),
+                                  double.parse(readingController.text),
+                                )) {
+                                  DialogBuilder(context).showSnackBar(
+                                      '${t.amountError} ${hose.measuringPointDesc}');
+
+                                  amountController.text =
+                                      hose.enteredAmount.toString();
+                                } else {
+                                  hose.enteredAmount = double.parse(value);
+                                }
+                              }
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                ],
-              ),
+                    )
+                  ],
+                ),
             ],
           ),
         ),
