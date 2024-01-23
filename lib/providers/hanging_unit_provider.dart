@@ -135,8 +135,8 @@ class HangingUnitsProvider with ChangeNotifier {
         final productsList = _hoseList
             .where((element) => element.material == tank.material)
             .toList();
-        final totalQuantity =
-            productsList.fold(0.0, (sum, product) => sum + product.quantity);
+        final totalQuantity = productsList.fold(
+            0.0, (sum, product) => sum + product.totalQuantity);
         tank.quantity = totalQuantity;
       }
     }
@@ -147,7 +147,7 @@ class HangingUnitsProvider with ChangeNotifier {
     // calculate total sales
     _total = 0.0;
     for (var element in _hoseList) {
-      _total += (element.quantity * element.unitPrice);
+      _total += (element.totalQuantity * element.unitPrice);
     }
 
     notifyListeners();
@@ -162,5 +162,13 @@ class HangingUnitsProvider with ChangeNotifier {
         .toList();
 
     return itemsWithIncorrectAmount.isEmpty ? [] : itemsWithIncorrectAmount;
+  }
+
+  List<Tank?> validateTanks() {
+    final tanksWithoutEntries = _tanks
+        .where((tank) => tank.quantity > 0)
+        .where((tank) => tank.shiftStart == 0.0 || tank.shiftEnd == 0.0)
+        .toList();
+        return tanksWithoutEntries.isEmpty ? [] : tanksWithoutEntries;
   }
 }

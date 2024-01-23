@@ -127,7 +127,7 @@ class RequestBuilder {
                 'ShiftType': '${userData['shiftType']}',
                 'Material': tank.material,
                 'Quantity': '${tank.quantity}',
-                'ExpQuantity': '${tank.expectedQuantity}',
+                'ExpQuantity': '${tank.shiftEnd}',
                 'Uoms': 'L',
               })
           .toList(),

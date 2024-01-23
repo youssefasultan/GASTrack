@@ -170,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
           onPressed: () {
             hangingUnitsData.calculateTotal();
-
+            hangingUnitsData.calculateTankQuantity();
             if (shiftType == 'G') {
               var invalidHoses = hangingUnitsData.validateProducts();
 
@@ -178,9 +178,13 @@ class _HomeScreenState extends State<HomeScreen>
                 DialogBuilder(context).showErrorDialog(
                     '${t.amountError} \n ${invalidHoses.map((e) => e!.measuringPointDesc).toList().join(', ')}');
               }
-            }
-
-            if (hangingUnitsData.getTotalSales == 0.0) {
+            } else if (shiftType == 'F') {
+              var unrecordedTanks = hangingUnitsData.validateTanks();
+              if (unrecordedTanks.isNotEmpty) {
+                DialogBuilder(context).showErrorDialog(
+                    '${t.unrecoredTankError} \n ${unrecordedTanks.map((e) => e!.material).toList().join(', ')}');
+              }
+            } else if (hangingUnitsData.getTotalSales == 0.0) {
               DialogBuilder(context).showErrorDialog(t.totalError);
             } else {
               Navigator.of(context).pushNamed(PaymentScreen.routeName);

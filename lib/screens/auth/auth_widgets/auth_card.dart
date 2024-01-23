@@ -150,19 +150,20 @@ class _AuthCardState extends State<AuthCard>
     var t = AppLocalizations.of(context);
     ThemeData themeData = Theme.of(context);
 
-    return SingleChildScrollView(
+    return Container(
+      height: 340,
+      width: deviceSize.width * 0.5,
+      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10.0),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
         elevation: 8.0,
-        child: Container(
-          height: 320,
-          width: deviceSize.width * 0.75,
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   TextFormField(
@@ -221,7 +222,8 @@ class _AuthCardState extends State<AuthCard>
                               customRadioButton(t.fuel, 'F'),
                               customRadioButton(t.gas, 'G'),
                             ],
-                          )),
+                          ),
+                        ),
                   const SizedBox(
                     height: 20,
                   ),

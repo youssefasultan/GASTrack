@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gas_track/helpers/view/ui/ui_constants.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -16,53 +17,192 @@ class _TankListTileState extends State<TankListTile> {
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
     // ThemeData themeData = Theme.of(context);
+    final contentSize = MediaQuery.of(context).size;
 
     final tank = Provider.of<Tank>(context);
-    TextEditingController readingController = TextEditingController(
-        text: tank.expectedQuantity == 0.0
-            ? ''
-            : tank.expectedQuantity.toString());
+    TextEditingController shiftStartController = TextEditingController(
+        text: tank.shiftStart == 0.0 ? '' : tank.shiftStart.toString());
+    TextEditingController shifEndController = TextEditingController(
+        text: tank.shiftEnd == 0.0 ? '' : tank.shiftEnd.toString());
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-      child: ListTile(
-        key: Key(tank.material),
-        title: Text('${t.fuel} ${tank.material}'),
-        titleTextStyle: TextStyle(
-          fontSize: 16,
-          color: Theme.of(context).primaryColor,
-          fontWeight: FontWeight.bold,
-          fontFamily: 'Bebas',
+    return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+        height: contentSize.height * 0.17,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Theme.of(context).primaryColorLight,
         ),
-        
-        trailing: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.5,
-          child: Focus(
-            onFocusChange: (value) {
-              if (!value) {
-                setState(() {
-                  tank.expectedQuantity = double.parse(readingController.text);
-                });
-              }
-            },
-            child: TextField(
-              controller: readingController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  '${t.fuel} ${tank.material}',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: blueColor,
+                    fontFamily: 'Bebas',
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              onSubmitted: (value) {
-                setState(() {
-                  tank.expectedQuantity = double.parse(value);
-                });
-              },
+                Text(
+                  '${t.amount} : ${tank.quantity} ${t.liter}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: blueColor,
+                    fontFamily: 'Bebas',
+                    fontWeight: FontWeight.normal,
+                  ),
+                )
+              ],
             ),
-          ),
-        ),
-      ),
-    );
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Focus(
+                    onFocusChange: (value) {
+                      if (!value) {
+                        tank.shiftStart = shiftStartController.text.isNotEmpty
+                            ? double.parse(shiftStartController.text)
+                            : 0.0;
+                      }
+                    },
+                    child: SizedBox(
+                      width: contentSize.width * 0.3,
+                      height: 60,
+                      child: TextField(
+                        controller: shiftStartController,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                          ),
+                          hintText: t.start,
+                        ),
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        onSubmitted: (value) {
+                          setState(() {
+                            tank.shiftStart =
+                                value.isNotEmpty ? double.parse(value) : 0.0;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  Focus(
+                    onFocusChange: (value) {
+                      if (!value) {
+                        tank.shiftEnd = shifEndController.text.isNotEmpty
+                            ? double.parse(shifEndController.text)
+                            : 0.0;
+                      }
+                    },
+                    child: SizedBox(
+                      width: contentSize.width * 0.3,
+                      height: 60,
+                      child: TextField(
+                        controller: shifEndController,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                          ),
+                          hintText: t.end,
+                        ),
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        onSubmitted: (value) {
+                          setState(() {
+                            tank.shiftEnd =
+                                value.isNotEmpty ? double.parse(value) : 0.0;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        )
+        // ListTile(
+        //   key: Key(tank.material),
+        //   dense: true,
+        //   visualDensity: const VisualDensity(vertical: 4, horizontal: 4),
+        //   title: Text('${t.fuel} ${tank.material}'),
+        //   subtitle: Text('${t.amount} : ${tank.quantity} ${t.liter}'),
+        //   titleTextStyle: TextStyle(
+        //     fontSize: 16,
+        //     color: Theme.of(context).primaryColor,
+        //     fontWeight: FontWeight.bold,
+        //     fontFamily: 'Bebas',
+        //   ),
+        //   trailing: Row(
+        //     children: [
+        //       Container(
+        //         width: 50,
+        //         height: 50,
+        //         padding: const EdgeInsets.symmetric(vertical: 5.0),
+        //         child: Focus(
+        //           onFocusChange: (value) {
+        //             if (!value) {
+        //               tank.shiftStart = double.parse(shiftStartController.text);
+        //             }
+        //           },
+        //           child: TextField(
+        //             controller: shiftStartController,
+        //             decoration: InputDecoration(
+        //               border: const OutlineInputBorder(
+        //                 borderRadius: BorderRadius.all(Radius.circular(30)),
+        //               ),
+        //               hintText: t.reading,
+        //             ),
+        //             keyboardType: TextInputType.number,
+        //             textAlign: TextAlign.center,
+        //             onSubmitted: (value) {
+        //               setState(() {
+        //                 tank.shiftStart = double.parse(value);
+        //               });
+        //             },
+        //           ),
+        //         ),
+        //       ),
+        //       Container(
+        //         width: 50,
+        //         height: 50,
+        //         padding:
+        //             const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+        //         child: Focus(
+        //           onFocusChange: (value) {
+        //             if (!value) {
+        //               tank.shiftEnd = double.parse(shifEndController.text);
+        //             }
+        //           },
+        //           child: TextField(
+        //             controller: shifEndController,
+        //             decoration: InputDecoration(
+        //               border: const OutlineInputBorder(
+        //                 borderRadius: BorderRadius.all(Radius.circular(30)),
+        //               ),
+        //               hintText: t.reading,
+        //             ),
+        //             keyboardType: TextInputType.number,
+        //             textAlign: TextAlign.center,
+        //             onSubmitted: (value) {
+        //               setState(() {
+        //                 tank.shiftEnd = double.parse(value);
+        //               });
+        //             },
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        );
   }
 }

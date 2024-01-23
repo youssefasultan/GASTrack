@@ -1,7 +1,7 @@
 name: gas_track
 description: A new Flutter project.
 publish_to: 'none'
-version: 0.1.0.17
+version: 0.1.0
 
 environment:
   sdk: '>=2.19.2'
@@ -15,7 +15,8 @@ dependencies:
   http: ^0.13.5
   intl: ^0.18.1
   shared_preferences: ^2.2.1
-  package_info_plus: ^1.0.6
+ 
+
 
 
 dev_dependencies:

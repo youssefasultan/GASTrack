@@ -69,7 +69,7 @@ class ConfirmationWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${t.quantity} : ${productsList[index].enteredReading.toString()}',
+                    '${t.quantity} : ${productsList[index].totalQuantity.toString()} ${t.liter}',
                     style: const TextStyle(
                       fontSize: 14,
                       fontFamily: 'Bebas',
@@ -77,7 +77,7 @@ class ConfirmationWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${t.amount} : ${productsList[index].enteredAmount.toString()}',
+                    '${t.amount} : ${productsList[index].totalAmount} ${t.egp}',
                     style: const TextStyle(
                       fontSize: 14,
                       fontFamily: 'Bebas',
@@ -124,7 +124,15 @@ class ConfirmationWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      '${t.reading} : ${tankList[index].expectedQuantity.toString()}',
+                      '${t.start} : ${tankList[index].shiftStart.toString()}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Bebas',
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    Text(
+                      '${t.end} : ${tankList[index].shiftEnd.toString()}',
                       style: const TextStyle(
                         fontSize: 14,
                         fontFamily: 'Bebas',

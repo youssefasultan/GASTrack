@@ -35,6 +35,7 @@ class _FuelTabBarLibraryState extends State<FuelTabBarLibrary> {
             itemCount: hangingUnitList.length,
           ),
           ListView.builder(
+            shrinkWrap: true,
             itemBuilder: (context, index) => ChangeNotifierProvider.value(
               value: tanksList[index],
               child: const TankListTile(),

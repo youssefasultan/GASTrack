@@ -75,6 +75,7 @@ class HoseListTile extends StatelessWidget {
                             .copyWith(color: themeData.primaryColor),
                       ),
                       Text(hose.materialDesc),
+                      Text('${t.price} : ${hose.unitPrice} ${t.egpPerL}'),
                     ],
                   ),
                   hose.inActiveFlag
@@ -168,8 +169,14 @@ class HoseListTile extends StatelessWidget {
                             } else {
                               hose.enteredReading =
                                   double.parse(readingController.text);
-                              hose.quantity =
+                              hose.totalQuantity =
                                   hose.enteredReading - hose.lastReading;
+                              if (shiftType == 'F') {
+                                hose.totalAmount =
+                                    hose.totalQuantity * hose.unitPrice;
+                                hose.enteredAmount =
+                                    hose.lastAmount + hose.totalAmount;
+                              }
                             }
                           }
                         }
@@ -199,8 +206,15 @@ class HoseListTile extends StatelessWidget {
                                 readingController.clear();
                               } else {
                                 hose.enteredReading = double.parse(value);
-                                hose.quantity =
+                                hose.totalQuantity =
                                     hose.enteredReading - hose.lastReading;
+
+                                if (shiftType == 'F') {
+                                  hose.totalAmount =
+                                      hose.totalQuantity * hose.unitPrice;
+                                  hose.enteredAmount =
+                                      hose.lastAmount + hose.totalAmount;
+                                }
                               }
                             }
                           },

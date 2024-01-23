@@ -1,5 +1,5 @@
 {
-
+  "@@locale": "en",
   "appTitle" : "GASTEC Dispensing Tracking App",
   "username" : "Username",
   "password" : "Password",
@@ -9,8 +9,8 @@
   "invalidUsername" : "Invalid Username!",
   "shortPassword" : "Password is too short!",
   "enterUrl" : "Enter Url",
-  "fuel": "fuel",
-  "gas" : "gas",
+  "fuel": "Fuel",
+  "gas" : "Gas",
   "oil" : "oil",
   "home" : "Home",
   "endShift" : "End Shift Invoice",
@@ -59,6 +59,11 @@
   "calibration" : "calibration",
   "unpaidCoupons" : "Unpaid coupons",
   "active" : "Active",
-  "inActive" : "Inactive"
+  "inActive" : "Inactive",
+  "price" : "Price",
+  "egpPerL" : "EGP/L",
+  "start" : "Start",
+  "end" : "End",
+  "unrecoredTankError" : "Please Enter Start and End shift Tank Readings for Fuel"
 
 }

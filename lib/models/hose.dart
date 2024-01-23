@@ -8,7 +8,8 @@ class Hose with ChangeNotifier {
   double lastAmount;
   double enteredReading;
   double enteredAmount;
-  double quantity;
+  double totalQuantity;
+  double totalAmount;
   final double unitPrice;
   final int measuringPoint;
   final String measuringUnit;
@@ -22,8 +23,9 @@ class Hose with ChangeNotifier {
     required this.lastReading,
     required this.lastAmount,
     this.enteredReading = 0.0,
-    this.quantity = 0.0,
+    this.totalQuantity = 0.0,
     this.enteredAmount = 0.0,
+    this.totalAmount = 0.0,
     required this.unitPrice,
     required this.measuringUnit,
     required this.measuringPoint,

@@ -1,5 +1,5 @@
 {
-
+  "@@locale": "ar",
   "appTitle": "تطبيق جازتك لتتبع صرف",
   "username":"اسم المستخدم",
   "password":"كلمه السر",
@@ -58,7 +58,12 @@
   "cashOverFlowError" : "من فضلك تأكد من القيم المدخله",
   "unpaidCoupons" : "كبونات غير مدفوعه",
   "active" : "Active",
-  "inActive" : "Inactive"
+  "inActive" : "Inactive",
+  "price" : "السعر",
+  "egpPerL" : "جنيه مصري / لتر",
+  "start" : "بداية",
+  "end" : "نهاية",
+  "unrecoredTankError" : "الرجاء إدخال قراءات خزان بداية ونهاية لبنزين"
 
 
 }
