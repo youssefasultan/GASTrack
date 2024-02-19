@@ -15,6 +15,9 @@ class PaymentsProvider with ChangeNotifier {
   List<Summery> _summery = [];
   Map<String, double> _summeryTotals = {};
 
+  String _cashRecipetImg = '';
+  final List<String> _visaReciptsImg = [];
+
   PaymentsProvider(double totalSales) {
     _total = totalSales;
   }
@@ -33,6 +36,29 @@ class PaymentsProvider with ChangeNotifier {
 
   List<Summery> get getSummery {
     return _summery;
+  }
+
+  String get getCashRecipetImg {
+    return _cashRecipetImg;
+  }
+
+  void setCashRecipetImg(String path) {
+    _cashRecipetImg = path;
+    notifyListeners();
+  }
+
+  void removeImgPathFromList(String path) {
+    _visaReciptsImg.removeWhere((element) => element == path);
+    notifyListeners();
+  }
+
+  List<String> get getVisaReciptsImg {
+    return _visaReciptsImg;
+  }
+
+  void addVisaRecipets(List<String> paths) {
+    _visaReciptsImg.addAll(paths);
+    notifyListeners();
   }
 
   Future<void> getEndOfDaySummeryPayments() async {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gas_track/helpers/view/ui/pop_up_menu.dart';
 import 'package:gas_track/screens/home/home_widgets/fuel_tabbar_library.dart';
 import 'package:provider/provider.dart';
 
@@ -74,41 +75,8 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ),
         automaticallyImplyLeading: false,
-        actions: [
-          PopupMenuButton(
-            icon: Icon(
-              Icons.more_vert,
-              color: themeData.primaryColor,
-            ),
-            onSelected: (value) {
-              if (value == 'logout') {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                Provider.of<AuthProvider>(context, listen: false).logout();
-              }
-            },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.logout,
-                      color: themeData.primaryColor,
-                      size: 30.0,
-                    ),
-                    Text(
-                      t.logout,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: themeData.primaryColor,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
+        actions: const [
+          SettingsPopUpMenu(),
         ],
       ),
       body: _isLoading
@@ -177,17 +145,21 @@ class _HomeScreenState extends State<HomeScreen>
               if (invalidHoses.isNotEmpty) {
                 DialogBuilder(context).showErrorDialog(
                     '${t.amountError} \n ${invalidHoses.map((e) => e!.measuringPointDesc).toList().join(', ')}');
+              } else if (hangingUnitsData.getTotalSales == 0.0) {
+                DialogBuilder(context).showErrorDialog(t.totalError);
+              } else {
+                Navigator.of(context).pushNamed(PaymentScreen.routeName);
               }
             } else if (shiftType == 'F') {
               var unrecordedTanks = hangingUnitsData.validateTanks();
               if (unrecordedTanks.isNotEmpty) {
                 DialogBuilder(context).showErrorDialog(
                     '${t.unrecoredTankError} \n ${unrecordedTanks.map((e) => e!.material).toList().join(', ')}');
+              } else if (hangingUnitsData.getTotalSales == 0.0) {
+                DialogBuilder(context).showErrorDialog(t.totalError);
+              } else {
+                Navigator.of(context).pushNamed(PaymentScreen.routeName);
               }
-            } else if (hangingUnitsData.getTotalSales == 0.0) {
-              DialogBuilder(context).showErrorDialog(t.totalError);
-            } else {
-              Navigator.of(context).pushNamed(PaymentScreen.routeName);
             }
           },
         ),

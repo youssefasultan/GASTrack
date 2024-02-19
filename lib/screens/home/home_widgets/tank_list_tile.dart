@@ -27,7 +27,7 @@ class _TankListTileState extends State<TankListTile> {
 
     return Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-        height: contentSize.height * 0.17,
+        height: contentSize.height * 0.2,
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
@@ -48,17 +48,31 @@ class _TankListTileState extends State<TankListTile> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  '${t.amount} : ${tank.quantity} ${t.liter}',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: blueColor,
-                    fontFamily: 'Bebas',
-                    fontWeight: FontWeight.normal,
-                  ),
+                Column(
+                  children: [
+                    Text(
+                      '${t.quantity} : ${tank.quantity} ${t.liter}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: blueColor,
+                        fontFamily: 'Bebas',
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    Text(
+                      '${t.amount} : ${tank.amount} ${t.egp}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: blueColor,
+                        fontFamily: 'Bebas',
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:gas_track/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
+
+import 'package:gas_track/helpers/view/ui/pop_up_menu.dart';
+import 'package:gas_track/providers/auth_provider.dart';
+import 'package:gas_track/screens/payment/payment_widgets/payment_tabbar_library.dart';
 
 import '../../helpers/view/dialog/dialog_builder.dart';
 import '../../providers/payments_provider.dart';
@@ -16,9 +19,17 @@ class PaymentScreen extends StatefulWidget {
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
-class _PaymentScreenState extends State<PaymentScreen> {
+class _PaymentScreenState extends State<PaymentScreen>
+    with SingleTickerProviderStateMixin {
   var _isLoading = false;
   var _isInit = true;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -51,6 +62,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     final paymentsData = Provider.of<PaymentsProvider>(context);
     final paymentMethods = paymentsData.getPaymentsMethods;
+    final auth = Provider.of<AuthProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -62,41 +74,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
             color: themeData.primaryColor,
           ),
         ),
-        actions: [
-          PopupMenuButton(
-            icon: Icon(
-              Icons.more_vert,
-              color: themeData.primaryColor,
-            ),
-            onSelected: (value) {
-              if (value == 'logout') {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                Provider.of<AuthProvider>(context, listen: false).logout();
-              }
-            },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.logout,
-                      color: themeData.primaryColor,
-                      size: 30.0,
-                    ),
-                    Text(
-                      t.logout,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: themeData.primaryColor,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
+        actions: const [
+          SettingsPopUpMenu(),
         ],
       ),
       body: _isLoading
@@ -106,16 +85,37 @@ class _PaymentScreenState extends State<PaymentScreen> {
           : Column(
               children: [
                 const PaymentCard(),
-                Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (context, index) =>
-                        ChangeNotifierProvider.value(
-                      value: paymentMethods[index],
-                      child: const PaymentTile(),
+                if (auth.getShiftType == 'F')
+                  Expanded(
+                    child: Column(
+                      children: [
+                        TabBar(
+                          tabs: [
+                            Tab(
+                              text: t.payment,
+                            ),
+                            Tab(
+                              text: t.attachment,
+                            ),
+                          ],
+                          controller: _tabController,
+                          indicatorSize: TabBarIndicatorSize.tab,
+                        ),
+                        PaymentTabBarLibrary(tabController: _tabController),
+                      ],
                     ),
-                    itemCount: paymentMethods.length,
+                  )
+                else
+                  Expanded(
+                    child: ListView.builder(
+                      itemBuilder: (context, index) =>
+                          ChangeNotifierProvider.value(
+                        value: paymentMethods[index],
+                        child: const PaymentTile(),
+                      ),
+                      itemCount: paymentMethods.length,
+                    ),
                   ),
-                ),
               ],
             ),
       floatingActionButton: Visibility(

@@ -64,6 +64,10 @@
   "egpPerL" : "EGP/L",
   "start" : "Start",
   "end" : "End",
-  "unrecoredTankError" : "Please Enter Start and End shift Tank Readings for Fuel"
+  "unrecoredTankError" : "Please Enter Start and End shift Tank Readings for Fuel",
+  "attachment": "Attachment",
+  "addCashPic": "Add Cash Recipt",
+  "addVisaPics": "Add Visa Recipts",
+  "deleteImg": "Are you sure you want to remove?"
 
 }

@@ -73,7 +73,12 @@ class HangingUnitsProvider with ChangeNotifier {
 
   void addTanks(List<dynamic> extractedData) {
     final loadedTanks = getUniqueObjects(extractedData, 'Material')
-        .map((product) => Tank(material: product['Material']))
+        .map(
+          (product) => Tank(
+            material: product['Material'],
+            unitPrice: double.parse(product['PricingUnit']),
+          ),
+        )
         .toList();
 
     _tanks = loadedTanks;
@@ -138,6 +143,7 @@ class HangingUnitsProvider with ChangeNotifier {
         final totalQuantity = productsList.fold(
             0.0, (sum, product) => sum + product.totalQuantity);
         tank.quantity = totalQuantity;
+        tank.amount = tank.quantity * tank.unitPrice;
       }
     }
     notifyListeners();
@@ -169,6 +175,6 @@ class HangingUnitsProvider with ChangeNotifier {
         .where((tank) => tank.quantity > 0)
         .where((tank) => tank.shiftStart == 0.0 || tank.shiftEnd == 0.0)
         .toList();
-        return tanksWithoutEntries.isEmpty ? [] : tanksWithoutEntries;
+    return tanksWithoutEntries.isEmpty ? [] : tanksWithoutEntries;
   }
 }

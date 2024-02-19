@@ -39,7 +39,12 @@ class DialogBuilder {
       SnackBar(
         content: Text(msg),
         backgroundColor: redColor,
-        duration: const Duration(milliseconds: 800),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        margin: const EdgeInsets.all(10.0),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -213,6 +218,47 @@ class DialogBuilder {
                   Theme.of(context).primaryColor,
                   Theme.of(context).primaryColor,
                 )
+        ],
+      ),
+    );
+  }
+
+  void showDeleteImgConfrimation(bool isCash, String path) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(
+          t.deleteImg,
+          textAlign: TextAlign.center,
+        ),
+        icon: const Icon(
+          Icons.delete,
+          size: 20,
+        ),
+        iconColor: redColor,
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          _dialogTextButton(
+            hideOpenDialog,
+            t.cancel,
+            Colors.white,
+            Theme.of(context).primaryColor,
+          ),
+          _dialogTextButton(
+            () {
+              hideOpenDialog();
+              if (isCash) {
+                Provider.of<PaymentsProvider>(context, listen: false)
+                    .setCashRecipetImg('');
+              } else {
+                Provider.of<PaymentsProvider>(context, listen: false)
+                    .removeImgPathFromList(path);
+              }
+            },
+            t.confirm,
+            Theme.of(context).primaryColor,
+            Theme.of(context).primaryColor,
+          ),
         ],
       ),
     );
