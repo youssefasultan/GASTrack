@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/providers/payments_provider.dart';
+import 'package:gas_track/models/payment.dart';
 import 'package:gas_track/screens/payment/payment_widgets/attachment_view.dart';
 import 'package:provider/provider.dart';
 
 import 'payment_list_tile.dart';
 
-class PaymentTabBarLibrary extends StatefulWidget {
+class PaymentTabBarLibrary extends StatelessWidget {
   final TabController tabController;
-  const PaymentTabBarLibrary({super.key, required this.tabController});
+  final List<Payment> paymentMethods;
+  const PaymentTabBarLibrary(
+      {super.key, required this.tabController, required this.paymentMethods});
 
-  @override
-  State<PaymentTabBarLibrary> createState() => _PaymentTabBarLibraryState();
-}
-
-class _PaymentTabBarLibraryState extends State<PaymentTabBarLibrary> {
   @override
   Widget build(BuildContext context) {
-    final paymentsData = Provider.of<PaymentsProvider>(context);
-    final paymentMethods = paymentsData.getPaymentsMethods;
     return Expanded(
       child: TabBarView(
-        controller: widget.tabController,
+        controller: tabController,
         children: [
           //payment view
           ListView.builder(

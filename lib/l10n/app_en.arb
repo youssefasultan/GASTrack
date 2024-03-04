@@ -45,7 +45,7 @@
   "quantity" : "Quantity",
   "total" : "Total",
   "salesError": "Total Collection Should be greater than  or Equal to Total Sales",
-  "totalError": "Totals Must be greater than zero",
+  "totalError": "Totals Must be equal to Total Sales",
   "amountError": "Please Check Amount Entered for item",
   "shiftTypeHint" : "Select Shift Type",
   "next" : "Next",
@@ -68,6 +68,7 @@
   "attachment": "Attachment",
   "addCashPic": "Add Cash Recipt",
   "addVisaPics": "Add Visa Recipts",
-  "deleteImg": "Are you sure you want to remove?"
+  "deleteImg": "Are you sure you want to remove?",
+  "wared" : "Incoming"
 
 }

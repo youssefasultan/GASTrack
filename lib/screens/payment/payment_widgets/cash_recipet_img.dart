@@ -28,15 +28,15 @@ class _CashRecipetImgState extends State<CashRecipetImg> {
               onTap: () async {
                 List<String> pictures;
                 try {
-                  pictures =
-                      await CunningDocumentScanner.getPictures(false) ?? [];
+                  pictures = await CunningDocumentScanner.getPictures() ?? [];
                   if (!mounted) return;
-                  if(pictures.isNotEmpty) {
+                  if (pictures.isNotEmpty) {
                     payment.setCashRecipetImg(pictures[0]);
                   }
-                  
                 } catch (exception) {
-                  DialogBuilder(context).showSnackBar(exception.toString());
+                  if (mounted) {
+                    DialogBuilder(context).showSnackBar(exception.toString());
+                  }
                 }
               },
               child: DottedBorder(

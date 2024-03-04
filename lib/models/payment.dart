@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 class Payment with ChangeNotifier {
   String paymentType;
+  String paymentName;
   double amount;
   String icon;
   Payment({
     required this.icon,
     required this.paymentType,
+    required this.paymentName,
     this.amount = 0.0,
   });
 }
@@ -35,14 +37,17 @@ class Coupon extends Payment {
   Coupon({
     required super.icon,
     required super.paymentType,
+    required super.paymentName,
     required this.couponsList,
   });
 }
 
 class UnpaidCoupon extends Payment {
   List<CouponData> couponsList;
-  UnpaidCoupon(
-      {required super.icon,
-      required super.paymentType,
-      required this.couponsList});
+  UnpaidCoupon({
+    required super.icon,
+    required super.paymentType,
+    required super.paymentName,
+    required this.couponsList,
+  });
 }

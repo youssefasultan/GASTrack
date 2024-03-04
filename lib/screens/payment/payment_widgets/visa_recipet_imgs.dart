@@ -44,7 +44,7 @@ class _VisaRecieptsImgsState extends State<VisaRecieptsImgs> {
           onTap: () async {
             List<String> pictures;
             try {
-              pictures = await CunningDocumentScanner.getPictures(false) ?? [];
+              pictures = await CunningDocumentScanner.getPictures() ?? [];
               if (!mounted) return;
               payment.addVisaRecipets(pictures);
             } catch (exception) {

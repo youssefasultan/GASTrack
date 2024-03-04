@@ -47,6 +47,7 @@ class HangingUnit with ChangeNotifier {
           'ExpAmount':
               '${hose.enteredAmount == 0.0 ? hose.lastAmount : hose.enteredAmount}',
           'Currency': 'EGP',
+          'CalibrQty' : '${hose.calibration}',
         },
       );
     }

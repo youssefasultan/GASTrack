@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gas_track/helpers/view/ui/ui_constants.dart';
+import 'package:gas_track/models/hose.dart';
+import 'package:gas_track/models/tank.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -53,40 +56,10 @@ class ConfirmationWidget extends StatelessWidget {
           width: double.maxFinite,
           height: shiftType == 'F' ? size.height * 0.3 : size.height * 0.5,
           child: ListView.builder(
-            itemBuilder: (context, index) => ListTile(
-              title: Text(
-                productsList[index].measuringPointDesc,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontFamily: 'Bebas',
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(
-                productsList[index].materialDesc,
-              ),
-              trailing: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '${t.quantity} : ${productsList[index].totalQuantity.toString()} ${t.liter}',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'Bebas',
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                  Text(
-                    '${t.amount} : ${productsList[index].totalAmount} ${t.egp}',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontFamily: 'Bebas',
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            itemBuilder: (context, index) {
+              final product = productsList[index];
+              return productItem(product, t);
+            },
             itemCount: productsList.length,
           ),
         ),
@@ -108,40 +81,11 @@ class ConfirmationWidget extends StatelessWidget {
             width: double.maxFinite,
             height: size.height * 0.2,
             child: ListView.builder(
-              itemBuilder: (context, index) => ListTile(
-                title: Text(
-                  tankList[index].material,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontFamily: 'Bebas',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                subtitle: Text(
-                  '${t.amount} : ${tankList[index].quantity.toString()}',
-                ),
-                trailing: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '${t.start} : ${tankList[index].shiftStart.toString()}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Bebas',
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    Text(
-                      '${t.end} : ${tankList[index].shiftEnd.toString()}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Bebas',
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              itemBuilder: (context, index) {
+                final tank = tankList[index];
+
+                return tankItem(tank, t);
+              },
               itemCount: tankList.length,
             ),
           )
@@ -174,5 +118,143 @@ class ConfirmationWidget extends StatelessWidget {
         )
       ],
     );
+  }
+
+  Widget tankItem(Tank tank, AppLocalizations t) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: blueColor,
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(20.0),
+        color: Colors.white,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              Text(
+                '${t.fuel} : ${tank.material}',
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'Bebas',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '${t.amount} : ${tank.quantity.toString()}',
+              )
+            ],
+          ),
+          Column(
+            children: [
+              Text(
+                '${t.start} : ${tank.shiftStart.toString()}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'Bebas',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                '${t.end} : ${tank.shiftEnd.toString()}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'Bebas',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                '${t.refil} : ${tank.waredQty.toString()}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'Bebas',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget productItem(Hose product, AppLocalizations t) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: blueColor,
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(20.0),
+        color: Colors.white,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              Text(
+                product.measuringPointDesc,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'Bebas',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                product.materialDesc,
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Text(
+                '${t.quantity} : ${product.totalQuantity.toString()} ${getUom(product.measuringUnit, t)}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'Bebas',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                '${t.amount} : ${product.totalAmount} ${t.egp}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'Bebas',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              Text(
+                '${t.calibration} : ${product.calibration} ${getUom(product.measuringUnit, t)}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'Bebas',
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  String getUom(String mesruementUnit, AppLocalizations t) {
+    switch (mesruementUnit) {
+      case 'L':
+        return t.liter;
+
+      case 'M3':
+        return t.m3;
+      default:
+        return '';
+    }
   }
 }

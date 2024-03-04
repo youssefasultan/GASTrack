@@ -52,7 +52,7 @@ class HangingUnitsProvider with ChangeNotifier {
       matchHoseToHangingUnit();
 
       if (userData['shiftType'] == 'F') {
-        addTanks(extractedData);
+        addTanks(userData['funLoc']!);
       }
 
       notifyListeners();
@@ -71,12 +71,23 @@ class HangingUnitsProvider with ChangeNotifier {
     }
   }
 
-  void addTanks(List<dynamic> extractedData) {
-    final loadedTanks = getUniqueObjects(extractedData, 'Material')
+  void addTanks(String funLoc) async {
+    final response = await RequestBuilder().buildGetRequest(
+        "GasTankSet?\$filter=ShiftLocation eq 'GASTEC-ELCANAAL-1069'&");
+
+    final responseData = json.decode(response.body);
+    final extractedData = responseData['d']['results'] as List<dynamic>;
+
+    if (extractedData.isEmpty) {
+      throw ArgumentError("No Tanks Found.");
+    }
+
+    final loadedTanks = extractedData
         .map(
-          (product) => Tank(
-            material: product['Material'],
-            unitPrice: double.parse(product['PricingUnit']),
+          (e) => Tank(
+            material: e['Material'],
+            shiftStart: double.parse(e['Quantity']),
+            unitPrice: double.parse(e['PricingUnit']),
           ),
         )
         .toList();

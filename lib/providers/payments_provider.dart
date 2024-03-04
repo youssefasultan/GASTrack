@@ -129,6 +129,7 @@ class PaymentsProvider with ChangeNotifier {
 
       for (var element in extractedData) {
         final paymentType = element['PaymentType'];
+        final paymentName = element['PaymentTextAr'];
         final icon = element['Icon'];
         final isCoupon = icon == 'COUPON';
         final isCard = icon == 'CARD';
@@ -140,6 +141,7 @@ class PaymentsProvider with ChangeNotifier {
               Coupon(
                 icon: icon,
                 paymentType: paymentType,
+                paymentName: paymentName,
                 couponsList: [],
               ),
             );
@@ -149,6 +151,7 @@ class PaymentsProvider with ChangeNotifier {
               UnpaidCoupon(
                 icon: icon,
                 paymentType: paymentType,
+                paymentName: paymentName,
                 couponsList: [],
               ),
             );
@@ -156,12 +159,14 @@ class PaymentsProvider with ChangeNotifier {
             loadedPayments.add(Payment(
               icon: icon,
               paymentType: paymentType,
+              paymentName: paymentName,
             ));
           }
         } else {
           loadedPayments.add(Payment(
             icon: icon,
             paymentType: paymentType,
+            paymentName: paymentName,
           ));
         }
       }
@@ -224,7 +229,7 @@ class PaymentsProvider with ChangeNotifier {
           )
           .first;
 
-      cashPayment.amount = _total;
+      if (shiftType == 'G') cashPayment.amount = _total;
       _paymentsItems.remove(cashPayment);
       _paymentsItems.add(cashPayment);
 
@@ -240,8 +245,10 @@ class PaymentsProvider with ChangeNotifier {
           Provider.of<HangingUnitsProvider>(context, listen: false);
       final hangingUnitsList = productsData.getHangingUnits;
       final tankList = productsData.getTanks;
+
+
       return await RequestBuilder()
-          .postShiftRequest(hangingUnitsList, _paymentsItems, tankList, _total);
+          .postShiftRequest(hangingUnitsList, _paymentsItems, tankList, _total, _cashRecipetImg, _visaReciptsImg);
     } catch (error) {
       rethrow;
     }
@@ -292,6 +299,6 @@ class PaymentsProvider with ChangeNotifier {
       total += payment.amount;
     }
 
-    return total == 0.0;
+    return total != _total;
   }
 }

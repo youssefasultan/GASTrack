@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gas_track/helpers/view/dialog/dialog_builder.dart';
 import 'package:provider/provider.dart';
 
@@ -17,20 +18,18 @@ class PaymentTile extends StatefulWidget {
 
 class _PaymentTileState extends State<PaymentTile> {
   late AppLocalizations t;
+  late TextEditingController amountController;
 
-  String getTitle(String paymentType) {
-    switch (paymentType) {
-      case 'COUPON':
-        return t.coupon;
-      case 'VISA':
-        return t.card;
-      case 'CASH':
-        return t.cash;
-      case 'CARD':
-        return t.unpaidCoupons;
-      default:
-        return '';
-    }
+  @override
+  void initState() {
+    amountController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    amountController.dispose();
+    super.dispose();
   }
 
   IconData? getIcon(String paymentType) {
@@ -57,8 +56,8 @@ class _PaymentTileState extends State<PaymentTile> {
     final payments = Provider.of<PaymentsProvider>(context);
     final auth = Provider.of<AuthProvider>(context, listen: false);
 
-    TextEditingController amountController = TextEditingController(
-        text: payment.amount == 0 ? '' : payment.amount.toString());
+    amountController.text =
+        payment.amount == 0 ? '' : payment.amount.toString();
 
     if (auth.getShiftType == 'G' && payment is Coupon) {
       return Padding(
@@ -66,7 +65,7 @@ class _PaymentTileState extends State<PaymentTile> {
         child: ExpansionTile(
           key: Key(payment.paymentType),
           title: Text(
-            getTitle(payment.icon),
+            payment.paymentName,
             style: TextStyle(
               fontFamily: 'Bebas',
               color: Theme.of(context).primaryColor,
@@ -100,7 +99,7 @@ class _PaymentTileState extends State<PaymentTile> {
         child: ExpansionTile(
           key: Key(payment.paymentType),
           title: Text(
-            getTitle(payment.icon),
+            payment.paymentName,
             style: TextStyle(
               fontFamily: 'Bebas',
               color: Theme.of(context).primaryColor,
@@ -132,9 +131,8 @@ class _PaymentTileState extends State<PaymentTile> {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
         child: ListTile(
-          key: Key(payment.paymentType),
           title: Text(
-            getTitle(payment.icon),
+            payment.paymentName,
             style: TextStyle(
               fontFamily: 'Bebas',
               color: themeData.primaryColor,
@@ -155,13 +153,14 @@ class _PaymentTileState extends State<PaymentTile> {
                     }
                   });
 
-                  if (!payments.calculateCash()) {
-                    setState(() {
-                      payment.amount = 0;
-                    });
-                    payments.calculateCash();
-
-                    DialogBuilder(context).showSnackBar(t.cashOverFlowError);
+                  if (auth.getShiftType == 'G') {
+                    if (!payments.calculateCash()) {
+                      setState(() {
+                        payment.amount = 0;
+                      });
+                      payments.calculateCash();
+                      DialogBuilder(context).showSnackBar(t.cashOverFlowError);
+                    }
                   }
                 }
               },
@@ -179,8 +178,8 @@ class _PaymentTileState extends State<PaymentTile> {
                 ),
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
-                key: Key(payment.icon),
-                enabled: payment.icon != 'CASH',
+                key: Key(payment.paymentName),
+                enabled: payment.icon != 'CASH' || auth.getShiftType == 'F',
                 onSubmitted: (value) {
                   setState(() {
                     if (value.isEmpty) {
@@ -189,12 +188,15 @@ class _PaymentTileState extends State<PaymentTile> {
                       payment.amount = double.parse(value);
                     }
                   });
-                  if (!payments.calculateCash()) {
-                    setState(() {
-                      payment.amount = 0;
-                    });
-                    payments.calculateCash();
-                    DialogBuilder(context).showSnackBar(t.cashOverFlowError);
+
+                  if (auth.getShiftType == 'G') {
+                    if (!payments.calculateCash()) {
+                      setState(() {
+                        payment.amount = 0;
+                      });
+                      payments.calculateCash();
+                      DialogBuilder(context).showSnackBar(t.cashOverFlowError);
+                    }
                   }
                 },
               ),

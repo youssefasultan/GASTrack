@@ -101,7 +101,10 @@ class _PaymentScreenState extends State<PaymentScreen>
                           controller: _tabController,
                           indicatorSize: TabBarIndicatorSize.tab,
                         ),
-                        PaymentTabBarLibrary(tabController: _tabController),
+                        PaymentTabBarLibrary(
+                          tabController: _tabController,
+                          paymentMethods: paymentMethods,
+                        ),
                       ],
                     ),
                   )

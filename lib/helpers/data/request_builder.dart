@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 import '../../models/http_exception.dart';
 import '../../models/payment.dart';
@@ -32,14 +34,19 @@ class RequestBuilder {
     );
   }
 
-  Future<bool> postShiftRequest(List<HangingUnit> hangingUnitsList,
-      List<Payment> paymentList, List<Tank> tankList, double total) async {
+  Future<bool> postShiftRequest(
+      List<HangingUnit> hangingUnitsList,
+      List<Payment> paymentList,
+      List<Tank> tankList,
+      double total,
+      String cashImg,
+      List<String> visaImgs) async {
     int responseCode;
     try {
       await _getToken();
 
-      responseCode = await _upload(
-          _token!, _cookie!, hangingUnitsList, paymentList, total, tankList);
+      responseCode = await _upload(_token!, _cookie!, hangingUnitsList,
+          paymentList, total, tankList, cashImg, visaImgs);
     } catch (error) {
       throw HttpException(error.toString());
     }
@@ -78,9 +85,21 @@ class RequestBuilder {
     List<Payment> paymentList,
     double total,
     List<Tank> tankList,
+    String cashImg,
+    List<String> visaImgs,
   ) async {
     var settings = await Shared.getSettings();
     var userData = await Shared.getUserdata();
+    String cashBase64String = '';
+    List<String> visaBase64String = [];
+
+    if (cashImg.isNotEmpty) {
+      cashBase64String = await cashImageBase64(cashImg);
+    }
+
+    if (visaImgs.isNotEmpty) {
+      visaBase64String = await visaImgsToBase64String(visaImgs);
+    }
 
     String basicAuth =
         'Basic ${base64Encode(utf8.encode('${settings['username']}:${settings['password']}'))}';
@@ -128,6 +147,7 @@ class RequestBuilder {
                 'Material': tank.material,
                 'Quantity': '${tank.quantity}',
                 'ExpQuantity': '${tank.shiftEnd}',
+                'WaredQty': '${tank.waredQty}',
                 'Uoms': 'L',
               })
           .toList(),
@@ -143,6 +163,7 @@ class RequestBuilder {
                 'CouponsQty': e.count,
               })
           .toList(),
+      'GasokToGasom': getImageList(userData, cashBase64String, visaBase64String)
     });
 
     final response = await http.post(
@@ -152,6 +173,65 @@ class RequestBuilder {
     );
 
     return response.statusCode;
+  }
+
+  Future<List<String>> visaImgsToBase64String(List<String> visaImgs) async {
+    List<String> visaBase64String = [];
+    for (var img in visaImgs) {
+      File imageFile = File(img);
+      Uint8List bytes = await imageFile.readAsBytes();
+      visaBase64String.add(base64.encode(bytes));
+    }
+    return visaBase64String;
+  }
+
+  Future<String> cashImageBase64(String cashImg) async {
+    File imageFile = File(cashImg);
+    Uint8List bytes = await imageFile.readAsBytes();
+    String cashBase64String = base64.encode(bytes);
+    return cashBase64String;
+  }
+
+  List<Map<String, dynamic>> getImageList(Map<String, String> userData,
+      String cashImgSource, List<String> visaImgs) {
+    final List<Map<String, dynamic>> result = [];
+    final f = DateFormat('yyyyMMdd');
+    final date = f.format(DateTime.now());
+
+    // cashImg
+    final cashImg = {
+      'ShiftLocation': '${userData['funLoc']}',
+      'ShiftDate': '${userData['shiftDate']}',
+      'Shift': '${userData['shiftNo']}',
+      'ShiftType': '${userData['shiftType']}',
+      'Item': '1',
+      'ImageObject':
+          '${userData['funLoc']}#$date#${userData['shiftNo']}#${userData['shiftType']}#1',
+      'Filename': 'فاتوره كاش',
+      'Mimetype': 'png',
+      'Value': cashImgSource,
+    };
+
+    result.add(cashImg);
+
+    final visaMap = visaImgs
+        .map((e) => {
+              'ShiftLocation': '${userData['funLoc']}',
+              'ShiftDate': '${userData['shiftDate']}',
+              'Shift': '${userData['shiftNo']}',
+              'ShiftType': '${userData['shiftType']}',
+              'Item': '${visaImgs.indexOf(e) + 2}',
+              'ImageObject':
+                  '${userData['funLoc']}#$date#${userData['shiftNo']}#${userData['shiftType']}#${visaImgs.indexOf(e) + 2}',
+              'Filename': 'فيزا ${visaImgs.indexOf(e)}',
+              'Mimetype': 'png',
+              'Value': e,
+            })
+        .toList();
+
+    result.addAll(visaMap);
+
+    return result;
   }
 
   List<Map<String, String>> getJsonObjects(List<HangingUnit> hangingUnitsList) {
