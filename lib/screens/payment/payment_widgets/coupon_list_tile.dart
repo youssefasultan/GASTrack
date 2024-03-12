@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gas_track/helpers/view/dialog/dialog_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../models/payment.dart';
 import '../../../providers/payments_provider.dart';
@@ -29,7 +30,7 @@ class _CouponListTileState extends State<CouponListTile> {
     TextEditingController couponValueController = TextEditingController(
         text: coupon.value == 0 ? '' : coupon.value.toString());
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,7 +39,7 @@ class _CouponListTileState extends State<CouponListTile> {
             coupon.coupon,
             style: TextStyle(
               color: themeData.primaryColor,
-              fontSize: 15,
+              fontSize: 15.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -46,12 +47,12 @@ class _CouponListTileState extends State<CouponListTile> {
             coupon.amount.toString(),
             style: TextStyle(
               color: Theme.of(context).primaryColor,
-              fontSize: 15,
+              fontSize: 15.sp,
             ),
           ),
           if (coupon.businessPartner.isNotEmpty)
             SizedBox(
-              width: MediaQuery.of(context).size.width * 0.25,
+              width: 25.w,
               child: Focus(
                 canRequestFocus: true,
                 onFocusChange: (value) {
@@ -109,9 +110,7 @@ class _CouponListTileState extends State<CouponListTile> {
               ),
             ),
           SizedBox(
-            width: coupon.businessPartner.isNotEmpty
-                ? MediaQuery.of(context).size.width * 0.25
-                : MediaQuery.of(context).size.width * 0.3,
+            width: coupon.businessPartner.isNotEmpty ? 25.w : 30.w,
             child: Focus(
               onFocusChange: (value) {
                 if (!value) {

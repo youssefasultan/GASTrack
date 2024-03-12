@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../helpers/view/ui/ui_constants.dart';
 import '../../../providers/payments_provider.dart';
@@ -16,10 +17,10 @@ class PaymentCard extends StatelessWidget {
     var t = AppLocalizations.of(context)!;
     // ThemeData themeData = Theme.of(context);
     return Container(
-      width: double.infinity,
-      height: 150,
-      margin: const EdgeInsets.all(20.0),
-      padding: const EdgeInsets.all(10.0),
+      width: 100.w,
+      height: 23.h,
+      margin: EdgeInsets.all(1.h),
+      padding: EdgeInsets.all(1.h),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(
           Radius.circular(20),
@@ -27,17 +28,17 @@ class PaymentCard extends StatelessWidget {
         gradient: linerGradient,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20.0,
-          vertical: 5.0,
+        padding: EdgeInsets.symmetric(
+          horizontal: 2.w,
+          vertical: 1.h,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(
+            Icon(
               Icons.receipt_long_rounded,
-              size: 60,
+              size: 9.h,
               color: Colors.white,
             ),
             Row(
@@ -45,18 +46,18 @@ class PaymentCard extends StatelessWidget {
               children: [
                 Text(
                   t.total,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Bebas',
-                    fontSize: 25,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
                 Text(
                   '${paymentData.getTotalCollection} ${t.egp}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Bebas',
-                    fontSize: 20,
+                    fontSize: 18.sp,
                     color: Colors.white,
                   ),
                 ),

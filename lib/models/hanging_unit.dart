@@ -39,7 +39,7 @@ class HangingUnit with ChangeNotifier {
           'MeasuringPoint': '${hose.measuringPoint}',
           'Measurmntrangeunit': hose.measuringUnit,
           'Material': hose.material,
-          'Quantity': '${hose.totalQuantity}',
+          'Quantity': '${hose.totalQuantity - hose.calibration}',
           'ExpQuantity':
               '${hose.enteredReading == 0.0 ? hose.lastReading : hose.enteredReading}',
           'Uoms': hose.measuringUnit,

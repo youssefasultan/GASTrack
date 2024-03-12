@@ -3,6 +3,7 @@ import 'package:gas_track/providers/auth_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 class SettingsPopUpMenu extends StatelessWidget {
   const SettingsPopUpMenu({super.key});
@@ -30,13 +31,14 @@ class SettingsPopUpMenu extends StatelessWidget {
             children: [
               Icon(
                 Icons.logout,
-                color: themeData.primaryColor,
-                size: 30.0,
+                color: Colors.red,
+                size: 3.h,
               ),
+              SizedBox(width: 2.w),
               Text(
                 t.logout,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16.sp,
                   color: themeData.primaryColor,
                 ),
               )

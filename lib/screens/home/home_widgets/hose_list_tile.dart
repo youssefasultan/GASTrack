@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gas_track/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../helpers/view/dialog/dialog_builder.dart';
 import '../../../models/hose.dart';
@@ -66,7 +67,7 @@ class _HoseListTileState extends State<HoseListTile> {
         text: hose.calibration == 0.0 ? '' : hose.calibration.toString());
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
       child: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -75,7 +76,7 @@ class _HoseListTileState extends State<HoseListTile> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(1.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -96,7 +97,7 @@ class _HoseListTileState extends State<HoseListTile> {
                   ),
                   hose.inActiveFlag
                       ? Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
+                          padding: EdgeInsets.only(right: 5.w),
                           child: Text(
                             t.inActive,
                             style: const TextStyle(
@@ -106,7 +107,7 @@ class _HoseListTileState extends State<HoseListTile> {
                           ),
                         )
                       : Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
+                          padding: EdgeInsets.only(right: 5.w),
                           child: Text(
                             t.active,
                             style: const TextStyle(
@@ -160,7 +161,7 @@ class _HoseListTileState extends State<HoseListTile> {
     return Row(
       children: [
         SizedBox(
-          width: 90,
+          width: 20.w,
           child: Text(
             t.calibration,
             style: themeData.textTheme.bodyMedium,
@@ -217,7 +218,7 @@ class _HoseListTileState extends State<HoseListTile> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         SizedBox(
-          width: 75,
+          width: 15.w,
           child: Text(
             t.amount,
             style: themeData.textTheme.bodyMedium,
@@ -236,7 +237,7 @@ class _HoseListTileState extends State<HoseListTile> {
               }
             },
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(1.h),
               child: TextField(
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(
@@ -284,7 +285,7 @@ class _HoseListTileState extends State<HoseListTile> {
               }
             },
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(1.h),
               child: TextField(
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(
@@ -340,7 +341,7 @@ class _HoseListTileState extends State<HoseListTile> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         SizedBox(
-          width: 75,
+          width: 15.w,
           child: Text(
             t.reading,
             style: themeData.textTheme.bodyMedium,
@@ -359,7 +360,7 @@ class _HoseListTileState extends State<HoseListTile> {
               }
             },
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(1.h),
               child: TextField(
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(
@@ -394,6 +395,9 @@ class _HoseListTileState extends State<HoseListTile> {
                     hose.enteredReading = 0;
                     hose.totalAmount = 0;
                     hose.enteredAmount = 0;
+                    if (shiftType == 'F') {
+                      calculateHoes(hose);
+                    }
                   });
                 } else {
                   if (double.parse(readingController.text) <=
@@ -411,7 +415,7 @@ class _HoseListTileState extends State<HoseListTile> {
               }
             },
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(1.h),
               child: TextField(
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(
@@ -430,6 +434,9 @@ class _HoseListTileState extends State<HoseListTile> {
                       hose.enteredReading = 0;
                       hose.totalAmount = 0;
                       hose.enteredAmount = 0;
+                      if (shiftType == 'F') {
+                        calculateHoes(hose);
+                      }
                     });
                   } else {
                     if (double.parse(value) <= hose.lastReading) {

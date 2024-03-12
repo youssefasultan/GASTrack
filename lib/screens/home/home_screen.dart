@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/helpers/view/ui/pop_up_menu.dart';
 import 'package:gas_track/screens/home/home_widgets/fuel_tabbar_library.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../helpers/view/dialog/dialog_builder.dart';
 import '../../providers/auth_provider.dart';
@@ -64,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Scaffold(
       appBar: AppBar(
         title: Padding(
-          padding: const EdgeInsets.only(top: 5, left: 10),
+          padding: EdgeInsets.only(left: 10.w),
           child: Text(
             t.home,
             style: TextStyle(
@@ -90,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Expanded(
                     child: SizedBox(
                       width: double.infinity,
-                      height: 450,
+                      height: 450.h,
                       child: ListView.builder(
                         itemBuilder: (context, index) =>
                             ChangeNotifierProvider.value(

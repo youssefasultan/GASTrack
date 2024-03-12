@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../helpers/data/data_constants.dart';
 import '../../../helpers/data/shared.dart';
@@ -146,14 +147,13 @@ class _AuthCardState extends State<AuthCard>
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
     var t = AppLocalizations.of(context);
     ThemeData themeData = Theme.of(context);
 
     return Container(
-      height: 340,
-      width: deviceSize.width * 0.5,
-      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10.0),
+      height: 40.h,
+      width: 30.w,
+      margin: EdgeInsets.symmetric(horizontal: 3.h, vertical: 1.w),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -163,7 +163,7 @@ class _AuthCardState extends State<AuthCard>
           key: _formKey,
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 4.w),
               child: Column(
                 children: [
                   TextFormField(
@@ -213,8 +213,8 @@ class _AuthCardState extends State<AuthCard>
                           },
                         )
                       : Padding(
-                          padding: const EdgeInsets.only(
-                            top: 20.0,
+                          padding: EdgeInsets.only(
+                            top: 3.h,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -224,8 +224,8 @@ class _AuthCardState extends State<AuthCard>
                             ],
                           ),
                         ),
-                  const SizedBox(
-                    height: 20,
+                  SizedBox(
+                    height: 5.h,
                   ),
                   if (_isLoading)
                     const CircularProgressIndicator()
@@ -240,9 +240,9 @@ class _AuthCardState extends State<AuthCard>
                           ),
                         ),
                         padding: MaterialStateProperty.all<EdgeInsets>(
-                          const EdgeInsets.symmetric(
-                            horizontal: 30.0,
-                            vertical: 8.0,
+                          EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                            vertical: 2.h,
                           ),
                         ),
                         backgroundColor: MaterialStateProperty.all(
@@ -252,6 +252,8 @@ class _AuthCardState extends State<AuthCard>
                       child: Text(
                         _authMode == AuthMode.login ? t.login : t.register,
                         style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
                           color: Theme.of(context)
                               .primaryTextTheme
                               .labelLarge

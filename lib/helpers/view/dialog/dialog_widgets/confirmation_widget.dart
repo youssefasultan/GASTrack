@@ -4,6 +4,7 @@ import 'package:gas_track/models/hose.dart';
 import 'package:gas_track/models/tank.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../ui/dash_separator.dart';
 import '../../../../providers/auth_provider.dart';
@@ -16,8 +17,7 @@ class ConfirmationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
-    // ThemeData themeData = Theme.of(context);
-    final size = MediaQuery.of(context).size;
+
     final shiftType =
         Provider.of<AuthProvider>(context, listen: false).getShiftType;
     final hangingUnitsData =
@@ -33,7 +33,7 @@ class ConfirmationWidget extends StatelessWidget {
           t.confirm,
           textAlign: TextAlign.left,
           style: TextStyle(
-            fontSize: 25,
+            fontSize: 18.sp,
             fontWeight: FontWeight.bold,
             color: Theme.of(context).primaryColor,
             fontFamily: 'Bebas',
@@ -41,20 +41,20 @@ class ConfirmationWidget extends StatelessWidget {
         ),
         const DashSeparator(),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          padding: EdgeInsets.symmetric(vertical: 2.h),
           child: Text(
             t.dispenser,
             textAlign: TextAlign.start,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 14.sp,
               fontWeight: FontWeight.bold,
               color: Theme.of(context).primaryColor,
             ),
           ),
         ),
         SizedBox(
-          width: double.maxFinite,
-          height: shiftType == 'F' ? size.height * 0.3 : size.height * 0.5,
+          width: 90.w,
+          height: shiftType == 'F' ? 30.h : 50.h,
           child: ListView.builder(
             itemBuilder: (context, index) {
               final product = productsList[index];
@@ -66,20 +66,20 @@ class ConfirmationWidget extends StatelessWidget {
         if (shiftType == 'F' && tankList.isNotEmpty) ...{
           const DashSeparator(),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 3.0),
+            padding: EdgeInsets.symmetric(vertical: 1.h),
             child: Text(
               t.tank,
               textAlign: TextAlign.start,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).primaryColor,
               ),
             ),
           ),
           SizedBox(
-            width: double.maxFinite,
-            height: size.height * 0.2,
+            width: 90.w,
+            height: 20.h,
             child: ListView.builder(
               itemBuilder: (context, index) {
                 final tank = tankList[index];
@@ -93,8 +93,8 @@ class ConfirmationWidget extends StatelessWidget {
         const DashSeparator(),
         Container(
           width: double.maxFinite,
-          height: size.height * 0.1,
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          height: 10.h,
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -102,15 +102,15 @@ class ConfirmationWidget extends StatelessWidget {
                 t.total,
                 style: TextStyle(
                   fontFamily: 'Bebas',
-                  fontSize: 18,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColor,
                 ),
               ),
               Text(
                 '${paymentData.getTotalCollection} ${t.egp}',
-                style: const TextStyle(
-                  fontSize: 18,
+                style: TextStyle(
+                  fontSize: 18.sp,
                 ),
               ),
             ],
@@ -122,8 +122,8 @@ class ConfirmationWidget extends StatelessWidget {
 
   Widget tankItem(Tank tank, AppLocalizations t) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+      margin: EdgeInsets.symmetric(vertical: 1.h),
       decoration: BoxDecoration(
         border: Border.all(
           color: blueColor,
@@ -139,8 +139,8 @@ class ConfirmationWidget extends StatelessWidget {
             children: [
               Text(
                 '${t.fuel} : ${tank.material}',
-                style: const TextStyle(
-                  fontSize: 15,
+                style: TextStyle(
+                  fontSize: 12.sp,
                   fontFamily: 'Bebas',
                   fontWeight: FontWeight.bold,
                 ),
@@ -154,24 +154,24 @@ class ConfirmationWidget extends StatelessWidget {
             children: [
               Text(
                 '${t.start} : ${tank.shiftStart.toString()}',
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: 12.sp,
                   fontFamily: 'Bebas',
                   fontWeight: FontWeight.normal,
                 ),
               ),
               Text(
                 '${t.end} : ${tank.shiftEnd.toString()}',
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: 12.sp,
                   fontFamily: 'Bebas',
                   fontWeight: FontWeight.normal,
                 ),
               ),
               Text(
                 '${t.refil} : ${tank.waredQty.toString()}',
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: 12.sp,
                   fontFamily: 'Bebas',
                   fontWeight: FontWeight.normal,
                 ),
@@ -185,8 +185,8 @@ class ConfirmationWidget extends StatelessWidget {
 
   Widget productItem(Hose product, AppLocalizations t) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+      margin: EdgeInsets.symmetric(vertical: 1.h),
       decoration: BoxDecoration(
         border: Border.all(
           color: blueColor,
@@ -202,8 +202,8 @@ class ConfirmationWidget extends StatelessWidget {
             children: [
               Text(
                 product.measuringPointDesc,
-                style: const TextStyle(
-                  fontSize: 15,
+                style: TextStyle(
+                  fontSize: 12.sp,
                   fontFamily: 'Bebas',
                   fontWeight: FontWeight.bold,
                 ),
@@ -217,24 +217,24 @@ class ConfirmationWidget extends StatelessWidget {
             children: [
               Text(
                 '${t.quantity} : ${product.totalQuantity.toString()} ${getUom(product.measuringUnit, t)}',
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: 12.sp,
                   fontFamily: 'Bebas',
                   fontWeight: FontWeight.normal,
                 ),
               ),
               Text(
                 '${t.amount} : ${product.totalAmount} ${t.egp}',
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: 12.sp,
                   fontFamily: 'Bebas',
                   fontWeight: FontWeight.normal,
                 ),
               ),
               Text(
                 '${t.calibration} : ${product.calibration} ${getUom(product.measuringUnit, t)}',
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: 12.sp,
                   fontFamily: 'Bebas',
                   fontWeight: FontWeight.normal,
                 ),

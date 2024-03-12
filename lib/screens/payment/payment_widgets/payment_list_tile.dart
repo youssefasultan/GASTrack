@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gas_track/helpers/view/dialog/dialog_builder.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../models/payment.dart';
 import '../../../providers/auth_provider.dart';
@@ -61,7 +62,7 @@ class _PaymentTileState extends State<PaymentTile> {
 
     if (auth.getShiftType == 'G' && payment is Coupon) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
         child: ExpansionTile(
           key: Key(payment.paymentType),
           title: Text(
@@ -69,7 +70,7 @@ class _PaymentTileState extends State<PaymentTile> {
             style: TextStyle(
               fontFamily: 'Bebas',
               color: Theme.of(context).primaryColor,
-              fontSize: 16,
+              fontSize: 12.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -95,7 +96,7 @@ class _PaymentTileState extends State<PaymentTile> {
       );
     } else if (auth.getShiftType == 'G' && payment is UnpaidCoupon) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
         child: ExpansionTile(
           key: Key(payment.paymentType),
           title: Text(
@@ -103,7 +104,7 @@ class _PaymentTileState extends State<PaymentTile> {
             style: TextStyle(
               fontFamily: 'Bebas',
               color: Theme.of(context).primaryColor,
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -129,19 +130,19 @@ class _PaymentTileState extends State<PaymentTile> {
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
         child: ListTile(
           title: Text(
             payment.paymentName,
             style: TextStyle(
               fontFamily: 'Bebas',
               color: themeData.primaryColor,
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
           trailing: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
+            width: 60.w,
             child: Focus(
               onFocusChange: (value) {
                 if (!value) {

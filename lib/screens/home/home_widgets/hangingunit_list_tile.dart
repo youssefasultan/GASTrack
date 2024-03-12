@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../models/hanging_unit.dart';
 import 'hose_list_tile.dart';
@@ -18,12 +19,12 @@ class _HangingUnitListTileState extends State<HangingUnitListTile> {
     ThemeData themeData = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(1.h),
       child: ExpansionTile(
         title: Text(
           hangingUnit.equipmentDesc,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 16.sp,
             fontFamily: 'Bebas',
             color: themeData.primaryColor,
             fontWeight: FontWeight.bold,
@@ -46,7 +47,6 @@ class _HangingUnitListTileState extends State<HangingUnitListTile> {
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            
             itemBuilder: (context, index) => ChangeNotifierProvider.value(
               value: hangingUnit.hoseList[index],
               child: const HoseListTile(),

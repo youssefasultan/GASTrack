@@ -5,6 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:gas_track/providers/payments_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../helpers/view/dialog/dialog_builder.dart';
 
@@ -24,7 +25,7 @@ class _VisaRecieptsImgsState extends State<VisaRecieptsImgs> {
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
-      padding: const EdgeInsets.all(10.0),
+      padding: EdgeInsets.all(2.h),
       physics: const ClampingScrollPhysics(),
       children: [
         ...visaRecipts
@@ -33,9 +34,9 @@ class _VisaRecieptsImgsState extends State<VisaRecieptsImgs> {
                     DialogBuilder(context).showDeleteImgConfrimation(false, e);
                   },
                   child: Container(
-                    height: 30.0,
-                    width: 30.0,
-                    margin: const EdgeInsets.all(5.0),
+                    height: 20.h,
+                    width: 20.w,
+                    margin: EdgeInsets.all(5.h),
                     child: Image.file(File(e)),
                   ),
                 ))
@@ -48,16 +49,18 @@ class _VisaRecieptsImgsState extends State<VisaRecieptsImgs> {
               if (!mounted) return;
               payment.addVisaRecipets(pictures);
             } catch (exception) {
-              DialogBuilder(context).showSnackBar(exception.toString());
+              if (context.mounted) {
+                DialogBuilder(context).showSnackBar(exception.toString());
+              }
             }
           },
           child: DottedBorder(
             color: Colors.grey[400]!,
             dashPattern: const [8, 4],
-            child: const Center(
+            child: Center(
               child: Icon(
                 Icons.add,
-                size: 30.0,
+                size: 5.h,
                 color: Colors.grey,
               ),
             ),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:gas_track/helpers/view/ui/pop_up_menu.dart';
 import 'package:gas_track/providers/auth_provider.dart';
 import 'package:gas_track/screens/payment/payment_widgets/payment_tabbar_library.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../helpers/view/dialog/dialog_builder.dart';
 import '../../providers/payments_provider.dart';
@@ -133,7 +134,7 @@ class _PaymentScreenState extends State<PaymentScreen>
           },
           child: Icon(
             Icons.upload,
-            size: 35,
+            size: 5.h,
             color: themeData.primaryColor,
           ),
         ),

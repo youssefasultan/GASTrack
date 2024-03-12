@@ -3,6 +3,7 @@ import 'package:gas_track/helpers/view/ui/ui_constants.dart';
 import 'package:gas_track/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../models/tank.dart';
 
@@ -17,7 +18,6 @@ class _TankListTileState extends State<TankListTile> {
   @override
   Widget build(BuildContext context) {
     var t = AppLocalizations.of(context)!;
-    final contentSize = MediaQuery.of(context).size;
     final tank = Provider.of<Tank>(context);
 
     final authData = Provider.of<AuthProvider>(context, listen: false);
@@ -32,8 +32,8 @@ class _TankListTileState extends State<TankListTile> {
         text: tank.waredQty == 0.0 ? '' : tank.waredQty.toString());
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-      height: contentSize.height * 0.3,
+      margin: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
+      height: 30.h,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
@@ -48,7 +48,7 @@ class _TankListTileState extends State<TankListTile> {
               Text(
                 '${t.fuel} ${tank.material}',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 14.sp,
                   color: blueColor,
                   fontFamily: 'Bebas',
                   fontWeight: FontWeight.bold,
@@ -59,7 +59,7 @@ class _TankListTileState extends State<TankListTile> {
                   Text(
                     '${t.quantity} : ${tank.quantity} ${t.liter}',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 12.sp,
                       color: blueColor,
                       fontFamily: 'Bebas',
                       fontWeight: FontWeight.normal,
@@ -68,7 +68,7 @@ class _TankListTileState extends State<TankListTile> {
                   Text(
                     '${t.amount} : ${tank.amount} ${t.egp}',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 12.sp,
                       color: blueColor,
                       fontFamily: 'Bebas',
                       fontWeight: FontWeight.normal,
@@ -78,9 +78,9 @@ class _TankListTileState extends State<TankListTile> {
               )
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 1.h),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(1.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -93,8 +93,8 @@ class _TankListTileState extends State<TankListTile> {
                     }
                   },
                   child: SizedBox(
-                    width: contentSize.width * 0.3,
-                    height: 60,
+                    width: 30.w,
+                    height: 7.h,
                     child: TextField(
                       controller: shiftStartController,
                       decoration: InputDecoration(
@@ -124,8 +124,8 @@ class _TankListTileState extends State<TankListTile> {
                     }
                   },
                   child: SizedBox(
-                    width: contentSize.width * 0.3,
-                    height: 60,
+                    width: 30.w,
+                    height: 7.h,
                     child: TextField(
                       controller: shifEndController,
                       decoration: InputDecoration(
@@ -148,9 +148,9 @@ class _TankListTileState extends State<TankListTile> {
               ],
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 1.h),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(1.h),
             child: Focus(
               onFocusChange: (value) {
                 if (!value) {
@@ -160,8 +160,7 @@ class _TankListTileState extends State<TankListTile> {
                 }
               },
               child: SizedBox(
-                width: contentSize.width * 0.6,
-                height: 60,
+                width: 50.w,
                 child: TextField(
                   controller: waredController,
                   decoration: InputDecoration(

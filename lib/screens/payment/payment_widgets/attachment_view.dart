@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/screens/payment/payment_widgets/cash_recipet_img.dart';
 import 'package:gas_track/screens/payment/payment_widgets/visa_recipet_imgs.dart';
+import 'package:sizer/sizer.dart';
 
 class AttachmentView extends StatelessWidget {
   const AttachmentView({super.key});
@@ -13,12 +14,12 @@ class AttachmentView extends StatelessWidget {
     return ListView(
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 10.0, top: 10.0),
+          padding: EdgeInsets.only(left: 2.w, top: 2.h),
           child: Text(
             t.addCashPic,
             textAlign: TextAlign.start,
             style: TextStyle(
-              fontSize: 20.0,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
               color: themeData.primaryColor,
             ),
@@ -26,12 +27,12 @@ class AttachmentView extends StatelessWidget {
         ),
         const CashRecipetImg(),
         Padding(
-          padding: const EdgeInsets.only(left: 10.0, top: 10.0),
+          padding: EdgeInsets.only(left: 2.w, top: 2.h),
           child: Text(
             t.addVisaPics,
             textAlign: TextAlign.start,
             style: TextStyle(
-              fontSize: 20.0,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
               color: themeData.primaryColor,
             ),

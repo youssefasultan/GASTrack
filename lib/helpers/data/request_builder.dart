@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -120,6 +121,7 @@ class RequestBuilder {
       'ShiftType': '${userData['shiftType']}',
       'ShiftTime': '${userData['shiftTime']}',
       'ShiftEndBy': '${userData['user']}',
+      'ShiftEndByName': '${userData['name']}',
       'ShiftLocation': '${userData['funLoc']}',
       'TotalAmount': '$total',
       'Currency': 'EGP',
@@ -145,6 +147,7 @@ class RequestBuilder {
                 'Shift': '${userData['shiftNo']}',
                 'ShiftType': '${userData['shiftType']}',
                 'Material': tank.material,
+                'FirstQuantity': '${tank.shiftStart}',
                 'Quantity': '${tank.quantity}',
                 'ExpQuantity': '${tank.shiftEnd}',
                 'WaredQty': '${tank.waredQty}',
@@ -165,6 +168,7 @@ class RequestBuilder {
           .toList(),
       'GasokToGasom': getImageList(userData, cashBase64String, visaBase64String)
     });
+
 
     final response = await http.post(
       url,

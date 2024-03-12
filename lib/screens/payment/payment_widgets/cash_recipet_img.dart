@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gas_track/helpers/view/dialog/dialog_builder.dart';
 import 'package:gas_track/providers/payments_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 class CashRecipetImg extends StatefulWidget {
   const CashRecipetImg({super.key});
@@ -21,8 +22,8 @@ class _CashRecipetImgState extends State<CashRecipetImg> {
 
     return Container(
       width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.3,
-      margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      height: 25.h,
+      margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),
       child: payment.getCashRecipetImg.isEmpty
           ? InkWell(
               onTap: () async {
@@ -34,7 +35,7 @@ class _CashRecipetImgState extends State<CashRecipetImg> {
                     payment.setCashRecipetImg(pictures[0]);
                   }
                 } catch (exception) {
-                  if (mounted) {
+                  if (context.mounted) {
                     DialogBuilder(context).showSnackBar(exception.toString());
                   }
                 }

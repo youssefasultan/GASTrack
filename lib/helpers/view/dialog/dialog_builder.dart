@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../providers/auth_provider.dart';
 import '../../../providers/payments_provider.dart';
@@ -55,17 +56,16 @@ class DialogBuilder {
 
   void showConfirmationDialog() {
     final paymentData = Provider.of<PaymentsProvider>(context, listen: false);
-    final deviceSize = MediaQuery.of(context).size;
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (_) {
         return SizedBox(
-          height: deviceSize.height * 0.9,
-          width: deviceSize.width,
+          height: 90.h,
+          width: 100.w,
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(2.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

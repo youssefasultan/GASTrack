@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../../helpers/view/ui/ui_constants.dart';
 import '../../../providers/auth_provider.dart';
@@ -17,10 +18,10 @@ class UserCard extends StatelessWidget {
     // ThemeData themeData = Theme.of(context);
 
     return Container(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.2,
-      margin: const EdgeInsets.all(20.0),
-      padding: const EdgeInsets.all(10.0),
+      width: 100.w,
+      height: 20.h,
+      margin: EdgeInsets.all(2.h),
+      padding: EdgeInsets.all(1.h),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(
           Radius.circular(20),
@@ -28,7 +29,7 @@ class UserCard extends StatelessWidget {
         gradient: linerGradient,
       ),
       child: Container(
-        margin: const EdgeInsets.all(8.0),
+        margin: EdgeInsets.all(1.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -40,33 +41,34 @@ class UserCard extends StatelessWidget {
                   '${t.welcome},',
                   style: TextStyle(
                     fontFamily: 'Bebas',
-                    fontSize: 16,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.normal,
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
                 Text(
                   userSettings.getName!,
-                  style: const TextStyle(
-                      fontFamily: 'Bebas',
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                  style: TextStyle(
+                    fontFamily: 'Bebas',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 Text(
                   t.station,
                   style: TextStyle(
                     fontFamily: 'Bebas',
-                    fontSize: 16,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.normal,
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
                 Text(
                   userSettings.getLocationDesc!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Bebas',
-                    fontSize: 20,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -74,32 +76,32 @@ class UserCard extends StatelessWidget {
               ],
             ),
             Container(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: 10.h,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.white,
-                  width: 2.0,
+                  width: 1.w,
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(1.h),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       t.shift,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 12.sp,
                       ),
                     ),
                     Text(
                       userSettings.getShiftNo!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 10.sp,
                       ),
                     ),
                   ],

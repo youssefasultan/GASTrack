@@ -13,6 +13,7 @@ import 'providers/payments_provider.dart';
 import 'screens/auth/auth_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/payment/payment_screen.dart';
+import 'package:sizer/sizer.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -56,33 +57,38 @@ class MainApp extends StatelessWidget {
         ),
       ],
       child: Consumer<AuthProvider>(
-        builder: (context, auth, child) => MaterialApp(
-          onGenerateTitle: (context) {
-            return AppLocalizations.of(context)!.appTitle;
-          },
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', ''),
-            Locale('ar', ''),
-          ],
-          theme: ThemeData(
-            fontFamily: 'Babas',
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(seedColor: blueColor).copyWith(
-              primary: blueColor,
-              secondary: redColor,
-            ),
-          ),
-          home: auth.isAuth ? const HomeScreen() : const AuthScreen(),
-          routes: {
-            HomeScreen.routeName: (context) => const HomeScreen(),
-            PaymentScreen.routeName: (context) => const PaymentScreen(),
+        builder: (context, auth, child) => Sizer(
+          builder: (context, orientation, deviceType) {
+            return MaterialApp(
+              onGenerateTitle: (context) {
+                return AppLocalizations.of(context)!.appTitle;
+              },
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('en', ''),
+                Locale('ar', ''),
+              ],
+              theme: ThemeData(
+                fontFamily: 'Babas',
+                useMaterial3: true,
+                colorScheme:
+                    ColorScheme.fromSeed(seedColor: blueColor).copyWith(
+                  primary: blueColor,
+                  secondary: redColor,
+                ),
+              ),
+              home: auth.isAuth ? const HomeScreen() : const AuthScreen(),
+              routes: {
+                HomeScreen.routeName: (context) => const HomeScreen(),
+                PaymentScreen.routeName: (context) => const PaymentScreen(),
+              },
+            );
           },
         ),
       ),
