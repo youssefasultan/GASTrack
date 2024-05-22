@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -53,6 +55,7 @@ class UserCard extends StatelessWidget {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Text(
@@ -71,6 +74,7 @@ class UserCard extends StatelessWidget {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

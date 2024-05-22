@@ -3,10 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../helpers/data/data_constants.dart';
-import '../../../helpers/data/shared.dart';
 import '../../../helpers/view/dialog/dialog_builder.dart';
-import '../../../models/http_exception.dart';
 import '../../../providers/auth_provider.dart';
 
 class AuthCard extends StatefulWidget {
@@ -19,7 +16,6 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard>
     with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  AuthMode _authMode = AuthMode.login;
 
   final Map<String, String> _authData = {
     'username': '',
@@ -30,7 +26,7 @@ class _AuthCardState extends State<AuthCard>
 
   final _passwordController = TextEditingController();
   final _usernameController = TextEditingController();
-  final _urlController = TextEditingController();
+  // final _urlController = TextEditingController();
 
   var _isLoading = false;
 
@@ -40,80 +36,32 @@ class _AuthCardState extends State<AuthCard>
   }
 
   Future<void> _submit() async {
-    var settings = await Shared.getSettings();
-
-    if (!mounted) return;
-
-    var t = AppLocalizations.of(context);
-
     if (!_formKey.currentState!.validate()) {
       // Invalid!
       return;
     }
     _formKey.currentState!.save();
 
-    if (_authData['username'] == 'EcsAdmin' &&
-        _authData['password'] == 'Ecs@2023') {
-      _switchAuthMode();
-    } else {
-      setState(() {
-        _isLoading = true;
-      });
+    setState(() {
+      _isLoading = true;
+    });
 
-      try {
-        if (_authMode == AuthMode.login) {
-          if (settings['ip']!.isEmpty) {
-            throw HttpException(t!.notRegestered);
-          }
+    try {
+      // call login
+      await Provider.of<AuthProvider>(context, listen: false).login(
+        _authData['username']!,
+        _authData['password']!,
+        _authData['shiftType']!,
+      );
+    } catch (error) {
+      if (!mounted) return;
 
-          // call login
-          await Provider.of<AuthProvider>(context, listen: false).login(
-            _authData['username']!,
-            _authData['password']!,
-            _authData['shiftType']!,
-          );
-        } else if (_authMode == AuthMode.admin) {
-          // call register
-          await Provider.of<AuthProvider>(context, listen: false).register(
-            _authData['username']!,
-            _authData['password']!,
-            _authData['url']!,
-          );
-
-          _switchAuthMode();
-        }
-      } catch (error) {
-        if (!mounted) return;
-
-        DialogBuilder(context).showErrorDialog(error.toString());
-      }
-
-      setState(() {
-        _isLoading = false;
-      });
+      DialogBuilder(context).showErrorDialog(error.toString());
     }
-  }
 
-  void _switchAuthMode() async {
-    var settings = await Shared.getSettings();
-    // switch between Auth Mode
-    if (_authMode == AuthMode.login) {
-      setState(() {
-        _authMode = AuthMode.admin;
-      });
-      if (settings['ip']!.isNotEmpty && settings['ip'] != 'null') {
-        _usernameController.text = settings['username']!;
-        _passwordController.text = settings['password']!;
-        _urlController.text = settings['ip']!;
-      }
-    } else {
-      setState(() {
-        _authMode = AuthMode.login;
-      });
-
-      _usernameController.clear();
-      _passwordController.clear();
-    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Widget customRadioButton(String text, String index) {
@@ -197,33 +145,18 @@ class _AuthCardState extends State<AuthCard>
                       _authData['password'] = value!;
                     },
                   ),
-                  _authMode == AuthMode.admin
-                      ? TextFormField(
-                          enabled: _authMode == AuthMode.admin,
-                          decoration: InputDecoration(labelText: t.url),
-                          controller: _urlController,
-                          validator: (value) {
-                            if (value!.isEmpty && _authMode == AuthMode.admin) {
-                              return t.enterUrl;
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _authData['url'] = value!;
-                          },
-                        )
-                      : Padding(
-                          padding: EdgeInsets.only(
-                            top: 3.h,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              customRadioButton(t.fuel, 'F'),
-                              customRadioButton(t.gas, 'G'),
-                            ],
-                          ),
-                        ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 3.h,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        customRadioButton(t.fuel, 'F'),
+                        customRadioButton(t.gas, 'G'),
+                      ],
+                    ),
+                  ),
                   SizedBox(
                     height: 5.h,
                   ),
@@ -234,23 +167,23 @@ class _AuthCardState extends State<AuthCard>
                       onPressed: _submit,
                       style: ButtonStyle(
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        padding: MaterialStateProperty.all<EdgeInsets>(
+                        padding: WidgetStateProperty.all<EdgeInsets>(
                           EdgeInsets.symmetric(
-                            horizontal: 20.w,
-                            vertical: 2.h,
+                            horizontal: 25.w,
+                            vertical: 1.h,
                           ),
                         ),
-                        backgroundColor: MaterialStateProperty.all(
+                        backgroundColor: WidgetStateProperty.all(
                           themeData.primaryColor,
                         ),
                       ),
                       child: Text(
-                        _authMode == AuthMode.login ? t.login : t.register,
+                        t.login,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.bold,

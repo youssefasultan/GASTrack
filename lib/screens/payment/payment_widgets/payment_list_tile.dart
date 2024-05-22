@@ -96,7 +96,7 @@ class _PaymentTileState extends State<PaymentTile> {
       );
     } else if (auth.getShiftType == 'G' && payment is UnpaidCoupon) {
       return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
         child: ExpansionTile(
           key: Key(payment.paymentType),
           title: Text(
@@ -104,7 +104,7 @@ class _PaymentTileState extends State<PaymentTile> {
             style: TextStyle(
               fontFamily: 'Bebas',
               color: Theme.of(context).primaryColor,
-              fontSize: 16.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -137,7 +137,7 @@ class _PaymentTileState extends State<PaymentTile> {
             style: TextStyle(
               fontFamily: 'Bebas',
               color: themeData.primaryColor,
-              fontSize: 16.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.bold,
             ),
           ),

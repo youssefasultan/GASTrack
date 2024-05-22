@@ -30,7 +30,7 @@ class _CouponListTileState extends State<CouponListTile> {
     TextEditingController couponValueController = TextEditingController(
         text: coupon.value == 0 ? '' : coupon.value.toString());
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,7 +39,7 @@ class _CouponListTileState extends State<CouponListTile> {
             coupon.coupon,
             style: TextStyle(
               color: themeData.primaryColor,
-              fontSize: 15.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -47,12 +47,12 @@ class _CouponListTileState extends State<CouponListTile> {
             coupon.amount.toString(),
             style: TextStyle(
               color: Theme.of(context).primaryColor,
-              fontSize: 15.sp,
+              fontSize: 10.sp,
             ),
           ),
           if (coupon.businessPartner.isNotEmpty)
             SizedBox(
-              width: 25.w,
+              width: 22.w,
               child: Focus(
                 canRequestFocus: true,
                 onFocusChange: (value) {
@@ -110,7 +110,7 @@ class _CouponListTileState extends State<CouponListTile> {
               ),
             ),
           SizedBox(
-            width: coupon.businessPartner.isNotEmpty ? 25.w : 30.w,
+            width: coupon.businessPartner.isNotEmpty ? 22.w : 40.w,
             child: Focus(
               onFocusChange: (value) {
                 if (!value) {

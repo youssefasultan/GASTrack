@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:gas_track/helpers/data/data_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -17,17 +18,16 @@ class RequestBuilder {
   String? _cookie;
 
   Future<http.Response> buildGetRequest(String entitySet) async {
-    var settings = await Shared.getSettings();
     String basicAuth =
-        'Basic ${base64Encode(utf8.encode('${settings['username']}:${settings['password']}'))}';
+        'Basic ${base64Encode(utf8.encode('$kUsername:$kPassword'))}';
     Map<String, String> headers = {
       'Authorization': basicAuth,
       'Content-Type': 'application/json',
-      'sap-client': '700',
+      // 'sap-client': '100',
     };
 
     final url = Uri.parse(
-        "http://${settings['ip']}:8001/sap/opu/odata/SAP/YGASOLINA_SRV/$entitySet\$format=json");
+        "https://$ipAddress:44301/sap/opu/odata/SAP/YGASOLINA_SRV/$entitySet\$format=json");
 
     return await http.get(
       url,
@@ -56,19 +56,17 @@ class RequestBuilder {
   }
 
   Future<void> _getToken() async {
-    var settings = await Shared.getSettings();
-
     String basicAuth =
-        'Basic ${base64Encode(utf8.encode('${settings['username']}:${settings['password']}'))}';
+        'Basic ${base64Encode(utf8.encode('$kUsername:$kPassword'))}';
     Map<String, String> headers = {
       'Authorization': basicAuth,
       'x-csrf-token': 'fetch',
       'set-cookie': 'fetch',
-      'sap-client': '700',
+      // 'sap-client': '100',
     };
 
     final url = Uri.parse(
-        "https://${settings['ip']}:44301/sap/opu/odata/SAP/YGASOLINA_SRV/St_GASOKSet?");
+        "https://$ipAddress:44301/sap/opu/odata/SAP/YGASOLINA_SRV/St_GASOKSet?");
 
     final response = await http.get(
       url,
@@ -89,7 +87,6 @@ class RequestBuilder {
     String cashImg,
     List<String> visaImgs,
   ) async {
-    var settings = await Shared.getSettings();
     var userData = await Shared.getUserdata();
     String cashBase64String = '';
     List<String> visaBase64String = [];
@@ -103,17 +100,17 @@ class RequestBuilder {
     }
 
     String basicAuth =
-        'Basic ${base64Encode(utf8.encode('${settings['username']}:${settings['password']}'))}';
+        'Basic ${base64Encode(utf8.encode('$kUsername:$kPassword'))}';
     Map<String, String> headers = {
       'Authorization': basicAuth,
       'x-csrf-token': token,
       'cookie': cookie,
       'content-type': 'application/json',
-      'sap-client': '700',
+      // 'sap-client': '100',
     };
 
     final url = Uri.parse(
-        "https://${settings['ip']}:44301/sap/opu/odata/SAP/YGASOLINA_SRV/St_GASOKSet");
+        "https://$ipAddress:44301/sap/opu/odata/SAP/YGASOLINA_SRV/St_GASOKSet");
 
     var body = json.encode({
       'ShiftDate': '${userData['shiftDate']}',
@@ -168,7 +165,6 @@ class RequestBuilder {
           .toList(),
       'GasokToGasom': getImageList(userData, cashBase64String, visaBase64String)
     });
-
 
     final response = await http.post(
       url,

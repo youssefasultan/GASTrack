@@ -26,96 +26,103 @@ class ConfirmationWidget extends StatelessWidget {
     final tankList = hangingUnitsData.getTanks;
     final paymentData = Provider.of<PaymentsProvider>(context, listen: false);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return ListView(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       children: [
-        Text(
-          t.confirm,
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).primaryColor,
-            fontFamily: 'Bebas',
-          ),
-        ),
-        const DashSeparator(),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 2.h),
-          child: Text(
-            t.dispenser,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 90.w,
-          height: shiftType == 'F' ? 30.h : 50.h,
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              final product = productsList[index];
-              return productItem(product, t);
-            },
-            itemCount: productsList.length,
-          ),
-        ),
-        if (shiftType == 'F' && tankList.isNotEmpty) ...{
-          const DashSeparator(),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 1.h),
-            child: Text(
-              t.tank,
-              textAlign: TextAlign.start,
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              t.confirm,
+              textAlign: TextAlign.left,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).primaryColor,
+                fontFamily: 'Bebas',
               ),
             ),
-          ),
-          SizedBox(
-            width: 90.w,
-            height: 20.h,
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                final tank = tankList[index];
-
-                return tankItem(tank, t);
-              },
-              itemCount: tankList.length,
-            ),
-          )
-        },
-        const DashSeparator(),
-        Container(
-          width: double.maxFinite,
-          height: 10.h,
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                t.total,
+            const DashSeparator(),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 2.h),
+              child: Text(
+                t.dispenser,
+                textAlign: TextAlign.start,
                 style: TextStyle(
-                  fontFamily: 'Bebas',
                   fontSize: 14.sp,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColor,
                 ),
               ),
-              Text(
-                '${paymentData.getTotalCollection} ${t.egp}',
-                style: TextStyle(
-                  fontSize: 18.sp,
+            ),
+            SizedBox(
+              width: 90.w,
+              height: shiftType == 'F' ? 30.h : 45.h,
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  final product = productsList[index];
+                  return productItem(product, t, shiftType);
+                },
+                itemCount: productsList.length,
+              ),
+            ),
+            if (shiftType == 'F' && tankList.isNotEmpty) ...{
+              const DashSeparator(),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 1.h),
+                child: Text(
+                  t.tank,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
               ),
-            ],
-          ),
-        )
+              SizedBox(
+                width: 90.w,
+                height: 20.h,
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    final tank = tankList[index];
+
+                    return tankItem(tank, t);
+                  },
+                  itemCount: tankList.length,
+                ),
+              ),
+            } else ...{
+              const DashSeparator(),
+            },
+            Container(
+              width: double.maxFinite,
+              height: shiftType == 'F' ? 10.h : 20.h,
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    t.total,
+                    style: TextStyle(
+                      fontFamily: 'Bebas',
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  Text(
+                    '${paymentData.getTotalCollection} ${t.egp}',
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -183,7 +190,7 @@ class ConfirmationWidget extends StatelessWidget {
     );
   }
 
-  Widget productItem(Hose product, AppLocalizations t) {
+  Widget productItem(Hose product, AppLocalizations t, String shiftType) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
       margin: EdgeInsets.symmetric(vertical: 1.h),
@@ -231,14 +238,15 @@ class ConfirmationWidget extends StatelessWidget {
                   fontWeight: FontWeight.normal,
                 ),
               ),
-              Text(
-                '${t.calibration} : ${product.calibration} ${getUom(product.measuringUnit, t)}',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontFamily: 'Bebas',
-                  fontWeight: FontWeight.normal,
+              if (shiftType == 'F')
+                Text(
+                  '${t.calibration} : ${product.calibration} ${getUom(product.measuringUnit, t)}',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontFamily: 'Bebas',
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
-              ),
             ],
           )
         ],

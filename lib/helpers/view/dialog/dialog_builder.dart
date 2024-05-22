@@ -279,7 +279,7 @@ class DialogBuilder {
     return TextButton(
       onPressed: fun,
       style: ButtonStyle(
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             side: BorderSide(
               color: borderColor,
@@ -288,13 +288,13 @@ class DialogBuilder {
             borderRadius: BorderRadius.circular(30),
           ),
         ),
-        padding: MaterialStateProperty.all<EdgeInsets>(
+        padding: WidgetStateProperty.all<EdgeInsets>(
           const EdgeInsets.symmetric(
             horizontal: 30.0,
             vertical: 8.0,
           ),
         ),
-        backgroundColor: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(
           bgColor,
         ),
       ),

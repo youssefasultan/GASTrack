@@ -84,50 +84,56 @@ class _HomeScreenState extends State<HomeScreen>
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Column(
-              children: [
-                const UserCard(),
-                if (shiftType == 'G')
-                  Expanded(
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 450.h,
-                      child: ListView.builder(
-                        itemBuilder: (context, index) =>
-                            ChangeNotifierProvider.value(
-                          value: hangingUnits[index],
-                          child: const HangingUnitListTile(),
-                        ),
-                        itemCount: hangingUnits.length,
+          : NestedScrollView(
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    pinned: true,
+                    floating: true,
+                    backgroundColor: Colors.white,
+                    expandedHeight: 30.h,
+                    automaticallyImplyLeading: false,
+                    flexibleSpace: Padding(
+                      padding: EdgeInsets.all(1.h),
+                      child: ListView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        children: const [
+                          UserCard(),
+                        ],
                       ),
                     ),
+                    bottom: shiftType == 'F'
+                        ? HomeTabBar(
+                            tabController: _tabController,
+                          )
+                        : null,
                   )
-                else
-                  Expanded(
-                    child: Column(
-                      children: [
-                        TabBar(
-                          tabs: [
-                            Tab(
-                              text: t.dispenser,
-                            ),
-                            Tab(
-                              text: t.tank,
-                            ),
-                          ],
-                          controller: _tabController,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          onTap: (value) {
-                            if (value == 1) {
-                              hangingUnitsData.calculateTankQuantity();
-                            }
-                          },
+                ];
+              },
+              body: Column(
+                children: [
+                  if (shiftType == 'G')
+                    Expanded(
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 450.h,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) =>
+                              ChangeNotifierProvider.value(
+                            value: hangingUnits[index],
+                            child: const HangingUnitListTile(),
+                          ),
+                          itemCount: hangingUnits.length,
                         ),
-                        FuelTabBarLibrary(tabController: _tabController),
-                      ],
-                    ),
-                  ),
-              ],
+                      ),
+                    )
+                  else
+                    FuelTabBarLibrary(tabController: _tabController),
+                ],
+              ),
             ),
       floatingActionButton: Visibility(
         visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
@@ -167,4 +173,42 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
+}
+
+class HomeTabBar extends StatelessWidget implements PreferredSizeWidget {
+  const HomeTabBar({
+    super.key,
+    required TabController tabController,
+  }) : _tabController = tabController;
+
+  final TabController _tabController;
+
+  @override
+  Widget build(BuildContext context) {
+    var t = AppLocalizations.of(context)!;
+    final hangingUnitsData = Provider.of<HangingUnitsProvider>(context);
+    return Material(
+      color: Colors.white,
+      child: TabBar(
+        tabs: [
+          Tab(
+            text: t.dispenser,
+          ),
+          Tab(
+            text: t.tank,
+          ),
+        ],
+        controller: _tabController,
+        indicatorSize: TabBarIndicatorSize.tab,
+        onTap: (value) {
+          if (value == 1) {
+            hangingUnitsData.calculateTankQuantity();
+          }
+        },
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

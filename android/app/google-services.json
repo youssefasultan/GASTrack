@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "641672152138",
+    "project_id": "gastrack-cbae7",
+    "storage_bucket": "gastrack-cbae7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641672152138:android:b40ee31c27f26947d412b3",
+        "android_client_info": {
+          "package_name": "com.example.gastech_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGboecKS68t_bNCNbLw60KsIYv_7Cm8cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

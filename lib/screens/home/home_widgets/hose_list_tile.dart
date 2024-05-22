@@ -33,6 +33,10 @@ class _HoseListTileState extends State<HoseListTile> {
     return amount != expectedAmount;
   }
 
+  bool calibrationValidation(Hose hose, double entredCalibrationAmount) {
+    return entredCalibrationAmount > (hose.enteredReading - hose.lastReading);
+  }
+
   void calculateHoes(Hose hose) {
     setState(() {
       hose.totalAmount =
@@ -130,17 +134,18 @@ class _HoseListTileState extends State<HoseListTile> {
                 shiftType,
               ),
               // Amount Row
-              _amountRow(
-                t,
-                themeData,
-                lastAmountController,
-                hose,
-                isAdmin,
-                amountController,
-                context,
-                readingController,
-                shiftType,
-              ),
+              if (shiftType == 'G')
+                _amountRow(
+                  t,
+                  themeData,
+                  lastAmountController,
+                  hose,
+                  isAdmin,
+                  amountController,
+                  context,
+                  readingController,
+                  shiftType,
+                ),
               // calibration row
               if (shiftType == 'F')
                 _calibrationRow(
@@ -171,12 +176,19 @@ class _HoseListTileState extends State<HoseListTile> {
           child: Focus(
             onFocusChange: (value) {
               if (!value) {
-                setState(() {
-                  hose.calibration = calibrationController.text.isNotEmpty
-                      ? double.parse(calibrationController.text)
-                      : 0.0;
-                });
-                calculateHoes(hose);
+                if (calibrationValidation(
+                    hose, double.parse(calibrationController.text))) {
+                  calibrationController.clear();
+                  DialogBuilder(context).showSnackBar(
+                      '${t.calibError} ${hose.enteredReading - hose.lastReading}');
+                } else {
+                  setState(() {
+                    hose.calibration = calibrationController.text.isNotEmpty
+                        ? double.parse(calibrationController.text)
+                        : 0.0;
+                  });
+                  calculateHoes(hose);
+                }
               }
             },
             child: TextField(
@@ -190,12 +202,19 @@ class _HoseListTileState extends State<HoseListTile> {
               controller: calibrationController,
               keyboardType: TextInputType.number,
               key: UniqueKey(),
+              enabled: !hose.inActiveFlag,
               onSubmitted: (value) {
-                setState(() {
-                  hose.calibration =
-                      value.isNotEmpty ? double.parse(value) : 0.0;
-                });
-                calculateHoes(hose);
+                if (calibrationValidation(hose, double.parse(value))) {
+                  calibrationController.clear();
+                  DialogBuilder(context).showSnackBar(
+                      '${t.calibError} ${hose.enteredReading - hose.lastReading}');
+                } else {
+                  setState(() {
+                    hose.calibration =
+                        value.isNotEmpty ? double.parse(value) : 0.0;
+                  });
+                  calculateHoes(hose);
+                }
               },
             ),
           ),
@@ -266,7 +285,7 @@ class _HoseListTileState extends State<HoseListTile> {
                 if (amountController.text.isEmpty) {
                   hose.enteredAmount = 0;
                 } else {
-                  if (double.parse(amountController.text) <= hose.lastAmount) {
+                  if (double.parse(amountController.text) < hose.lastAmount) {
                     DialogBuilder(context).showSnackBar(t.readingError);
                     amountController.clear();
                   } else if (amountValidation(
@@ -280,6 +299,7 @@ class _HoseListTileState extends State<HoseListTile> {
                     amountController.clear();
                   } else {
                     hose.enteredAmount = double.parse(amountController.text);
+                    hose.totalAmount = hose.enteredAmount - hose.lastAmount;
                   }
                 }
               }
@@ -303,7 +323,7 @@ class _HoseListTileState extends State<HoseListTile> {
                   if (value.isEmpty) {
                     hose.enteredAmount = 0;
                   } else {
-                    if (double.parse(value) <= hose.lastAmount) {
+                    if (double.parse(value) < hose.lastAmount) {
                       DialogBuilder(context).showSnackBar(t.readingError);
                       amountController.clear();
                     } else if (amountValidation(
@@ -317,6 +337,7 @@ class _HoseListTileState extends State<HoseListTile> {
                       amountController.text = hose.enteredAmount.toString();
                     } else {
                       hose.enteredAmount = double.parse(value);
+                      hose.totalAmount = hose.enteredAmount - hose.lastAmount;
                     }
                   }
                 },
@@ -400,8 +421,7 @@ class _HoseListTileState extends State<HoseListTile> {
                     }
                   });
                 } else {
-                  if (double.parse(readingController.text) <=
-                      hose.lastReading) {
+                  if (double.parse(readingController.text) < hose.lastReading) {
                     DialogBuilder(context).showSnackBar(t.readingError);
                     readingController.clear();
                   } else {
@@ -439,7 +459,7 @@ class _HoseListTileState extends State<HoseListTile> {
                       }
                     });
                   } else {
-                    if (double.parse(value) <= hose.lastReading) {
+                    if (double.parse(value) < hose.lastReading) {
                       DialogBuilder(context).showSnackBar(t.readingError);
                       readingController.clear();
                     } else {

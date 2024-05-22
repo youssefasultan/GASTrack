@@ -28,6 +28,7 @@ class _FuelTabBarLibraryState extends State<FuelTabBarLibrary> {
         controller: widget.tabController,
         children: [
           ListView.builder(
+            shrinkWrap: true,
             itemBuilder: (context, index) => ChangeNotifierProvider.value(
               value: hangingUnitList[index],
               child: const HangingUnitListTile(),

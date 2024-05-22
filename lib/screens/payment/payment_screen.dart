@@ -83,44 +83,57 @@ class _PaymentScreenState extends State<PaymentScreen>
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Column(
-              children: [
-                const PaymentCard(),
-                if (auth.getShiftType == 'F')
-                  Expanded(
-                    child: Column(
-                      children: [
-                        TabBar(
-                          tabs: [
-                            Tab(
-                              text: t.payment,
-                            ),
-                            Tab(
-                              text: t.attachment,
-                            ),
-                          ],
-                          controller: _tabController,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                        ),
-                        PaymentTabBarLibrary(
-                          tabController: _tabController,
-                          paymentMethods: paymentMethods,
-                        ),
-                      ],
-                    ),
-                  )
-                else
-                  Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (context, index) =>
-                          ChangeNotifierProvider.value(
-                        value: paymentMethods[index],
-                        child: const PaymentTile(),
+          : NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    pinned: true,
+                    floating: true,
+                    backgroundColor: Colors.white,
+                    expandedHeight: 32.h,
+                    automaticallyImplyLeading: false,
+                    flexibleSpace: Padding(
+                      padding: EdgeInsets.all(1.h),
+                      child: ListView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        children: const [
+                          PaymentCard(),
+                        ],
                       ),
-                      itemCount: paymentMethods.length,
                     ),
-                  ),
-              ],
+                    bottom: auth.getShiftType == 'F'
+                        ? PaymentTabBar(tabController: _tabController)
+                        : null,
+                  )
+                ];
+              },
+              body: Column(
+                children: [
+                  if (auth.getShiftType == 'F')
+                    Expanded(
+                      child: Column(
+                        children: [
+                          PaymentTabBarLibrary(
+                            tabController: _tabController,
+                            paymentMethods: paymentMethods,
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    Expanded(
+                      child: ListView.builder(
+                        itemBuilder: (context, index) =>
+                            ChangeNotifierProvider.value(
+                          value: paymentMethods[index],
+                          child: const PaymentTile(),
+                        ),
+                        itemCount: paymentMethods.length,
+                      ),
+                    ),
+                ],
+              ),
             ),
       floatingActionButton: Visibility(
         visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
@@ -141,4 +154,36 @@ class _PaymentScreenState extends State<PaymentScreen>
       ),
     );
   }
+}
+
+class PaymentTabBar extends StatelessWidget implements PreferredSizeWidget {
+  const PaymentTabBar({
+    super.key,
+    required TabController tabController,
+  }) : _tabController = tabController;
+
+  final TabController _tabController;
+
+  @override
+  Widget build(BuildContext context) {
+    var t = AppLocalizations.of(context)!;
+    return Material(
+      color: Colors.white,
+      child: TabBar(
+        tabs: [
+          Tab(
+            text: t.payment,
+          ),
+          Tab(
+            text: t.attachment,
+          ),
+        ],
+        controller: _tabController,
+        indicatorSize: TabBarIndicatorSize.tab,
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

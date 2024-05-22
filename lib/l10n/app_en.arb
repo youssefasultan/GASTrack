@@ -69,6 +69,7 @@
   "addCashPic": "Add Cash Recipt",
   "addVisaPics": "Add Visa Recipts",
   "deleteImg": "Are you sure you want to remove?",
-  "wared" : "Incoming"
+  "wared" : "Incoming",
+  "calibError": "calibration amount must be less than or equal"
 
 }

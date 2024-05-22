@@ -49,10 +49,10 @@ class HangingUnitsProvider with ChangeNotifier {
 
       addHoses(extractedData);
 
-      matchHoseToHangingUnit();
+      matchHosesToHangingUnits();
 
       if (userData['shiftType'] == 'F') {
-        addTanks(userData['funLoc']!);
+        addTanks(userData['funLoc']!, extractedData);
       }
 
       notifyListeners();
@@ -61,38 +61,54 @@ class HangingUnitsProvider with ChangeNotifier {
     }
   }
 
-  void matchHoseToHangingUnit() {
-    for (var hangingUnit in _hangingUnitItems) {
+  void matchHosesToHangingUnits() {
+    for (var unit in _hangingUnitItems) {
       for (var hose in _hoseList) {
-        if (hangingUnit.equipment == hose.equipmentId) {
-          hangingUnit.hoseList.add(hose);
+        if (unit.equipment == hose.equipmentId) {
+          unit.hoseList.add(hose);
         }
       }
     }
   }
 
-  void addTanks(String funLoc) async {
-    final response = await RequestBuilder().buildGetRequest(
-        "GasTankSet?\$filter=ShiftLocation eq 'GASTEC-ELCANAAL-1069'&");
+  void addTanks(String funLoc, List<dynamic> hangingUnitResponse) async {
+    try {
+      final response = await RequestBuilder()
+          .buildGetRequest("GasTankSet?\$filter=ShiftLocation eq '$funLoc'&");
 
-    final responseData = json.decode(response.body);
-    final extractedData = responseData['d']['results'] as List<dynamic>;
+      final responseData = json.decode(response.body);
+      var extractedData = responseData['d']['results'] as List<dynamic>;
 
-    if (extractedData.isEmpty) {
-      throw ArgumentError("No Tanks Found.");
+      if (extractedData.isEmpty) {
+        extractedData = getUniqueObjects(hangingUnitResponse, 'Material');
+
+        final loadedTanks = extractedData
+            .map(
+              (e) => Tank(
+                material: e['Material'],
+                shiftStart: 0.0,
+                unitPrice: double.parse(e['PricingUnit']),
+              ),
+            )
+            .toList();
+
+        _tanks = loadedTanks;
+      } else {
+        final loadedTanks = extractedData
+            .map(
+              (e) => Tank(
+                material: e['Material'],
+                shiftStart: double.parse(e['Quantity']),
+                unitPrice: double.parse(e['PricingUnit']),
+              ),
+            )
+            .toList();
+
+        _tanks = loadedTanks;
+      }
+    } catch (error) {
+      rethrow;
     }
-
-    final loadedTanks = extractedData
-        .map(
-          (e) => Tank(
-            material: e['Material'],
-            shiftStart: double.parse(e['Quantity']),
-            unitPrice: double.parse(e['PricingUnit']),
-          ),
-        )
-        .toList();
-
-    _tanks = loadedTanks;
   }
 
   void addHoses(List<dynamic> extractedData) {
@@ -187,7 +203,7 @@ class HangingUnitsProvider with ChangeNotifier {
   List<Tank?> validateTanks() {
     final tanksWithoutEntries = _tanks
         .where((tank) => tank.quantity > 0)
-        .where((tank) => tank.shiftStart == 0.0 || tank.shiftEnd == 0.0)
+        .where((tank) => tank.shiftEnd == 0.0)
         .toList();
     return tanksWithoutEntries.isEmpty ? [] : tanksWithoutEntries;
   }
