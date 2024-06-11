@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
+import 'package:gas_track/helpers/extentions/context_ext.dart';
 
 import '../../ui/dash_separator.dart';
-import '../dialog_builder.dart';
-import '../../../../providers/payments_provider.dart';
 
 class SummeryWidget extends StatefulWidget {
   const SummeryWidget({
@@ -18,7 +15,7 @@ class SummeryWidget extends StatefulWidget {
 class _SummeryWidgetState extends State<SummeryWidget> {
   var _isLoading = false;
   var _isInit = true;
-  late AppLocalizations t;
+
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -26,14 +23,12 @@ class _SummeryWidgetState extends State<SummeryWidget> {
         _isLoading = true;
       });
 
-      Provider.of<PaymentsProvider>(context)
-          .getEndOfDaySummeryPayments()
-          .then((_) {
+      context.paymentsProvider.getEndOfDaySummeryPayments().then((_) {
         setState(() {
           _isLoading = false;
         });
       }).catchError((error) {
-        DialogBuilder(context).showErrorDialog(error.toString());
+        context.dialogBuilder.showErrorDialog(error.toString());
       });
     }
     _isInit = false;
@@ -43,13 +38,15 @@ class _SummeryWidgetState extends State<SummeryWidget> {
   String getTitle(String paymentType) {
     switch (paymentType.toLowerCase()) {
       case 'coupon':
-        return t.coupon;
+        return context.translate.coupon;
       case 'visa':
-        return t.card;
+        return context.translate.card;
       case 'cash':
-        return t.cash;
-      case 'unpaid coupons':
-        return t.unpaidCoupons;
+        return context.translate.cash;
+      case 'credit':
+        return context.translate.unpaidCoupons;
+      case 'smartcards':
+        return context.translate.smartCard;
       default:
         return '';
     }
@@ -57,11 +54,9 @@ class _SummeryWidgetState extends State<SummeryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-    t = AppLocalizations.of(context)!;
-    // ThemeData themeData = Theme.of(context);
+    final deviceSize = context.mediaQuery.size;
 
-    final summeryData = Provider.of<PaymentsProvider>(context, listen: false);
+    final summeryData = context.paymentsProviderWithNoListner;
     final summeryItems = summeryData.getSummery;
     final summryTotal = summeryData.getSummeryTotals;
 
@@ -77,10 +72,10 @@ class _SummeryWidgetState extends State<SummeryWidget> {
                 Padding(
                   padding: const EdgeInsets.all(7.0),
                   child: Text(
-                    t.daySummery,
+                    context.translate.daySummery,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Theme.of(context).primaryColor,
+                      color: context.theme.primaryColor,
                       fontFamily: 'Bebas',
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -93,9 +88,9 @@ class _SummeryWidgetState extends State<SummeryWidget> {
                     children: [
                       DataTable(
                         columns: [
-                          DataColumn(label: Text(t.shift)),
-                          DataColumn(label: Text(t.payment)),
-                          DataColumn(label: Text(t.amount))
+                          DataColumn(label: Text(context.translate.shift)),
+                          DataColumn(label: Text(context.translate.payment)),
+                          DataColumn(label: Text(context.translate.amount))
                         ],
                         rows: summeryItems
                             .map((e) => DataRow(
@@ -113,7 +108,7 @@ class _SummeryWidgetState extends State<SummeryWidget> {
                 const DashSeparator(),
                 Container(
                   width: double.maxFinite,
-                  height: MediaQuery.of(context).size.height * 0.25,
+                  height: context.mediaQuery.size.height * 0.26,
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8.0, vertical: 8.0),
                   child: ListView.builder(
@@ -124,16 +119,16 @@ class _SummeryWidgetState extends State<SummeryWidget> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${t.total} ${getTitle(summryTotal.keys.elementAt(index))}',
+                              '${context.translate.total} ${getTitle(summryTotal.keys.elementAt(index))}',
                               style: TextStyle(
                                 fontFamily: 'Bebas',
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
+                                color: context.theme.primaryColor,
                               ),
                             ),
                             Text(
-                              '${summryTotal.values.elementAt(index)} ${t.egp}',
+                              '${summryTotal.values.elementAt(index)} ${context.translate.egp}',
                               style: const TextStyle(
                                 fontSize: 18,
                               ),

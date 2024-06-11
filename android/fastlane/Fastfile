@@ -4,7 +4,7 @@ default_platform(:android)
 
 platform :android do
   desc "lane for android firebase app distribution"
-  lane :firebase_distribution do
+  lane :firebase_distribution_dev_tester do
     sh "flutter clean"
     sh "flutter build apk --release --no-tree-shake-icons"
     firebase_app_distribution(
@@ -12,7 +12,19 @@ platform :android do
     firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
     android_artifact_type: "APK",
     android_artifact_path:"../build/app/outputs/flutter-apk/app-release.apk",
-    testers: "mobisalesecs@gmail.com",
+    groups: "dev_testers"
+  )
+  end
+
+  lane :firebase_distribution_consultant_tester do
+    sh "flutter clean"
+    sh "flutter build apk --release --no-tree-shake-icons"
+    firebase_app_distribution(
+    app: "1:641672152138:android:b40ee31c27f26947d412b3",
+    firebase_cli_token: ENV["FIREBASE_CLI_TOKEN"],
+    android_artifact_type: "APK",
+    android_artifact_path:"../build/app/outputs/flutter-apk/app-release.apk",
+    groups: "consultants_testers"
   )
   end
 

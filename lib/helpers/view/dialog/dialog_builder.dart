@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gas_track/helpers/extentions/context_ext.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../providers/auth_provider.dart';
-import '../../../providers/payments_provider.dart';
 
 import 'dialog_widgets/confirmation_widget.dart';
 import 'dialog_widgets/loading_indicator.dart';
@@ -13,11 +10,10 @@ import '../ui/ui_constants.dart';
 
 class DialogBuilder {
   DialogBuilder(this.context) {
-    t = AppLocalizations.of(context)!;
+    context = context;
   }
 
-  final BuildContext context;
-  late AppLocalizations t;
+  BuildContext context;
 
   void showLoadingIndicator(String text) {
     showDialog(
@@ -55,7 +51,7 @@ class DialogBuilder {
   }
 
   void showConfirmationDialog() {
-    final paymentData = Provider.of<PaymentsProvider>(context, listen: false);
+    final paymentData = context.paymentsProviderWithNoListner;
 
     showModalBottomSheet(
       context: context,
@@ -76,30 +72,34 @@ class DialogBuilder {
                     _dialogTextButton(
                       () async {
                         Navigator.pop(context);
-                        showLoadingIndicator(t.uploading);
+                        showLoadingIndicator(context.translate.uploading);
 
                         try {
                           if (await paymentData.uploadShift(context)) {
                             hideOpenDialog();
-                            showSuccessDialog(t.successMsg);
+                            if (context.mounted) {
+                              showSuccessDialog(context.translate.successMsg);
+                            }
                           } else {
                             hideOpenDialog();
-                            showErrorDialog(t.uploadError);
+                            if (context.mounted) {
+                              showErrorDialog(context.translate.uploadError);
+                            }
                           }
                         } catch (error) {
                           hideOpenDialog();
                           showErrorDialog(error.toString());
                         }
                       },
-                      t.confirm,
-                      Theme.of(context).primaryColor,
-                      Theme.of(context).primaryColor,
+                      context.translate.confirm,
+                      context.theme.primaryColor,
+                      context.theme.primaryColor,
                     ),
                     _dialogTextButton(
                       hideOpenDialog,
-                      t.cancel,
+                      context.translate.cancel,
                       Colors.white,
-                      Theme.of(context).primaryColor,
+                      context.theme.primaryColor,
                     )
                   ],
                 )
@@ -125,11 +125,11 @@ class DialogBuilder {
                 hideOpenDialog();
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                Provider.of<AuthProvider>(context, listen: false).logout();
+                context.authProvider.logout();
               },
-              t.confirm,
-              Theme.of(context).primaryColor,
-              Theme.of(context).primaryColor,
+              context.translate.confirm,
+              context.theme.primaryColor,
+              context.theme.primaryColor,
             )
           ],
         );
@@ -144,7 +144,7 @@ class DialogBuilder {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(
-          t.error,
+          context.translate.error,
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
@@ -163,9 +163,9 @@ class DialogBuilder {
         actions: [
           _dialogTextButton(
             hideOpenDialog,
-            t.okay,
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor,
+            context.translate.okay,
+            context.theme.primaryColor,
+            context.theme.primaryColor,
           )
         ],
       ),
@@ -175,12 +175,11 @@ class DialogBuilder {
   void showSuccessDialog(
     String message,
   ) {
-    final isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(
-          t.success,
+          context.translate.success,
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
@@ -197,27 +196,15 @@ class DialogBuilder {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          isAdmin
-              ? _dialogTextButton(
-                  () {
-                    hideOpenDialog();
-                    showEndOfDaySummery();
-                  },
-                  t.next,
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor,
-                )
-              : _dialogTextButton(
-                  () {
-                    hideOpenDialog();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                    Provider.of<AuthProvider>(context, listen: false).logout();
-                  },
-                  t.okay,
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor,
-                )
+          _dialogTextButton(
+            () {
+              hideOpenDialog();
+              showEndOfDaySummery();
+            },
+            context.translate.next,
+            context.theme.primaryColor,
+            context.theme.primaryColor,
+          )
         ],
       ),
     );
@@ -228,7 +215,7 @@ class DialogBuilder {
       context: context,
       builder: (context) => AlertDialog(
         content: Text(
-          t.deleteImg,
+          context.translate.deleteImg,
           textAlign: TextAlign.center,
         ),
         icon: const Icon(
@@ -240,24 +227,23 @@ class DialogBuilder {
         actions: [
           _dialogTextButton(
             hideOpenDialog,
-            t.cancel,
+            context.translate.cancel,
             Colors.white,
-            Theme.of(context).primaryColor,
+            context.theme.primaryColor,
           ),
           _dialogTextButton(
             () {
               hideOpenDialog();
               if (isCash) {
-                Provider.of<PaymentsProvider>(context, listen: false)
-                    .setCashRecipetImg('');
+                context.paymentsProviderWithNoListner.setCashRecipetImg('');
               } else {
-                Provider.of<PaymentsProvider>(context, listen: false)
+                context.paymentsProviderWithNoListner
                     .removeImgPathFromList(path);
               }
             },
-            t.confirm,
-            Theme.of(context).primaryColor,
-            Theme.of(context).primaryColor,
+            context.translate.confirm,
+            context.theme.primaryColor,
+            context.theme.primaryColor,
           ),
         ],
       ),
@@ -275,7 +261,7 @@ class DialogBuilder {
 
   TextButton _dialogTextButton(
       Function()? fun, String title, Color bgColor, Color borderColor) {
-    var textColorCheck = bgColor == Theme.of(context).primaryColor;
+    var textColorCheck = bgColor == context.theme.primaryColor;
     return TextButton(
       onPressed: fun,
       style: ButtonStyle(

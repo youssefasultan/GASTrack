@@ -15,13 +15,21 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
-### android firebase_distribution
+### android firebase_distribution_dev_tester
 
 ```sh
-[bundle exec] fastlane android firebase_distribution
+[bundle exec] fastlane android firebase_distribution_dev_tester
 ```
 
 lane for android firebase app distribution
+
+### android firebase_distribution_consultant_tester
+
+```sh
+[bundle exec] fastlane android firebase_distribution_consultant_tester
+```
+
+
 
 ----
 

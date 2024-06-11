@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:gas_track/helpers/extentions/context_ext.dart';
 import 'firebase_options.dart';
 
 import 'package:flutter/material.dart';
@@ -9,12 +10,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'helpers/view/ui/ui_constants.dart';
-import 'providers/auth_provider.dart';
-import 'providers/hanging_unit_provider.dart';
-import 'providers/payments_provider.dart';
-import 'screens/auth/auth_screen.dart';
-import 'screens/home/home_screen.dart';
-import 'screens/payment/payment_screen.dart';
+import 'features/auth/controller/auth_provider.dart';
+import 'features/home/controller/hanging_unit_provider.dart';
+import 'features/payment/controller/payments_provider.dart';
+import 'features/auth/view/auth_screen.dart';
+import 'features/home/view/home_screen.dart';
+import 'features/payment/view/payment_screen.dart';
 import 'package:sizer/sizer.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -56,10 +57,8 @@ class MainApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<HangingUnitsProvider, PaymentsProvider>(
           create: (context) => PaymentsProvider(
-              Provider.of<HangingUnitsProvider>(context, listen: false)
-                  .getTotalSales),
-          update: (context, value, previous) =>
-              PaymentsProvider(value.getTotalSales),
+              context.hangingUnitsProviderWithNoListner.getTotalSales),
+          update: (_, value, previous) => PaymentsProvider(value.getTotalSales),
         ),
       ],
       child: Consumer<AuthProvider>(
@@ -67,7 +66,7 @@ class MainApp extends StatelessWidget {
           builder: (context, orientation, deviceType) {
             return MaterialApp(
               onGenerateTitle: (context) {
-                return AppLocalizations.of(context)!.appTitle;
+                return context.translate.appTitle;
               },
               debugShowCheckedModeBanner: false,
               localizationsDelegates: const [

@@ -57,7 +57,7 @@
   "couponValueError" : "Please Enter Coupon Value",
   "cashOverFlowError" : "Please Check Entries",
   "calibration" : "calibration",
-  "unpaidCoupons" : "Unpaid coupons",
+  "unpaidCoupons" : "Credit",
   "active" : "Active",
   "inActive" : "Inactive",
   "price" : "Price",
@@ -70,6 +70,7 @@
   "addVisaPics": "Add Visa Recipts",
   "deleteImg": "Are you sure you want to remove?",
   "wared" : "Incoming",
-  "calibError": "calibration amount must be less than or equal"
+  "calibError": "calibration amount must be less than or equal",
+  "smartCard": "Smart Cards"
 
 }

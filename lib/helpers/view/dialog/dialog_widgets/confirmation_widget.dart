@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:gas_track/helpers/extentions/context_ext.dart';
 import 'package:gas_track/helpers/view/ui/ui_constants.dart';
-import 'package:gas_track/models/hose.dart';
-import 'package:gas_track/models/tank.dart';
+import 'package:gas_track/features/home/model/hose.dart';
+import 'package:gas_track/features/home/model/tank.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../ui/dash_separator.dart';
-import '../../../../providers/auth_provider.dart';
-import '../../../../providers/hanging_unit_provider.dart';
-import '../../../../providers/payments_provider.dart';
+import '../../../../features/home/controller/hanging_unit_provider.dart';
 
 class ConfirmationWidget extends StatelessWidget {
   const ConfirmationWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var t = AppLocalizations.of(context)!;
-
-    final shiftType =
-        Provider.of<AuthProvider>(context, listen: false).getShiftType;
+    final shiftType = context.authProvider.getShiftType;
     final hangingUnitsData =
         Provider.of<HangingUnitsProvider>(context, listen: false);
     final productsList = hangingUnitsData.getHoseList;
     final tankList = hangingUnitsData.getTanks;
-    final paymentData = Provider.of<PaymentsProvider>(context, listen: false);
+    final paymentData = context.paymentsProviderWithNoListner;
 
     return ListView(
       physics: const NeverScrollableScrollPhysics(),
@@ -34,7 +30,7 @@ class ConfirmationWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              t.confirm,
+              context.translate.confirm,
               textAlign: TextAlign.left,
               style: TextStyle(
                 fontSize: 18.sp,
@@ -47,7 +43,7 @@ class ConfirmationWidget extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 2.h),
               child: Text(
-                t.dispenser,
+                context.translate.dispenser,
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   fontSize: 14.sp,
@@ -62,7 +58,7 @@ class ConfirmationWidget extends StatelessWidget {
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   final product = productsList[index];
-                  return productItem(product, t, shiftType);
+                  return productItem(product, context.translate, shiftType);
                 },
                 itemCount: productsList.length,
               ),
@@ -72,7 +68,7 @@ class ConfirmationWidget extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 1.h),
                 child: Text(
-                  t.tank,
+                  context.translate.tank,
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontSize: 14.sp,
@@ -88,7 +84,7 @@ class ConfirmationWidget extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final tank = tankList[index];
 
-                    return tankItem(tank, t);
+                    return tankItem(tank, context.translate);
                   },
                   itemCount: tankList.length,
                 ),
@@ -104,16 +100,16 @@ class ConfirmationWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    t.total,
+                    context.translate.total,
                     style: TextStyle(
                       fontFamily: 'Bebas',
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+                      color: context.theme.primaryColor,
                     ),
                   ),
                   Text(
-                    '${paymentData.getTotalCollection} ${t.egp}',
+                    '${paymentData.getTotalCollection} ${context.translate.egp}',
                     style: TextStyle(
                       fontSize: 18.sp,
                     ),

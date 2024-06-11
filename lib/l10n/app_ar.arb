@@ -56,18 +56,19 @@
   "count" : "عدد",
   "couponValueError" : "من فضلك ادخل القيمه",
   "cashOverFlowError" : "من فضلك تأكد من القيم المدخله",
-  "unpaidCoupons" : "كبونات غير مدفوعه",
+  "unpaidCoupons" : "أجل",
   "active" : "Active",
   "inActive" : "Inactive",
   "price" : "السعر",
   "egpPerL" : "جنيه مصري / لتر",
   "start" : "بداية",
   "end" : "نهاية",
-  "unrecoredTankError" : "الرجاء إدخال قراءات خزان بداية ونهاية لبنزين",
+  "unrecoredTankError" : "الرجاء إدخال قراءات خزان بداية ونهاية لبنزين",    
   "attachment": "المرفقات",
   "addCashPic": "أضاف إيصال وردية",
   "addVisaPics": "أضف إيصالات بطاقات الائتمان",
   "deleteImg": "هل تريد ازاله الصوره؟",
   "wared" : "وارد",
-  "calibError": "يجب أن يكون مقدار المعايرة أقل من أو يساوي"
+  "calibError": "يجب أن يكون مقدار المعايرة أقل من أو يساوي",
+  "smartCard": "الكرت الزكي"
 }

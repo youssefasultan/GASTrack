@@ -7,10 +7,10 @@ import 'package:gas_track/helpers/data/data_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-import '../../models/http_exception.dart';
-import '../../models/payment.dart';
-import '../../models/hanging_unit.dart';
-import '../../models/tank.dart';
+import '../models/http_exception.dart';
+import '../../features/payment/model/payment.dart';
+import '../../features/home/model/hanging_unit.dart';
+import '../../features/home/model/tank.dart';
 import 'shared.dart';
 
 class RequestBuilder {
@@ -246,27 +246,18 @@ class RequestBuilder {
 
   List<CouponData> getCouponData(List<Payment> paymentList) {
     Coupon? coupon;
-    UnpaidCoupon? unpaidCoupon;
+
     List<CouponData> result = [];
 
     for (var payment in paymentList) {
       if (payment is Coupon) {
         coupon = payment;
-      } else if (payment is UnpaidCoupon) {
-        unpaidCoupon = payment;
       }
     }
     if (coupon != null) {
       var usedCoupons =
           coupon.couponsList.where((element) => element.count != 0).toList();
 
-      result.addAll(usedCoupons);
-    }
-
-    if (unpaidCoupon != null) {
-      var usedCoupons = unpaidCoupon.couponsList
-          .where((element) => element.count != 0)
-          .toList();
       result.addAll(usedCoupons);
     }
 
