@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:sizer/sizer.dart';
-
 
 class VisaRecieptsImgs extends StatefulWidget {
   const VisaRecieptsImgs({super.key});
@@ -26,17 +25,19 @@ class _VisaRecieptsImgsState extends State<VisaRecieptsImgs> {
       physics: const ClampingScrollPhysics(),
       children: [
         ...visaRecipts
-            .map((e) => GestureDetector(
-                  onLongPress: () {
-                    context.dialogBuilder.showDeleteImgConfrimation(false, e);
-                  },
-                  child: Container(
-                    height: 20.h,
-                    width: 20.w,
-                    margin: EdgeInsets.all(5.h),
-                    child: Image.file(File(e)),
-                  ),
-                ))
+            .map(
+              (e) => GestureDetector(
+                onLongPress: () {
+                  context.dialogBuilder.showDeleteImgConfrimation(false, e);
+                },
+                child: Container(
+                  height: 20.h,
+                  width: 20.w,
+                  margin: EdgeInsets.all(5.h),
+                  child: Image.file(File(e)),
+                ),
+              ),
+            )
             .toList(),
         InkWell(
           onTap: () async {
@@ -62,7 +63,7 @@ class _VisaRecieptsImgsState extends State<VisaRecieptsImgs> {
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
@@ -141,24 +141,6 @@ class _PaymentTileState extends State<PaymentTile> {
                 enabled: payment.icon != 'CASH',
                 onTapOutside: (event) {
                   amountFN.unfocus();
-                },
-                onSubmitted: (value) {
-                  setState(() {
-                    if (value.isEmpty) {
-                      payment.amount = 0;
-                    } else {
-                      payment.amount = double.parse(value);
-                    }
-                  });
-
-                  if (!context.paymentsProviderWithNoListner.calculateCash()) {
-                    setState(() {
-                      payment.amount = 0;
-                    });
-                    context.paymentsProviderWithNoListner.calculateCash();
-                    context.dialogBuilder
-                        .showSnackBar(context.translate.cashOverFlowError);
-                  }
                 },
               ),
             ),

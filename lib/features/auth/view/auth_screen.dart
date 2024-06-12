@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/data/data_constants.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
-import 'package:gas_track/helpers/view/ui/ui_constants.dart';
+import 'package:gas_track/core/data/data_constants.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
+import 'package:gas_track/core/view/ui/ui_constants.dart';
 import 'package:sizer/sizer.dart';
 
 import 'auth_widgets/auth_card.dart';
@@ -13,10 +13,6 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-
-    
-
     return Scaffold(
       // resizeToAvoidBottomInset: true,
       body: ListView(
@@ -39,9 +35,7 @@ class AuthScreen extends StatelessWidget {
             width: 100.w,
             height: 20.h,
             child: Padding(
-              padding: EdgeInsets.only(
-                left: 5.w,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 6.w),
               child: Text(
                 context.translate.appTitle,
                 textAlign: TextAlign.start,

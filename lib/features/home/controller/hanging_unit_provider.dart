@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:gas_track/features/home/model/hose.dart';
 
-import '../../../helpers/data/request_builder.dart';
-import '../../../helpers/data/shared.dart';
+import '../../../core/data/request_builder.dart';
+import '../../../core/data/shared.dart';
 import '../model/hanging_unit.dart';
 import '../model/tank.dart';
 
@@ -182,7 +182,7 @@ class HangingUnitsProvider with ChangeNotifier {
   List<Tank?> validateTanks() {
     final tanksWithoutEntries = _tanks
         .where((tank) => tank.quantity > 0)
-        .where((tank) => tank.shiftEnd == 0.0)
+        .where((tank) => tank.shiftEnd == null)
         .toList();
     return tanksWithoutEntries.isEmpty ? [] : tanksWithoutEntries;
   }

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-import 'package:gas_track/helpers/data/data_constants.dart';
+import 'package:gas_track/core/data/data_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -146,7 +146,7 @@ class RequestBuilder {
                 'Material': tank.material,
                 'FirstQuantity': '${tank.shiftStart}',
                 'Quantity': '${tank.quantity}',
-                'ExpQuantity': '${tank.shiftEnd}',
+                'ExpQuantity': '${tank.shiftEnd ?? 0.0}',
                 'WaredQty': '${tank.waredQty}',
                 'Uoms': 'L',
               })

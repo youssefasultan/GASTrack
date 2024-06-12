@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gas_track/features/payment/view/payment_widgets/cash_recipet_img.dart';
 import 'package:gas_track/features/payment/view/payment_widgets/visa_recipet_imgs.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:sizer/sizer.dart';
 
 class AttachmentView extends StatelessWidget {

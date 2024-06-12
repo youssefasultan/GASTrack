@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:sizer/sizer.dart';
-
-
 
 class CouponListTile extends StatefulWidget {
   const CouponListTile({super.key});
@@ -31,8 +29,6 @@ class _CouponListTileState extends State<CouponListTile> {
 
   @override
   Widget build(BuildContext context) {
-    
-   
     final coupon = context.getCoupon;
     final payments = context.paymentsProviderWithNoListner;
 
@@ -66,7 +62,8 @@ class _CouponListTileState extends State<CouponListTile> {
               onFocusChange: (value) {
                 if (!value) {
                   if (coupon.businessPartner.isNotEmpty && coupon.value == 0) {
-                    context.dialogBuilder.showSnackBar(context.translate.couponValueError);
+                    context.dialogBuilder
+                        .showSnackBar(context.translate.couponValueError);
                   } else {
                     final count = couponCountController.text.isEmpty
                         ? 0
@@ -82,7 +79,8 @@ class _CouponListTileState extends State<CouponListTile> {
                         coupon.count = 0;
                       });
                       payments.calculateCouponTotal();
-                      context.dialogBuilder.showSnackBar(context.translate.cashOverFlowError);
+                      context.dialogBuilder
+                          .showSnackBar(context.translate.cashOverFlowError);
                     }
                   }
                 }
@@ -107,25 +105,6 @@ class _CouponListTileState extends State<CouponListTile> {
                 ),
                 onTapOutside: (event) {
                   countFN.unfocus();
-                },
-                onSubmitted: (value) {
-                  if (coupon.businessPartner.isNotEmpty && coupon.value == 0) {
-                    context.dialogBuilder.showSnackBar(context.translate.couponValueError);
-                  } else {
-                    final count = value.isEmpty ? 0 : int.parse(value);
-                    setState(() {
-                      coupon.count = count;
-                      coupon.amount = coupon.value * coupon.count;
-                    });
-                    if (!payments.calculateCouponTotal()) {
-                      setState(() {
-                        coupon.amount = 0;
-                        coupon.count = 0;
-                      });
-                      payments.calculateCouponTotal();
-                      context.dialogBuilder.showSnackBar(context.translate.cashOverFlowError);
-                    }
-                  }
                 },
               ),
             ),

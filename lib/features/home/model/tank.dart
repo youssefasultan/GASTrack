@@ -5,17 +5,32 @@ class Tank with ChangeNotifier {
   double quantity;
   double amount;
   double shiftStart;
-  double shiftEnd;
+  double? shiftEnd;
   final double unitPrice;
   double waredQty;
 
   Tank({
     required this.material,
     required this.unitPrice,
-    this.shiftEnd = 0.0,
+    this.shiftEnd,
     required this.shiftStart,
     this.quantity = 0.0,
     this.amount = 0.0,
     this.waredQty = 0.0,
   });
+
+  void setEndSift(double? shiftEnd) {
+    this.shiftEnd = shiftEnd;
+    notifyListeners();
+  }
+
+  void setWaredQty(double waredQty) {
+    this.waredQty = waredQty;
+    notifyListeners();
+  }
+
+  void setStartShift(double shiftStart) {
+    this.shiftStart = shiftStart;
+    notifyListeners();
+  }
 }

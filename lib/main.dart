@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 import 'firebase_options.dart';
 
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'helpers/view/ui/ui_constants.dart';
+import 'core/view/ui/ui_constants.dart';
 import 'features/auth/controller/auth_provider.dart';
 import 'features/home/controller/hanging_unit_provider.dart';
 import 'features/payment/controller/payments_provider.dart';

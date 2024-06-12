@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'hose_list_tile.dart';

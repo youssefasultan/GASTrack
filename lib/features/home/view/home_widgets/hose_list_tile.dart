@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 
 import 'package:sizer/sizer.dart';
 
@@ -101,7 +101,10 @@ class _HoseListTileState extends State<HoseListTile> {
                         style: context.theme.textTheme.titleSmall!
                             .copyWith(color: context.theme.primaryColor),
                       ),
-                      Text(hose.materialDesc),
+                      Text(
+                        hose.materialDesc,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                       Text(
                           '${context.translate.price} : ${hose.unitPrice} ${context.translate.egpPerL}'),
                     ],
@@ -144,7 +147,6 @@ class _HoseListTileState extends State<HoseListTile> {
                   hose,
                   isAdmin,
                   amountController,
-                  context,
                   readingController,
                   shiftType,
                 ),
@@ -177,7 +179,7 @@ class _HoseListTileState extends State<HoseListTile> {
     return Row(
       children: [
         SizedBox(
-          width: 20.w,
+          width: 15.w,
           child: Text(
             context.translate.calibration,
             style: context.theme.textTheme.bodyMedium,
@@ -218,19 +220,6 @@ class _HoseListTileState extends State<HoseListTile> {
               onTapOutside: (event) {
                 calibraionFN.unfocus();
               },
-              onSubmitted: (value) {
-                if (hose.calibrationValidation(double.parse(value))) {
-                  calibrationController.clear();
-                  context.dialogBuilder.showSnackBar(
-                      '${context.translate.calibError} ${hose.enteredReading - hose.lastReading}');
-                } else {
-                  setState(() {
-                    hose.calibration =
-                        value.isNotEmpty ? double.parse(value) : 0.0;
-                  });
-                  hose.calculateHoes();
-                }
-              },
             ),
           ),
         ),
@@ -243,11 +232,10 @@ class _HoseListTileState extends State<HoseListTile> {
       Hose hose,
       bool isAdmin,
       TextEditingController amountController,
-      BuildContext context,
       TextEditingController readingController,
       String shiftType) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
           width: 15.w,
@@ -287,9 +275,6 @@ class _HoseListTileState extends State<HoseListTile> {
                 },
                 enabled: !hose.inActiveFlag,
                 readOnly: !isAdmin,
-                onSubmitted: (value) {
-                  hose.lastAmount = double.parse(value);
-                },
               ),
             ),
           ),
@@ -338,26 +323,6 @@ class _HoseListTileState extends State<HoseListTile> {
                 keyboardType: TextInputType.number,
                 key: UniqueKey(),
                 enabled: !hose.inActiveFlag,
-                readOnly: shiftType == 'F',
-                onSubmitted: (value) {
-                  if (value.isEmpty || double.parse(value) == 0) {
-                    hose.enteredAmount = 0;
-                  } else {
-                    if (double.parse(value) < hose.lastAmount) {
-                      context.dialogBuilder
-                          .showSnackBar(context.translate.readingError);
-                      amountController.clear();
-                    } else if (hose.amountValidation(double.parse(value))) {
-                      context.dialogBuilder.showSnackBar(
-                          '${context.translate.amountError} ${hose.measuringPointDesc}');
-
-                      amountController.text = hose.enteredAmount.toString();
-                    } else {
-                      hose.enteredAmount = double.parse(value);
-                      hose.totalAmount = hose.enteredAmount - hose.lastAmount;
-                    }
-                  }
-                },
               ),
             ),
           ),
@@ -369,7 +334,7 @@ class _HoseListTileState extends State<HoseListTile> {
   Row _readingRow(TextEditingController lastReadingController, Hose hose,
       bool isAdmin, TextEditingController readingController, String shiftType) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
           width: 15.w,
@@ -408,13 +373,6 @@ class _HoseListTileState extends State<HoseListTile> {
                 readOnly: !isAdmin,
                 onTapOutside: (event) {
                   lastReadingFN.unfocus();
-                },
-                onSubmitted: (value) {
-                  if (value.isNotEmpty) {
-                    hose.lastReading = double.parse(value);
-                  } else {
-                    hose.lastReading = 0;
-                  }
                 },
               ),
             ),
@@ -467,34 +425,6 @@ class _HoseListTileState extends State<HoseListTile> {
                 enabled: !hose.inActiveFlag,
                 onTapOutside: (event) {
                   enteredReadingFN.unfocus();
-                },
-                onSubmitted: (value) {
-                  if (value.isEmpty || double.tryParse(value) == 0) {
-                    hose.enteredReading = 0;
-                    hose.totalAmount = 0;
-                    hose.enteredAmount = 0;
-                    hose.totalQuantity = 0;
-
-                    if (shiftType == 'F') {
-                      hose.calculateHoes();
-                    }
-                  } else {
-                    if (double.parse(value) < hose.lastReading) {
-                      context.dialogBuilder
-                          .showSnackBar(context.translate.readingError);
-                      readingController.clear();
-                    } else {
-                      hose.enteredReading = double.parse(value);
-                      hose.totalQuantity =
-                          hose.enteredReading - hose.lastReading;
-
-                      if (shiftType == 'F') {
-                        setState(() {
-                          hose.calculateHoes();
-                        });
-                      }
-                    }
-                  }
                 },
               ),
             ),

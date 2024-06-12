@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
-import 'package:gas_track/helpers/view/ui/ui_constants.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
+import 'package:gas_track/core/view/ui/ui_constants.dart';
 import 'package:sizer/sizer.dart';
 
 class TankListTile extends StatefulWidget {
@@ -49,11 +49,7 @@ class _TankListTileState extends State<TankListTile> {
     final isAdmin = context.authProvider.isAdmin;
 
     shiftStartController.text =
-        tank.shiftStart == 0.0 ? '0.0' : tank.shiftStart.toString();
-    shifEndController.text =
-        tank.shiftEnd == 0.0 ? '' : tank.shiftEnd.toString();
-
-    waredController.text = tank.waredQty == 0.0 ? '' : tank.waredQty.toString();
+        tank.shiftStart == 0.0 ? '0' : tank.shiftStart.toString();
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
@@ -111,9 +107,11 @@ class _TankListTileState extends State<TankListTile> {
                 Focus(
                   onFocusChange: (value) {
                     if (!value) {
-                      tank.shiftStart = shiftStartController.text.isNotEmpty
-                          ? double.parse(shiftStartController.text)
-                          : 0.0;
+                      tank.setStartShift(
+                        shiftStartController.text.isEmpty
+                            ? 0
+                            : double.parse(shiftStartController.text),
+                      );
                     }
                   },
                   child: SizedBox(
@@ -136,21 +134,23 @@ class _TankListTileState extends State<TankListTile> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       readOnly: isAdmin ? false : !(tank.shiftStart == 0.0),
-                      onSubmitted: (value) {
-                        setState(() {
-                          tank.shiftStart =
-                              value.isNotEmpty ? double.parse(value) : 0.0;
-                        });
-                      },
                     ),
                   ),
                 ),
                 Focus(
                   onFocusChange: (value) {
                     if (!value) {
-                      tank.shiftEnd = shifEndController.text.isNotEmpty
-                          ? double.parse(shifEndController.text)
-                          : 0.0;
+                      if (tank.quantity > 0) {
+                        if (shifEndController.text.isNotEmpty) {
+                          tank.setEndSift(double.parse(shifEndController.text));
+                        } else {
+                          tank.setEndSift(null);
+                          context.dialogBuilder.showSnackBar(
+                              '${context.translate.unrecoredTankError} ${tank.material}');
+                        }
+                      } else {
+                        tank.setEndSift(double.parse(shifEndController.text.isEmpty ? '0' : shifEndController.text));
+                      }
                     }
                   },
                   child: SizedBox(
@@ -170,12 +170,6 @@ class _TankListTileState extends State<TankListTile> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       onTapOutside: (event) => endFN.unfocus(),
-                      onSubmitted: (value) {
-                        setState(() {
-                          tank.shiftEnd =
-                              value.isNotEmpty ? double.parse(value) : 0.0;
-                        });
-                      },
                     ),
                   ),
                 ),
@@ -188,9 +182,11 @@ class _TankListTileState extends State<TankListTile> {
             child: Focus(
               onFocusChange: (value) {
                 if (!value) {
-                  tank.waredQty = waredController.text.isNotEmpty
-                      ? double.parse(waredController.text)
-                      : 0.0;
+                  tank.setWaredQty(
+                    waredController.text.isEmpty
+                        ? 0
+                        : double.parse(waredController.text),
+                  );
                 }
               },
               child: SizedBox(
@@ -209,12 +205,6 @@ class _TankListTileState extends State<TankListTile> {
                   keyboardType: TextInputType.number,
                   onTapOutside: (event) => waredFN.unfocus(),
                   textAlign: TextAlign.center,
-                  onSubmitted: (value) {
-                    setState(() {
-                      tank.waredQty =
-                          value.isNotEmpty ? double.parse(value) : 0.0;
-                    });
-                  },
                 ),
               ),
             ),

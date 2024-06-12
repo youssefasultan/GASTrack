@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 
-import 'package:gas_track/helpers/view/ui/pop_up_menu.dart';
+import 'package:gas_track/core/view/ui/pop_up_menu.dart';
 import 'package:gas_track/features/payment/view/payment_widgets/payment_tabbar_library.dart';
 import 'package:sizer/sizer.dart';
 

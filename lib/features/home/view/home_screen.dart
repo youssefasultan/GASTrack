@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
-import 'package:gas_track/helpers/view/ui/pop_up_menu.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
+import 'package:gas_track/core/view/ui/pop_up_menu.dart';
 import 'package:gas_track/features/home/view/home_widgets/fuel_tabbar_library.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';

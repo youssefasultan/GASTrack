@@ -7,7 +7,7 @@ import 'package:gas_track/features/home/model/tank.dart';
 import 'package:gas_track/features/payment/controller/payments_provider.dart';
 import 'package:gas_track/features/payment/model/payment.dart';
 
-import 'package:gas_track/helpers/view/dialog/dialog_builder.dart';
+import 'package:gas_track/core/view/dialog/dialog_builder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 

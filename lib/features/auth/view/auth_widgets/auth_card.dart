@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 
 import 'package:sizer/sizer.dart';
 
@@ -179,6 +179,8 @@ class _AuthCardState extends State<AuthCard>
                       ),
                       child: Text(
                         context.translate.login,
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.bold,

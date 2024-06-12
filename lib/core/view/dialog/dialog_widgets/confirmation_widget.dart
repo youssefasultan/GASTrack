@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
-import 'package:gas_track/helpers/view/ui/ui_constants.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
+import 'package:gas_track/core/view/ui/ui_constants.dart';
 import 'package:gas_track/features/home/model/hose.dart';
 import 'package:gas_track/features/home/model/tank.dart';
 import 'package:provider/provider.dart';
@@ -139,6 +139,7 @@ class ConfirmationWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 '${t.fuel} : ${tank.material}',
@@ -154,6 +155,7 @@ class ConfirmationWidget extends StatelessWidget {
             ],
           ),
           Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 '${t.start} : ${tank.shiftStart.toString()}',
@@ -164,7 +166,7 @@ class ConfirmationWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                '${t.end} : ${tank.shiftEnd.toString()}',
+                '${t.end} : ${tank.shiftEnd ?? 0.0}',
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontFamily: 'Bebas',
@@ -172,7 +174,7 @@ class ConfirmationWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                '${t.refil} : ${tank.waredQty.toString()}',
+                '${t.refil} : ${tank.waredQty}',
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontFamily: 'Bebas',
@@ -202,6 +204,7 @@ class ConfirmationWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 product.measuringPointDesc,
@@ -217,6 +220,7 @@ class ConfirmationWidget extends StatelessWidget {
             ],
           ),
           Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 '${t.quantity} : ${product.totalQuantity.toString()} ${getUom(product.measuringUnit, t)}',

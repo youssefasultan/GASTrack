@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/helpers/extentions/context_ext.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../../helpers/view/ui/ui_constants.dart';
+import '../../../../core/view/ui/ui_constants.dart';
 
 class UserCard extends StatelessWidget {
   const UserCard({
@@ -13,8 +13,8 @@ class UserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 100.w,
-      height: 20.h,
-      margin: EdgeInsets.all(2.h),
+      height: 22.h,
+      margin: EdgeInsets.all(1.h),
       padding: EdgeInsets.all(1.h),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(

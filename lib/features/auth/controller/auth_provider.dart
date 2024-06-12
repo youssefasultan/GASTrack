@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../../../helpers/data/request_builder.dart';
-import '../../../helpers/data/shared.dart';
-import '../../../helpers/models/http_exception.dart';
+import '../../../core/data/request_builder.dart';
+import '../../../core/data/shared.dart';
+import '../../../core/models/http_exception.dart';
 
 class AuthProvider with ChangeNotifier {
   String? deviceId;
