@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({super.key, this.text = ''});
@@ -36,12 +35,10 @@ class LoadingIndicator extends StatelessWidget {
   }
 
   Widget _getHeading(context) {
-    var t = AppLocalizations.of(context)!;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Text(
-        t.plesaeWait,
+        context.translate.plesaeWait,
         style: TextStyle(
           color: Theme.of(context).primaryColor,
           fontSize: 16,

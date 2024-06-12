@@ -1,31 +1,13 @@
 import 'dart:io';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:gas_track/core/extentions/context_ext.dart';
-import 'firebase_options.dart';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
+import 'package:gas_track/app.dart';
 
-import 'core/view/ui/ui_constants.dart';
-import 'features/auth/controller/auth_provider.dart';
-import 'features/home/controller/hanging_unit_provider.dart';
-import 'features/payment/controller/payments_provider.dart';
-import 'features/auth/view/auth_screen.dart';
-import 'features/home/view/home_screen.dart';
-import 'features/payment/view/payment_screen.dart';
-import 'package:sizer/sizer.dart';
 
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
-}
+import 'core/data/certifticate.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
@@ -42,61 +24,3 @@ Future<void> main() async {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => AuthProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => HangingUnitsProvider(),
-        ),
-        ChangeNotifierProxyProvider<HangingUnitsProvider, PaymentsProvider>(
-          create: (context) => PaymentsProvider(
-              context.hangingUnitsProviderWithNoListner.getTotalSales),
-          update: (_, value, previous) => PaymentsProvider(value.getTotalSales),
-        ),
-      ],
-      child: Consumer<AuthProvider>(
-        builder: (context, auth, child) => Sizer(
-          builder: (context, orientation, deviceType) {
-            return MaterialApp(
-              onGenerateTitle: (context) {
-                return context.translate.appTitle;
-              },
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [
-                Locale('en', ''),
-                Locale('ar', ''),
-              ],
-              theme: ThemeData(
-                fontFamily: 'Babas',
-                useMaterial3: true,
-                colorScheme:
-                    ColorScheme.fromSeed(seedColor: blueColor).copyWith(
-                  primary: blueColor,
-                  secondary: redColor,
-                ),
-              ),
-              home: auth.isAuth ? const HomeScreen() : const AuthScreen(),
-              routes: {
-                HomeScreen.routeName: (context) => const HomeScreen(),
-                PaymentScreen.routeName: (context) => const PaymentScreen(),
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
-}

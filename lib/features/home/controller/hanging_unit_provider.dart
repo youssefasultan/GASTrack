@@ -35,7 +35,7 @@ class HangingUnitsProvider with ChangeNotifier {
     try {
       final userData = await Shared.getUserdata();
 
-      final response = await RequestBuilder().buildGetRequest(
+      final response = await RequestBuilder.buildGetRequest(
           "GasoItemsSet?\$filter=FunctionalLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
 
       final responseData = json.decode(response.body);
@@ -73,7 +73,7 @@ class HangingUnitsProvider with ChangeNotifier {
 
   void addTanks(String funLoc, List<dynamic> hangingUnitResponse) async {
     try {
-      final response = await RequestBuilder()
+      final response = await RequestBuilder
           .buildGetRequest("GasTankSet?\$filter=ShiftLocation eq '$funLoc'&");
 
       final responseData = json.decode(response.body);

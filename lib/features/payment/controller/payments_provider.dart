@@ -65,7 +65,7 @@ class PaymentsProvider with ChangeNotifier {
     // return all day total for each payment type, total collection and total sales
     final userData = await Shared.getUserdata();
 
-    var response = await RequestBuilder().buildGetRequest(
+    var response = await RequestBuilder.buildGetRequest(
         "GasAdminSet?\$filter=ShiftLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
 
     var responseData = json.decode(response.body);
@@ -122,7 +122,7 @@ class PaymentsProvider with ChangeNotifier {
   Future<void> fetchPayments(String shiftType) async {
     try {
       // get payment methods
-      var response = await RequestBuilder().buildGetRequest("GasoPayMSet?");
+      var response = await RequestBuilder.buildGetRequest("GasoPayMSet?");
 
       var responseData = json.decode(response.body);
       var extractedData = responseData['d']['results'] as List<dynamic>;
@@ -166,7 +166,7 @@ class PaymentsProvider with ChangeNotifier {
 
       // get coupons
       if (shiftType == 'G') {
-        response = await RequestBuilder().buildGetRequest("YGasoCouponsSet?");
+        response = await RequestBuilder.buildGetRequest("YGasoCouponsSet?");
 
         responseData = json.decode(response.body);
         extractedData = responseData['d']['results'] as List<dynamic>;
@@ -223,7 +223,7 @@ class PaymentsProvider with ChangeNotifier {
       final hangingUnitsList = productsData.getHangingUnits;
       final tankList = productsData.getTanks;
 
-      return await RequestBuilder().postShiftRequest(hangingUnitsList,
+      return await RequestBuilder.postShiftRequest(hangingUnitsList,
           _paymentsItems, tankList, _total, _cashRecipetImg, _visaReciptsImg);
     } catch (error) {
       rethrow;

@@ -15,7 +15,8 @@ final LinearGradient linerGradient = LinearGradient(
   end: Alignment.bottomRight,
   stops: const [0, 1],
 );
-//TODO: complete and map theme data
+
+// theme
 final ThemeData myTheme = ThemeData(
   hintColor: Colors.black38,
   fontFamily: 'Bebas',

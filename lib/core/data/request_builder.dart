@@ -14,10 +14,11 @@ import '../../features/home/model/tank.dart';
 import 'shared.dart';
 
 class RequestBuilder {
-  String? _token;
-  String? _cookie;
+  RequestBuilder._();
+  static String? _token;
+  static String? _cookie;
 
-  Future<http.Response> buildGetRequest(String entitySet) async {
+  static Future<http.Response> buildGetRequest(String entitySet) async {
     String basicAuth =
         'Basic ${base64Encode(utf8.encode('$kUsername:$kPassword'))}';
     Map<String, String> headers = {
@@ -35,7 +36,7 @@ class RequestBuilder {
     );
   }
 
-  Future<bool> postShiftRequest(
+  static Future<bool> postShiftRequest(
       List<HangingUnit> hangingUnitsList,
       List<Payment> paymentList,
       List<Tank> tankList,
@@ -55,7 +56,7 @@ class RequestBuilder {
     return responseCode == HttpStatus.created;
   }
 
-  Future<void> _getToken() async {
+  static Future<void> _getToken() async {
     String basicAuth =
         'Basic ${base64Encode(utf8.encode('$kUsername:$kPassword'))}';
     Map<String, String> headers = {
@@ -77,7 +78,7 @@ class RequestBuilder {
     _cookie = response.headers['set-cookie']?.split(',')[1];
   }
 
-  Future<int> _upload(
+  static Future<int> _upload(
     String token,
     String cookie,
     List<HangingUnit> hangingUnitsList,
@@ -175,7 +176,8 @@ class RequestBuilder {
     return response.statusCode;
   }
 
-  Future<List<String>> visaImgsToBase64String(List<String> visaImgs) async {
+  static Future<List<String>> visaImgsToBase64String(
+      List<String> visaImgs) async {
     List<String> visaBase64String = [];
     for (var img in visaImgs) {
       File imageFile = File(img);
@@ -185,14 +187,14 @@ class RequestBuilder {
     return visaBase64String;
   }
 
-  Future<String> cashImageBase64(String cashImg) async {
+  static Future<String> cashImageBase64(String cashImg) async {
     File imageFile = File(cashImg);
     Uint8List bytes = await imageFile.readAsBytes();
     String cashBase64String = base64.encode(bytes);
     return cashBase64String;
   }
 
-  List<Map<String, dynamic>> getImageList(Map<String, String> userData,
+  static List<Map<String, dynamic>> getImageList(Map<String, String> userData,
       String cashImgSource, List<String> visaImgs) {
     final List<Map<String, dynamic>> result = [];
     final f = DateFormat('yyyyMMdd');
@@ -234,7 +236,8 @@ class RequestBuilder {
     return result;
   }
 
-  List<Map<String, String>> getJsonObjects(List<HangingUnit> hangingUnitsList) {
+  static List<Map<String, String>> getJsonObjects(
+      List<HangingUnit> hangingUnitsList) {
     List<Map<String, String>> result = [];
 
     for (var hangingUnit in hangingUnitsList) {
@@ -244,7 +247,7 @@ class RequestBuilder {
     return result;
   }
 
-  List<CouponData> getCouponData(List<Payment> paymentList) {
+  static List<CouponData> getCouponData(List<Payment> paymentList) {
     Coupon? coupon;
 
     List<CouponData> result = [];

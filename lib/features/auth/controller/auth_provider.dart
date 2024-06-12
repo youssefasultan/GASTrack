@@ -75,7 +75,7 @@ class AuthProvider with ChangeNotifier {
         _lock = true;
       }
 
-      final response = await RequestBuilder().buildGetRequest(
+      final response = await RequestBuilder.buildGetRequest(
           "GasolinaLoginSet(Username='${username.toUpperCase().trim()}',Password='$password',ShiftType='$shiftType',Locked=$_lock)?");
 
       final responseData = json.decode(response.body);
@@ -125,7 +125,7 @@ class AuthProvider with ChangeNotifier {
     final String lang =
         defaultLocale.split('_')[0].toUpperCase(); // get locale language
 
-    final response = await RequestBuilder()
+    final response = await RequestBuilder
         .buildGetRequest("ZGASO_MSG(MsgCode='0$code',Lang='$lang')?");
 
     final responseData = json.decode(response.body);

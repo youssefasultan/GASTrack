@@ -3,12 +3,10 @@ import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:gas_track/core/view/ui/ui_constants.dart';
 import 'package:gas_track/features/home/model/hose.dart';
 import 'package:gas_track/features/home/model/tank.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../ui/dash_separator.dart';
-import '../../../../features/home/controller/hanging_unit_provider.dart';
 
 class ConfirmationWidget extends StatelessWidget {
   const ConfirmationWidget({super.key});
@@ -16,8 +14,7 @@ class ConfirmationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shiftType = context.authProvider.getShiftType;
-    final hangingUnitsData =
-        Provider.of<HangingUnitsProvider>(context, listen: false);
+    final hangingUnitsData = context.hangingUnitsProviderWithNoListner;
     final productsList = hangingUnitsData.getHoseList;
     final tankList = hangingUnitsData.getTanks;
     final paymentData = context.paymentsProviderWithNoListner;
