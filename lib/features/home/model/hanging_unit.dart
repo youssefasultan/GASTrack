@@ -68,4 +68,17 @@ class HangingUnit with ChangeNotifier {
       shiftType: userData['shiftType']!,
     );
   }
+
+  factory HangingUnit.fromSavedJson(Map<String, dynamic> json) {
+    return HangingUnit(
+      List<Hose>.from(json['hoseList'].map((x) => Hose.fromSavedJson(x))),
+      equipmentDesc: json['EquipmentDescription'],
+      objectNumber: json['ObjectNumber'],
+      equipment: json['Equipment'],
+      shiftLoc: json['funLoc']!,
+      shiftDate: json['shiftDate']!,
+      shiftNo: json['shiftNo']!,
+      shiftType: json['shiftType']!,
+    );
+  }
 }

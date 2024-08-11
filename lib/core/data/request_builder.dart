@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
-import 'package:gas_track/core/data/data_constants.dart';
+import 'package:gas_track/core/constants/data_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../helper/image_converter.dart';
 import '../models/http_exception.dart';
 import '../../features/payment/model/payment.dart';
 import '../../features/home/model/hanging_unit.dart';
 import '../../features/home/model/tank.dart';
-import 'shared.dart';
+import 'shared_pref/shared.dart';
 
 class RequestBuilder {
   RequestBuilder._();
@@ -93,11 +92,11 @@ class RequestBuilder {
     List<String> visaBase64String = [];
 
     if (cashImg.isNotEmpty) {
-      cashBase64String = await cashImageBase64(cashImg);
+      cashBase64String = await ImageConverter.imageToBase64(cashImg);
     }
 
     if (visaImgs.isNotEmpty) {
-      visaBase64String = await visaImgsToBase64String(visaImgs);
+      visaBase64String = await ImageConverter.imageListToBase64String(visaImgs);
     }
 
     String basicAuth =
@@ -107,7 +106,6 @@ class RequestBuilder {
       'x-csrf-token': token,
       'cookie': cookie,
       'content-type': 'application/json',
-      // 'sap-client': '100',
     };
 
     final url = Uri.parse(
@@ -176,23 +174,9 @@ class RequestBuilder {
     return response.statusCode;
   }
 
-  static Future<List<String>> visaImgsToBase64String(
-      List<String> visaImgs) async {
-    List<String> visaBase64String = [];
-    for (var img in visaImgs) {
-      File imageFile = File(img);
-      Uint8List bytes = await imageFile.readAsBytes();
-      visaBase64String.add(base64.encode(bytes));
-    }
-    return visaBase64String;
-  }
+  
 
-  static Future<String> cashImageBase64(String cashImg) async {
-    File imageFile = File(cashImg);
-    Uint8List bytes = await imageFile.readAsBytes();
-    String cashBase64String = base64.encode(bytes);
-    return cashBase64String;
-  }
+  
 
   static List<Map<String, dynamic>> getImageList(Map<String, String> userData,
       String cashImgSource, List<String> visaImgs) {

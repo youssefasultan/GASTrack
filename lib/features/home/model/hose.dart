@@ -69,4 +69,19 @@ class Hose with ChangeNotifier {
       inActiveFlag: json['InactiveFlag'] as bool,
     );
   }
+   factory Hose.fromSavedJson(Map<String, dynamic> json) {
+    return Hose(
+      material: json['Material'],
+      materialDesc: json['MaterialDesc'],
+      lastReading: double.parse(json['LastRead']),
+      lastAmount: double.parse(json['LastAmount']),
+      unitPrice: double.parse(json['PricingUnit']),
+      measuringUnit: json['Measurmntrangeunit'],
+      measuringPoint: int.parse(json['MeasuringPoint']),
+      measuringPointDesc: json['MeasuringPointDesc'],
+      equipmentId: json['Equipment'],
+      index: json['index'] as int,
+      inActiveFlag: json['InactiveFlag'] as bool,
+    );
+  }
 }

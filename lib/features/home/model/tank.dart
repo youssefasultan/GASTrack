@@ -4,7 +4,7 @@ class Tank with ChangeNotifier {
   final String material;
   double quantity;
   double amount;
-  double shiftStart;
+  double? shiftStart;
   double? shiftEnd;
   final double unitPrice;
   double waredQty;
@@ -32,5 +32,13 @@ class Tank with ChangeNotifier {
   void setStartShift(double shiftStart) {
     this.shiftStart = shiftStart;
     notifyListeners();
+  }
+
+  factory Tank.fromJson(dynamic json) {
+    return Tank(
+      material: json['Material'],
+      shiftStart: double.parse(json['Quantity'] ?? 0.0),
+      unitPrice: double.parse(json['PricingUnit']),
+    );
   }
 }

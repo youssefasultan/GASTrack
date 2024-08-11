@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gas_track/core/extentions/context_ext.dart';
 
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({super.key, this.text = ''});
@@ -16,7 +17,17 @@ class LoadingIndicator extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _getLoadingIndicator(),
-          _getHeading(context),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Text(
+              context.translate.plesaeWait,
+              style: TextStyle(
+                color: context.theme.primaryColor,
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
           _getText(displayedText, context)
         ],
       ),
@@ -30,20 +41,6 @@ class LoadingIndicator extends StatelessWidget {
         width: 32,
         height: 32,
         child: CircularProgressIndicator(strokeWidth: 3),
-      ),
-    );
-  }
-
-  Widget _getHeading(context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Text(
-        context.translate.plesaeWait,
-        style: TextStyle(
-          color: Theme.of(context).primaryColor,
-          fontSize: 16,
-        ),
-        textAlign: TextAlign.center,
       ),
     );
   }

@@ -1,25 +1,27 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:gas_track/core/data/repo/payment/payment_repo.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/data/request_builder.dart';
-import '../../../core/data/shared.dart';
 import '../model/payment.dart';
 import '../model/summery.dart';
 import '../../home/controller/hanging_unit_provider.dart';
 
 class PaymentsProvider with ChangeNotifier {
+  final paymentRepo = PaymentRepo();
+
   List<Payment> _paymentsItems = [];
   double _total = 0.0;
+  double _creditAmount = 0.0;
+
   List<Summery> _summery = [];
   Map<String, double> _summeryTotals = {};
 
   String _cashRecipetImg = '';
   final List<String> _visaReciptsImg = [];
 
-  PaymentsProvider(double totalSales) {
+  PaymentsProvider(double totalSales, double creditAmount) {
     _total = totalSales;
+    _creditAmount = creditAmount;
   }
 
   Map<String, double> get getSummeryTotals {
@@ -62,23 +64,7 @@ class PaymentsProvider with ChangeNotifier {
   }
 
   Future<void> getEndOfDaySummeryPayments() async {
-    // return all day total for each payment type, total collection and total sales
-    final userData = await Shared.getUserdata();
-
-    var response = await RequestBuilder.buildGetRequest(
-        "GasAdminSet?\$filter=ShiftLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
-
-    var responseData = json.decode(response.body);
-    var extractedData = responseData['d']['results'] as List<dynamic>;
-
-    final loadedSummery = extractedData.map((e) {
-      return Summery(
-        shift: e['Shift'],
-        paymentType: e['PaymentTextEg'],
-        value: double.parse(e['PaymentValue']),
-      );
-    }).toList();
-    _summery = loadedSummery;
+    _summery = await paymentRepo.getSummery();
     _summeryTotals = calculateTotalSummery();
 
     notifyListeners();
@@ -104,7 +90,7 @@ class PaymentsProvider with ChangeNotifier {
         case 'credit':
           totalCredit += payment.value;
           break;
-        case 'smart cards':
+        case 'smart':
           totalSmartCard += payment.value;
           break;
       }
@@ -121,82 +107,21 @@ class PaymentsProvider with ChangeNotifier {
 
   Future<void> fetchPayments(String shiftType) async {
     try {
-      // get payment methods
-      var response = await RequestBuilder.buildGetRequest("GasoPayMSet?");
-
-      var responseData = json.decode(response.body);
-      var extractedData = responseData['d']['results'] as List<dynamic>;
-      if (extractedData.isEmpty) {
-        return;
-      }
-      final List<Payment> loadedPayments = [];
-
-      for (var element in extractedData) {
-        final paymentType = element['PaymentType'];
-        final paymentName = element['PaymentTextAr'];
-        final icon = element['Icon'];
-        final isCoupon = icon == 'COUPON';
-
-        if (shiftType == 'G') {
-          if (isCoupon) {
-            loadedPayments.insert(
-              0,
-              Coupon(
-                icon: icon,
-                paymentType: paymentType,
-                paymentName: paymentName,
-                couponsList: [],
-              ),
-            );
-          } else {
-            loadedPayments.add(Payment(
-              icon: icon,
-              paymentType: paymentType,
-              paymentName: paymentName,
-            ));
-          }
-        } else {
-          loadedPayments.add(Payment(
-            icon: icon,
-            paymentType: paymentType,
-            paymentName: paymentName,
-          ));
-        }
-      }
-
-      // get coupons
-      if (shiftType == 'G') {
-        response = await RequestBuilder.buildGetRequest("YGasoCouponsSet?");
-
-        responseData = json.decode(response.body);
-        extractedData = responseData['d']['results'] as List<dynamic>;
-
-        Coupon? coupon;
-
-        for (var payment in loadedPayments) {
-          if (payment is Coupon) {
-            coupon = payment;
-          }
-        }
-
-        for (var element in extractedData) {
-          coupon!.couponsList.add(
-            CouponData(
-              coupon: element['Coupons'],
-              couponDesc: element['CouponsDesc'],
-              value: double.parse(element['Value']),
-              currency: element['Currency'],
-              businessPartner: element['BusinessPartner'],
-            ),
-          );
-        }
-      }
-
-      _paymentsItems = loadedPayments;
+      _paymentsItems = await paymentRepo.fetchPayments(shiftType);
 
       if (shiftType == 'F') {
         _paymentsItems.removeWhere(
             (element) => element.icon == 'COUPON' || element.icon == 'CARD');
+      } else {
+        final Payment cardPayment = _paymentsItems
+            .where(
+              (element) => element.icon == 'CARD',
+            )
+            .first;
+
+        cardPayment.amount = _creditAmount;
+        _paymentsItems.remove(cardPayment);
+        _paymentsItems.add(cardPayment);
       }
 
       // make cash payment at the end of payment list and set cash amount to total as default
@@ -206,7 +131,7 @@ class PaymentsProvider with ChangeNotifier {
           )
           .first;
 
-      cashPayment.amount = _total;
+      cashPayment.amount = _total - _creditAmount;
       _paymentsItems.remove(cashPayment);
       _paymentsItems.add(cashPayment);
 
@@ -223,8 +148,8 @@ class PaymentsProvider with ChangeNotifier {
       final hangingUnitsList = productsData.getHangingUnits;
       final tankList = productsData.getTanks;
 
-      return await RequestBuilder.postShiftRequest(hangingUnitsList,
-          _paymentsItems, tankList, _total, _cashRecipetImg, _visaReciptsImg);
+      return await paymentRepo.uploadShift(hangingUnitsList, _paymentsItems,
+          tankList, _total, _cashRecipetImg, _visaReciptsImg);
     } catch (error) {
       rethrow;
     }

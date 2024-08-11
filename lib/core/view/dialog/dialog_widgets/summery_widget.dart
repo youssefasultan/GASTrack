@@ -45,7 +45,7 @@ class _SummeryWidgetState extends State<SummeryWidget> {
         return context.translate.cash;
       case 'credit':
         return context.translate.unpaidCoupons;
-      case 'smartcards':
+      case 'smart':
         return context.translate.smartCard;
       default:
         return '';

@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gas_track/core/helper/data_manipulation.dart';
 import 'package:gas_track/features/home/model/hose.dart';
 
 import '../../../core/data/request_builder.dart';
-import '../../../core/data/shared.dart';
+import '../../../core/data/shared_pref/shared.dart';
 import '../model/hanging_unit.dart';
 import '../model/tank.dart';
 
@@ -13,10 +14,15 @@ class HangingUnitsProvider with ChangeNotifier {
   List<Tank> _tanks = [];
   List<Hose> _hoseList = [];
 
-  double _total = 0.0;
+  double _totalSales = 0.0;
+  double _creditAmount = 0.0;
 
   double get getTotalSales {
-    return _total;
+    return _totalSales;
+  }
+
+  double get getCreditAmount {
+    return _creditAmount;
   }
 
   List<HangingUnit> get getHangingUnits {
@@ -33,31 +39,35 @@ class HangingUnitsProvider with ChangeNotifier {
 
   Future<void> fetchProducts() async {
     try {
-      final userData = await Shared.getUserdata();
-
-      final response = await RequestBuilder.buildGetRequest(
-          "GasoItemsSet?\$filter=FunctionalLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
-
-      final responseData = json.decode(response.body);
-      final extractedData = responseData['d']['results'] as List<dynamic>;
-
-      if (extractedData.isEmpty) {
-        throw ArgumentError("No Equipments Found.");
-      }
-
-      addHangingUnits(extractedData, userData);
-
-      addHoses(extractedData);
-
-      matchHosesToHangingUnits();
-
-      if (userData['shiftType'] == 'F') {
-        addTanks(userData['funLoc']!, extractedData);
-      }
+      await fetchHangingUnitsFromApi();
 
       notifyListeners();
     } catch (error) {
       rethrow;
+    }
+  }
+
+  Future<void> fetchHangingUnitsFromApi() async {
+    final userData = await Shared.getUserdata();
+
+    final response = await RequestBuilder.buildGetRequest(
+        "GasoItemsSet?\$filter=FunctionalLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
+
+    final responseData = json.decode(response.body);
+    final extractedData = responseData['d']['results'] as List<dynamic>;
+
+    if (extractedData.isEmpty) {
+      throw ArgumentError("No Equipments Found.");
+    }
+
+    addHangingUnits(extractedData, userData);
+
+    addHoses(extractedData);
+
+    matchHosesToHangingUnits();
+
+    if (userData['shiftType'] == 'F') {
+      addTanks(userData['funLoc']!, extractedData);
     }
   }
 
@@ -73,14 +83,15 @@ class HangingUnitsProvider with ChangeNotifier {
 
   void addTanks(String funLoc, List<dynamic> hangingUnitResponse) async {
     try {
-      final response = await RequestBuilder
-          .buildGetRequest("GasTankSet?\$filter=ShiftLocation eq '$funLoc'&");
+      final response = await RequestBuilder.buildGetRequest(
+          "GasTankSet?\$filter=ShiftLocation eq '$funLoc'&");
 
       final responseData = json.decode(response.body);
       var extractedData = responseData['d']['results'] as List<dynamic>;
 
       if (extractedData.isEmpty) {
-        extractedData = getUniqueObjects(hangingUnitResponse, 'Material');
+        extractedData =
+            DataManipulation.getUniqueObjects(hangingUnitResponse, 'Material');
 
         final loadedTanks = extractedData
             .map(
@@ -120,23 +131,12 @@ class HangingUnitsProvider with ChangeNotifier {
 
   void addHangingUnits(
       List<dynamic> extractedData, Map<String, String> userData) {
-    final loadedHangingUnits = getUniqueObjects(extractedData, 'Equipment')
-        .map((element) => HangingUnit.fromJson(element, userData))
-        .toList();
+    final loadedHangingUnits =
+        DataManipulation.getUniqueObjects(extractedData, 'Equipment')
+            .map((element) => HangingUnit.fromJson(element, userData))
+            .toList();
 
     _hangingUnitItems = loadedHangingUnits;
-  }
-
-  List<dynamic> getUniqueObjects(List<dynamic> jsonList, String key) {
-    return jsonList.fold<List<dynamic>>(
-      [],
-      (acc, obj) {
-        if (!acc.any((item) => item[key] == obj[key])) {
-          acc.add(obj);
-        }
-        return acc;
-      },
-    );
   }
 
   void calculateTankQuantity() {
@@ -159,14 +159,44 @@ class HangingUnitsProvider with ChangeNotifier {
 
   void calculateTotal() {
     // calculate total sales
-    _total = 0.0;
+    _totalSales = 0.0;
     for (var element in _hoseList) {
-      _total +=
+      _totalSales +=
           ((element.totalQuantity - element.calibration) * element.unitPrice);
     }
 
     notifyListeners();
   }
+
+  Future<void> calaulateTotalwithCredit() async {
+    try {
+      final userData = await Shared.getUserdata();
+
+      final response = await RequestBuilder.buildGetRequest(
+          "GetConditionsSet?\$filter=ShiftLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}' and ShiftNo eq '${userData['shiftNo']}' and ShiftDate eq '${userData['formattedDate']!.replaceAll('-', '')}' &");
+
+      final responseData = json.decode(response.body);
+
+      _creditAmount = double.parse(responseData['d']['results'][0]['Amount']);
+
+      double creditQty =
+          double.parse(responseData['d']['results'][0]['Quantity']);
+
+      double totalQty = calculateTotalQty();
+
+      // remove credit qty from totalQty
+      totalQty -= creditQty;
+
+      _totalSales = totalQty * _hoseList.first.unitPrice;
+      _totalSales += _creditAmount;
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  double calculateTotalQty() =>
+      _hoseList.fold(0.0, (sum, element) => sum + element.totalQuantity);
 
   List<Hose?> validateProducts() {
     final itemsWithIncorrectAmount = _hoseList

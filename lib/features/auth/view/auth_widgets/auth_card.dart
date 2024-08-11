@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
+import 'package:gas_track/features/home/view/home_screen.dart';
 
 import 'package:sizer/sizer.dart';
 
@@ -50,6 +51,10 @@ class _AuthCardState extends State<AuthCard>
         _authData['password']!,
         _authData['shiftType']!,
       );
+
+      if (!mounted) return;
+
+      Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
     } catch (error) {
       if (!mounted) return;
 

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:gas_track/app.dart';
 
 
-import 'core/data/certifticate.dart';
+import 'core/network/certifticate.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {

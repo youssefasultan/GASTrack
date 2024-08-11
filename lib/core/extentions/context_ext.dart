@@ -11,7 +11,7 @@ import 'package:gas_track/core/view/dialog/dialog_builder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-extension BuildContextEntension<T> on BuildContext {
+extension BuildContextEntension on BuildContext {
   DialogBuilder get dialogBuilder => DialogBuilder(this);
 
   AppLocalizations get translate => AppLocalizations.of(this)!;

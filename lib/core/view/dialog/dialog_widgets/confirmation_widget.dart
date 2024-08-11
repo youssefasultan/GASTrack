@@ -203,12 +203,17 @@ class ConfirmationWidget extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                product.measuringPointDesc,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontFamily: 'Bebas',
-                  fontWeight: FontWeight.bold,
+              SizedBox(
+                width: 35.w,
+                child: Text(
+                  product.measuringPointDesc,
+                  maxLines: 3,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontFamily: 'Bebas',
+                    fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
               Text(

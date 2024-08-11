@@ -1,10 +1,10 @@
 name: gas_track
 description: A new Flutter project.
 publish_to: 'none'
-version: 0.1.5
+version: 0.1.9
 
 environment:
-  sdk: '>=2.19.2'
+  sdk: '>=3.4.3 <4.0.0'
 
 dependencies:
   flutter:
@@ -19,26 +19,25 @@ dependencies:
   dotted_border: ^2.1.0
   sizer: ^2.0.15
   firebase_core: ^2.31.0
+  flutter_launcher_icons: ^0.13.1
+  animated_splash_screen: ^1.3.0
+  page_transition: ^2.1.0
+  internet_connection_checker_plus: ^1.0.1
+  flutter_secure_storage: ^9.2.2
+  
   
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  flutter_launcher_icons: ^0.13.1
-  flutter_native_splash: ^2.3.4
+  
+ 
 
 flutter_launcher_icons:
   image_path: "assets/images/icon.png"
   android: true
 
-flutter_native_splash:
-  color: "#ffffff"
-  branding: assets/images/logo.png
-  branding_mode: bottom
-  android_12:
-    branding: assets/images/logo.png
-    android_gravity: bottom
-    color: "#ffffff"
+
 
 
 

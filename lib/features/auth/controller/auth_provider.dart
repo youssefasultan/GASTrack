@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gas_track/core/network/connectivity.dart';
 
 import '../../../core/data/request_builder.dart';
-import '../../../core/data/shared.dart';
+import '../../../core/data/shared_pref/shared.dart';
 import '../../../core/models/http_exception.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -17,6 +18,7 @@ class AuthProvider with ChangeNotifier {
   String? _shiftNo;
   String? _shiftTime;
   String? _name;
+  String? _formattedDate;
   late String _shiftType;
 
   bool _lock = false;
@@ -65,7 +67,32 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> login(String username, String password, String shiftType) async {
-    return _authenticate(username, password, shiftType);
+    try {
+      if (await Connectivity.hasInternetAccess()) {
+        await _authenticate(username, password, shiftType);
+      } else {
+        if (await Shared.userDataFound()) {
+          final userData = await Shared.getUserdata();
+
+          _location = userData['funLoc'];
+          _locationDescription = userData['funLocDesc'];
+          _username = userData['user'];
+          _shiftDate = userData['shiftDate'];
+          _shiftNo = userData['shiftNo'];
+          _shiftTime = userData['shiftTime'];
+          _isAdmin = false;
+          _name = userData['name'];
+
+          _shiftType = shiftType;
+
+          notifyListeners();
+        } else {
+          throw Exception('No Internet Connection');
+        }
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> _authenticate(
@@ -101,6 +128,7 @@ class AuthProvider with ChangeNotifier {
       _shiftTime = responseData['d']['ShiftTime'];
       _isAdmin = responseData['d']['Admin'] as bool;
       _name = responseData['d']['Name'];
+      _formattedDate = responseData['d']['ShiftDateStr'];
       _shiftType = shiftType;
 
       await Shared.saveUserData(
@@ -112,6 +140,7 @@ class AuthProvider with ChangeNotifier {
         _shiftTime!,
         shiftType,
         _name!,
+        _formattedDate!,
       );
 
       notifyListeners();
@@ -125,8 +154,8 @@ class AuthProvider with ChangeNotifier {
     final String lang =
         defaultLocale.split('_')[0].toUpperCase(); // get locale language
 
-    final response = await RequestBuilder
-        .buildGetRequest("ZGASO_MSG(MsgCode='0$code',Lang='$lang')?");
+    final response = await RequestBuilder.buildGetRequest(
+        "ZGASO_MSG(MsgCode='0$code',Lang='$lang')?");
 
     final responseData = json.decode(response.body);
 

@@ -32,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
+
     if (_isInit) {
       setState(() {
         _isLoading = true;
@@ -41,10 +43,13 @@ class _HomeScreenState extends State<HomeScreen>
         setState(() {
           _isLoading = false;
         });
-      });
+      }).onError(
+        (error, stackTrace) {
+          context.dialogBuilder.showErrorDialog(error.toString());
+        },
+      );
     }
     _isInit = false;
-    super.didChangeDependencies();
   }
 
   @override
@@ -55,22 +60,12 @@ class _HomeScreenState extends State<HomeScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Padding(
-          padding: EdgeInsets.only(left: 10.w),
-          child: Text(
-            context.translate.home,
-            style: TextStyle(
-              fontFamily: 'Babas',
-              fontWeight: FontWeight.bold,
-              color: context.theme.primaryColor,
-            ),
-          ),
-        ),
         automaticallyImplyLeading: false,
         actions: const [
           SettingsPopUpMenu(),
         ],
       ),
+      resizeToAvoidBottomInset: true,
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -134,9 +129,8 @@ class _HomeScreenState extends State<HomeScreen>
             color: context.theme.primaryColor,
             size: 35.0,
           ),
-          onPressed: () {
+          onPressed: () async {
             context.hangingUnitsProviderWithNoListner.calculateTotal();
-            context.hangingUnitsProviderWithNoListner.calculateTankQuantity();
             if (shiftType == 'G') {
               var invalidHoses =
                   context.hangingUnitsProviderWithNoListner.validateProducts();
@@ -150,9 +144,22 @@ class _HomeScreenState extends State<HomeScreen>
                 context.dialogBuilder
                     .showErrorDialog(context.translate.totalError);
               } else {
+                context.dialogBuilder.showLoadingIndicator('');
+                await context.hangingUnitsProviderWithNoListner
+                    .calaulateTotalwithCredit()
+                    .onError(
+                  (error, stackTrace) {
+                    context.dialogBuilder.hideOpenDialog();
+                    context.dialogBuilder.showErrorDialog(error.toString());
+                  },
+                );
+
+                if (!context.mounted) return;
+                context.dialogBuilder.hideOpenDialog();
                 Navigator.of(context).pushNamed(PaymentScreen.routeName);
               }
             } else if (shiftType == 'F') {
+              context.hangingUnitsProviderWithNoListner.calculateTankQuantity();
               var unrecordedTanks =
                   context.hangingUnitsProviderWithNoListner.validateTanks();
               if (unrecordedTanks.isNotEmpty) {

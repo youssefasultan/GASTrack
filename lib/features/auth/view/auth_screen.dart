@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gas_track/core/data/data_constants.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
-import 'package:gas_track/core/view/ui/ui_constants.dart';
+import 'package:gas_track/core/view/ui/powered_by_ecs.dart';
 import 'package:sizer/sizer.dart';
 
 import 'auth_widgets/auth_card.dart';
@@ -49,18 +48,7 @@ class AuthScreen extends StatelessWidget {
             ),
           ),
           const AuthCard(),
-          Padding(
-            padding: EdgeInsets.only(top: 8.h),
-            child: Text(
-              'Copyright \u00A9 2024 ECS. All rights reserved. V$vNo',
-              style: TextStyle(
-                color: blueColor,
-                fontFamily: 'Bebas',
-                fontSize: 10.sp,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          )
+          const PoweredByEcs()
         ],
       ),
     );

@@ -138,7 +138,9 @@ class _PaymentTileState extends State<PaymentTile> {
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
                 key: Key(payment.paymentName),
-                enabled: payment.icon != 'CASH',
+                enabled: payment.icon == 'CASH' || payment.icon == 'CARD'
+                    ? false
+                    : true,
                 onTapOutside: (event) {
                   amountFN.unfocus();
                 },
