@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gas_track/core/data/shared_pref/shared.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
+import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
 import 'dialog_widgets/confirmation_widget.dart';
@@ -73,7 +74,7 @@ class DialogBuilder {
           _dialogTextButton(
             () {
               hideOpenDialog();
-              showEndDayWarning();
+              showEndDayWarning(shiftDate);
             },
             context.translate.endDayStr,
             context.theme.primaryColor,
@@ -94,7 +95,7 @@ class DialogBuilder {
     );
   }
 
-  void showEndDayWarning() {
+  void showEndDayWarning(DateTime shiftDate) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -104,7 +105,7 @@ class DialogBuilder {
           size: 10.h,
         ),
         content: Text(
-          context.translate.endDayWarning,
+          '${context.translate.endDayWarning} ${DateFormat('dd-MM-yyyy').format(shiftDate)}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: context.theme.primaryColor,
