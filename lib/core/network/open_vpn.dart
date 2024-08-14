@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:openvpn_flutter/openvpn_flutter.dart';
 
 class OpenVpnService with ChangeNotifier {
@@ -36,8 +37,8 @@ class OpenVpnService with ChangeNotifier {
         openvpn.connect(
           content,
           'GASTEC VPN',
-          username: 'gastech-user02',
-          password: 'y9fKH?1>}46Q',
+          username: dotenv.env['VPN_USER']!,
+          password: dotenv.env['VPN_PASS']!,
           certIsRequired: true,
         );
       }
