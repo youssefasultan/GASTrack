@@ -2,7 +2,8 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
-import 'package:gas_track/core/view/ui/powered_by_ecs.dart';
+import 'package:gas_track/core/network/open_vpn.dart';
+import 'package:gas_track/core/view/splash_screen.dart';
 import 'package:gas_track/core/view/ui/ui_constants.dart';
 import 'package:gas_track/features/auth/controller/auth_provider.dart';
 import 'package:gas_track/features/auth/view/auth_screen.dart';
@@ -24,6 +25,9 @@ class MainApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
+          create: (context) => OpenVpnService(),
+        ),
+        ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
         ChangeNotifierProvider(
@@ -37,8 +41,8 @@ class MainApp extends StatelessWidget {
               PaymentsProvider(value.getTotalSales, value.getCreditAmount),
         ),
       ],
-      child: Consumer<AuthProvider>(
-        builder: (context, auth, child) => Sizer(
+      child: Consumer<OpenVpnService>(
+        builder: (context, vpn, child) => Sizer(
           builder: (context, orientation, deviceType) {
             return MaterialApp(
               onGenerateTitle: (context) {
@@ -64,27 +68,18 @@ class MainApp extends StatelessWidget {
                   secondary: redColor,
                 ),
               ),
-              home: AnimatedSplashScreen(
+              home: AnimatedSplashScreen.withScreenFunction(
                 duration: 3000,
                 splashIconSize: 75.w,
-                splash: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                        ),
-                      ),
-                      const PoweredByEcs(),
-                    ],
-                  ),
-                ),
-                nextScreen: const AuthScreen(),
+                splash: const SplashScreen(),
                 splashTransition: SplashTransition.slideTransition,
                 pageTransitionType: PageTransitionType.leftToRight,
                 backgroundColor: Colors.white,
+                screenFunction: () async {
+                  vpn.init();
+                  vpn.connect();
+                  return const AuthScreen();
+                },
               ),
               routes: {
                 HomeScreen.routeName: (context) => const HomeScreen(),
