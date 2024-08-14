@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gas_track/core/data/shared_pref/shared.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:sizer/sizer.dart';
-
 
 import 'dialog_widgets/confirmation_widget.dart';
 import 'dialog_widgets/loading_indicator.dart';
@@ -50,7 +50,93 @@ class DialogBuilder {
     Navigator.of(context).pop();
   }
 
-  void showConfirmationDialog() {
+  void showEndDayDialog() async {
+    final sysDate = await Shared.getSystemDate();
+    final shiftDate = await Shared.getShiftDate();
+
+    if (!context.mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        elevation: 5,
+        title: Text(
+          context.translate.endDay,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: context.theme.primaryColor,
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          _dialogTextButton(
+            () {
+              hideOpenDialog();
+              showEndDayWarning();
+            },
+            context.translate.endDayStr,
+            context.theme.primaryColor,
+            context.theme.primaryColor,
+            isEnabled: sysDate.isAfter(shiftDate),
+          ),
+          _dialogTextButton(
+            () {
+              hideOpenDialog();
+              showConfirmationDialog(false);
+            },
+            context.translate.endShiftStr,
+            context.theme.primaryColor,
+            context.theme.primaryColor,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showEndDayWarning() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: Icon(
+          Icons.warning,
+          color: Colors.yellow,
+          size: 10.h,
+        ),
+        content: Text(
+          context.translate.endDayWarning,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: context.theme.primaryColor,
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          _dialogTextButton(
+            () {
+              hideOpenDialog();
+              showConfirmationDialog(true);
+            },
+            context.translate.okay,
+            Colors.green,
+            Colors.green,
+            textColor: Colors.white,
+          ),
+          _dialogTextButton(
+            () {
+              hideOpenDialog();
+            },
+            context.translate.cancel,
+            Colors.red,
+            Colors.red,
+            textColor: Colors.white,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showConfirmationDialog(bool endDay) {
     final paymentData = context.paymentsProviderWithNoListner;
 
     showModalBottomSheet(
@@ -65,7 +151,7 @@ class DialogBuilder {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const ConfirmationWidget(),
+                ConfirmationWidget(endDay: endDay),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -75,7 +161,7 @@ class DialogBuilder {
                         showLoadingIndicator(context.translate.uploading);
 
                         try {
-                          if (await paymentData.uploadShift(context)) {
+                          if (await paymentData.uploadShift(context, endDay)) {
                             hideOpenDialog();
                             if (context.mounted) {
                               showSuccessDialog(context.translate.successMsg);
@@ -260,10 +346,12 @@ class DialogBuilder {
   }
 
   TextButton _dialogTextButton(
-      Function()? fun, String title, Color bgColor, Color borderColor) {
+      Function()? fun, String title, Color bgColor, Color borderColor,
+      {Color? textColor, bool isEnabled = true}) {
     var textColorCheck = bgColor == context.theme.primaryColor;
+
     return TextButton(
-      onPressed: fun,
+      onPressed: isEnabled ? fun : null,
       style: ButtonStyle(
         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
@@ -281,7 +369,7 @@ class DialogBuilder {
           ),
         ),
         backgroundColor: WidgetStateProperty.all(
-          bgColor,
+          isEnabled ? bgColor : Colors.grey,
         ),
       ),
       child: Text(
@@ -289,7 +377,8 @@ class DialogBuilder {
         style: TextStyle(
           fontFamily: 'Bebas',
           fontSize: 20.0,
-          color: textColorCheck ? Colors.white : Theme.of(context).primaryColor,
+          color: textColor ??
+              (textColorCheck ? Colors.white : Theme.of(context).primaryColor),
         ),
       ),
     );

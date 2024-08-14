@@ -41,18 +41,27 @@ class RequestBuilder {
       List<Tank> tankList,
       double total,
       String cashImg,
-      List<String> visaImgs) async {
+      List<String> visaImgs,
+      bool endDay) async {
     int responseCode;
     try {
       await _getToken();
 
-      responseCode = await _upload(_token!, _cookie!, hangingUnitsList,
-          paymentList, total, tankList, cashImg, visaImgs);
+      responseCode = await _upload(
+        _token!,
+        _cookie!,
+        hangingUnitsList,
+        paymentList,
+        total,
+        tankList,
+        cashImg,
+        visaImgs,
+        endDay,
+      );
+      return responseCode == HttpStatus.created;
     } catch (error) {
       throw HttpException(error.toString());
     }
-
-    return responseCode == HttpStatus.created;
   }
 
   static Future<void> _getToken() async {
@@ -78,15 +87,15 @@ class RequestBuilder {
   }
 
   static Future<int> _upload(
-    String token,
-    String cookie,
-    List<HangingUnit> hangingUnitsList,
-    List<Payment> paymentList,
-    double total,
-    List<Tank> tankList,
-    String cashImg,
-    List<String> visaImgs,
-  ) async {
+      String token,
+      String cookie,
+      List<HangingUnit> hangingUnitsList,
+      List<Payment> paymentList,
+      double total,
+      List<Tank> tankList,
+      String cashImg,
+      List<String> visaImgs,
+      bool endDay) async {
     var userData = await Shared.getUserdata();
     String cashBase64String = '';
     List<String> visaBase64String = [];
@@ -122,6 +131,7 @@ class RequestBuilder {
       'TotalAmount': '$total',
       'Currency': 'EGP',
       'BillingDoc': '',
+      'EndDay': endDay ? 'X' : '',
       'GasokToGasop': getJsonObjects(hangingUnitsList),
       'GasokToGasov': paymentList
           .map((pay) => {
@@ -173,10 +183,6 @@ class RequestBuilder {
 
     return response.statusCode;
   }
-
-  
-
-  
 
   static List<Map<String, dynamic>> getImageList(Map<String, String> userData,
       String cashImgSource, List<String> visaImgs) {

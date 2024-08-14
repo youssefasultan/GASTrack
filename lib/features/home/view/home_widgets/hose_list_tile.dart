@@ -178,13 +178,13 @@ class _HoseListTileState extends State<HoseListTile> {
   Row _calibrationRow(Hose hose, TextEditingController calibrationController) {
     return Row(
       children: [
-        SizedBox(
-          width: 15.w,
+        FittedBox(
           child: Text(
             context.translate.calibration,
             style: context.theme.textTheme.bodyMedium,
           ),
         ),
+        SizedBox(width: 2.w),
         Expanded(
           child: Focus(
             onFocusChange: (value) {

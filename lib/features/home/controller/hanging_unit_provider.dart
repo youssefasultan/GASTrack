@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gas_track/core/data/repo/hangingUnits/hanging_unit_repo.dart';
 import 'package:gas_track/core/helper/data_manipulation.dart';
 import 'package:gas_track/features/home/model/hose.dart';
 
@@ -10,6 +11,7 @@ import '../model/hanging_unit.dart';
 import '../model/tank.dart';
 
 class HangingUnitsProvider with ChangeNotifier {
+  final hangingUnitRpo = HangingUnitRepo();
   List<HangingUnit> _hangingUnitItems = [];
   List<Tank> _tanks = [];
   List<Hose> _hoseList = [];
@@ -50,15 +52,7 @@ class HangingUnitsProvider with ChangeNotifier {
   Future<void> fetchHangingUnitsFromApi() async {
     final userData = await Shared.getUserdata();
 
-    final response = await RequestBuilder.buildGetRequest(
-        "GasoItemsSet?\$filter=FunctionalLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
-
-    final responseData = json.decode(response.body);
-    final extractedData = responseData['d']['results'] as List<dynamic>;
-
-    if (extractedData.isEmpty) {
-      throw ArgumentError("No Equipments Found.");
-    }
+    final extractedData = await hangingUnitRpo.fetchProducts();
 
     addHangingUnits(extractedData, userData);
 
@@ -83,40 +77,7 @@ class HangingUnitsProvider with ChangeNotifier {
 
   void addTanks(String funLoc, List<dynamic> hangingUnitResponse) async {
     try {
-      final response = await RequestBuilder.buildGetRequest(
-          "GasTankSet?\$filter=ShiftLocation eq '$funLoc'&");
-
-      final responseData = json.decode(response.body);
-      var extractedData = responseData['d']['results'] as List<dynamic>;
-
-      if (extractedData.isEmpty) {
-        extractedData =
-            DataManipulation.getUniqueObjects(hangingUnitResponse, 'Material');
-
-        final loadedTanks = extractedData
-            .map(
-              (e) => Tank(
-                material: e['Material'],
-                shiftStart: 0.0,
-                unitPrice: double.parse(e['PricingUnit']),
-              ),
-            )
-            .toList();
-
-        _tanks = loadedTanks;
-      } else {
-        final loadedTanks = extractedData
-            .map(
-              (e) => Tank(
-                material: e['Material'],
-                shiftStart: double.parse(e['Quantity']),
-                unitPrice: double.parse(e['PricingUnit']),
-              ),
-            )
-            .toList();
-
-        _tanks = loadedTanks;
-      }
+      _tanks = await hangingUnitRpo.addTanks(funLoc, hangingUnitResponse);
     } catch (error) {
       rethrow;
     }

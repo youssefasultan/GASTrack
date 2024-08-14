@@ -6,6 +6,7 @@ import 'package:gas_track/features/payment/view/payment_widgets/payment_tabbar_l
 import 'package:sizer/sizer.dart';
 
 import 'payment_widgets/payment_card.dart';
+import 'payment_widgets/payment_tab_bar.dart';
 
 class PaymentScreen extends StatefulWidget {
   static const routeName = '/payment';
@@ -116,7 +117,7 @@ class _PaymentScreenState extends State<PaymentScreen>
               context.dialogBuilder
                   .showErrorDialog(context.translate.totalError);
             } else {
-              context.dialogBuilder.showConfirmationDialog();
+              context.dialogBuilder.showEndDayDialog();
             }
           },
           child: Icon(
@@ -130,33 +131,3 @@ class _PaymentScreenState extends State<PaymentScreen>
   }
 }
 
-class PaymentTabBar extends StatelessWidget implements PreferredSizeWidget {
-  const PaymentTabBar({
-    super.key,
-    required TabController tabController,
-  }) : _tabController = tabController;
-
-  final TabController _tabController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      child: TabBar(
-        tabs: [
-          Tab(
-            text: context.translate.payment,
-          ),
-          Tab(
-            text: context.translate.attachment,
-          ),
-        ],
-        controller: _tabController,
-        indicatorSize: TabBarIndicatorSize.tab,
-      ),
-    );
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}

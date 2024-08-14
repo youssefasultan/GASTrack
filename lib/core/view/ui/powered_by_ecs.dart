@@ -11,26 +11,29 @@ class PoweredByEcs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: 8.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Powered By ',
-            style: TextStyle(
-              color: blueColor,
-              fontFamily: 'Bebas',
-              fontSize: 10.sp,
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Powered By ',
+              style: TextStyle(
+                color: blueColor,
+                fontFamily: 'Bebas',
+                fontSize: 10.sp,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(width: 10),
-          Image.asset(
-            'assets/images/ecs_logo.png',
-            width: 40,
-            height: 40,
-            fit: BoxFit.contain,
-          )
-        ],
+            const SizedBox(width: 10),
+            Image.asset(
+              'assets/images/ecs_logo.png',
+              width: 40,
+              height: 40,
+              fit: BoxFit.contain,
+            )
+          ],
+        ),
       ),
     );
   }

@@ -9,11 +9,10 @@ class AttachmentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return ListView(
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 2.w, top: 2.h),
+          padding: EdgeInsets.only(left: 2.w, top: 2.h, right: 2.h),
           child: Text(
             context.translate.addCashPic,
             textAlign: TextAlign.start,
@@ -26,7 +25,7 @@ class AttachmentView extends StatelessWidget {
         ),
         const CashRecipetImg(),
         Padding(
-          padding: EdgeInsets.only(left: 2.w, top: 2.h),
+          padding: EdgeInsets.only(left: 2.w, top: 2.h, right: 2.h),
           child: Text(
             context.translate.addVisaPics,
             textAlign: TextAlign.start,

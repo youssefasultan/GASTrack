@@ -22,6 +22,9 @@ class PaymentRepo {
       }
       final List<Payment> loadedPayments = [];
 
+      String sysDate = extractedData.first['Sdate'];
+      await Shared.saveSystemDate(sysDate);
+
       for (var element in extractedData) {
         final paymentType = element['PaymentType'];
         final paymentName = element['PaymentTextAr'];
@@ -118,10 +121,11 @@ class PaymentRepo {
       List<Tank> tankList,
       double total,
       String cashImg,
-      List<String> visaImgs) async {
+      List<String> visaImgs,
+      bool endDay) async {
     try {
-      return await RequestBuilder.postShiftRequest(
-          hangingUnitsList, payments, tankList, total, cashImg, visaImgs);
+      return await RequestBuilder.postShiftRequest(hangingUnitsList, payments,
+          tankList, total, cashImg, visaImgs, endDay);
     } catch (e) {
       rethrow;
     }

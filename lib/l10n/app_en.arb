@@ -71,6 +71,10 @@
   "deleteImg": "Are you sure you want to remove?",
   "wared" : "Incoming",
   "calibError": "calibration amount must be less than or equal",
-  "smartCard": "Smart Cards"
+  "smartCard": "Smart Cards",
+  "endDay": "Do you want to End Day?",
+  "endDayStr": "Day",
+  "endShiftStr":"Shift",
+  "endDayWarning": "current shift will be the last shift in day "
 
 }

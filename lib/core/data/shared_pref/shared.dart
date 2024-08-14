@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Shared {
@@ -15,6 +17,7 @@ class Shared {
   static const String _name = 'name';
 
   static const String _formatedDate = 'dateFormatted';
+  static const String _sysDate = 'sysDate';
 
   static Future<void> saveSettings(
       String username, String password, String url) async {
@@ -86,5 +89,31 @@ class Shared {
     prefs.setString(_loggedInUser, '');
     prefs.setString(_shiftDate, '');
     prefs.setString(_shiftNo, '');
+    prefs.setString(_formatedDate, '');
+  }
+
+  static Future<void> saveSystemDate(String date) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(_sysDate, date);
+  }
+
+  static Future<DateTime> getSystemDate() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final date = prefs.getString(_sysDate);
+      String formattedDate =
+          "${date!.substring(0, 4)}-${date.substring(4, 6)}-${date.substring(6, 8)}";
+
+      return DateFormat('yyyy-MM-dd').parse(formattedDate);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<DateTime> getShiftDate() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final date = prefs.getString(_formatedDate);
+
+    return DateFormat('yyyy-MM-dd').parse(date!);
   }
 }

@@ -9,7 +9,9 @@ import 'package:sizer/sizer.dart';
 import '../../ui/dash_separator.dart';
 
 class ConfirmationWidget extends StatelessWidget {
-  const ConfirmationWidget({super.key});
+  const ConfirmationWidget({super.key, required this.endDay});
+
+  final bool endDay;
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +29,12 @@ class ConfirmationWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              context.translate.confirm,
+              '${context.translate.end} ${endDay ? context.translate.endDayStr : context.translate.endShiftStr}',
               textAlign: TextAlign.left,
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
+                color: Colors.red,
                 fontFamily: 'Bebas',
               ),
             ),

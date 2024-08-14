@@ -141,7 +141,7 @@ class PaymentsProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> uploadShift(BuildContext context) async {
+  Future<bool> uploadShift(BuildContext context, bool endDay) async {
     try {
       final productsData =
           Provider.of<HangingUnitsProvider>(context, listen: false);
@@ -149,7 +149,7 @@ class PaymentsProvider with ChangeNotifier {
       final tankList = productsData.getTanks;
 
       return await paymentRepo.uploadShift(hangingUnitsList, _paymentsItems,
-          tankList, _total, _cashRecipetImg, _visaReciptsImg);
+          tankList, _total, _cashRecipetImg, _visaReciptsImg, endDay);
     } catch (error) {
       rethrow;
     }
