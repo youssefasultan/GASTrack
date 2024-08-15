@@ -11,6 +11,7 @@
 migrate_working_dir/
 *.env
 
+
 # IntelliJ related
 *.iml
 *.ipr
@@ -32,6 +33,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/assets/vpn/pfsense-TCP4-6443-gastech-config.ovpn
 
 # Symbolication related
 app.*.symbols

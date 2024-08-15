@@ -13,6 +13,7 @@ import 'package:gas_track/features/payment/controller/payments_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/features/payment/view/payment_screen.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -76,6 +77,9 @@ class MainApp extends StatelessWidget {
                 pageTransitionType: PageTransitionType.leftToRight,
                 backgroundColor: Colors.white,
                 screenFunction: () async {
+                  Permission.notification.isGranted.then((_) {
+                    if (!_) Permission.notification.request();
+                  });
                   vpn.init();
                   vpn.connect();
                   return const AuthScreen();

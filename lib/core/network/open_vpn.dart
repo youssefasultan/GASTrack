@@ -14,7 +14,7 @@ class OpenVpnService with ChangeNotifier {
     openvpn = OpenVPN(
       onVpnStatusChanged: (data) {
         status = data!;
-        debugPrint('vpn status : ${status.toString()}');
+        // debugPrint('vpn status : ${status.toString()}');
       },
       onVpnStageChanged: (stage, rawStage) {
         this.stage = stage;
@@ -36,7 +36,7 @@ class OpenVpnService with ChangeNotifier {
       if (openvpn.initialized) {
         openvpn.connect(
           content,
-          'GASTEC VPN',
+          'GASTRACK VPN',
           username: dotenv.env['VPN_USER']!,
           password: dotenv.env['VPN_PASS']!,
           certIsRequired: true,
