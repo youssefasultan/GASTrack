@@ -70,22 +70,27 @@ class _AuthCardState extends State<AuthCard>
     Color primary = context.theme.primaryColor;
 
     return OutlinedButton(
-        onPressed: () {
-          setState(() {
-            _authData['shiftType'] = index;
-          });
-        },
+        onPressed: _isLoading
+            ? null
+            : () {
+                setState(() {
+                  _authData['shiftType'] = index;
+                });
+              },
         style: OutlinedButton.styleFrom(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           side: BorderSide(
-            color: primary,
+            color: _isLoading ? Colors.grey : primary,
             width: 2.0,
             style: BorderStyle.solid,
           ),
-          backgroundColor:
-              (_authData['shiftType'] == index) ? primary : Colors.white,
+          backgroundColor: (_authData['shiftType'] == index)
+              ? _isLoading
+                  ? Colors.grey
+                  : primary
+              : Colors.white,
         ),
         child: Text(
           text,

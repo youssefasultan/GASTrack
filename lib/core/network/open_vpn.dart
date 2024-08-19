@@ -4,11 +4,16 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:openvpn_flutter/openvpn_flutter.dart';
 
 class OpenVpnService with ChangeNotifier {
+  static final OpenVpnService _singleton = OpenVpnService._internal();
   late OpenVPN openvpn;
   late VpnStatus status;
   late VPNStage stage;
 
-  OpenVpnService();
+  OpenVpnService._internal();
+
+  factory OpenVpnService() {
+    return _singleton;
+  }
 
   void init() {
     openvpn = OpenVPN(

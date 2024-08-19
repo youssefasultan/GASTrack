@@ -98,7 +98,7 @@ class PaymentRepo {
       final userData = await Shared.getUserdata();
 
       var response = await RequestBuilder.buildGetRequest(
-          "GasAdminSet?\$filter=ShiftLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
+          "GasAdminSet?\$filter=ShiftLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}' and ShiftDate eq datetime'${userData['formattedDate']}T00:00:00'&");
 
       var responseData = json.decode(response.body);
       var extractedData = responseData['d']['results'] as List<dynamic>;
