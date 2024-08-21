@@ -7,7 +7,7 @@ class OpenVpnService with ChangeNotifier {
   static final OpenVpnService _singleton = OpenVpnService._internal();
   late OpenVPN openvpn;
   late VpnStatus status;
-  late VPNStage stage;
+  VPNStage stage = VPNStage.prepare;
 
   OpenVpnService._internal();
 

@@ -75,6 +75,8 @@
   "endDay": "Do you want to End Day?",
   "endDayStr": "Day",
   "endShiftStr":"Shift",
-  "endDayWarning": "current shift will be the last shift in day "
+  "endDayWarning": "current shift will be the last shift in day ",
+  "connecting": "Connecting",
+  "connected": "Connected"
 
 }

@@ -18,8 +18,36 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    final vpn = OpenVpnService();
+    if (state == AppLifecycleState.paused) {
+      vpn.disconnect();
+    } else if (state == AppLifecycleState.resumed) {
+      vpn.connect();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +100,7 @@ class MainApp extends StatelessWidget {
               home: AnimatedSplashScreen.withScreenFunction(
                 duration: 3000,
                 splashIconSize: 75.w,
-                splash: const SplashScreen(),
+                splash: SplashScreen(stage: vpn.stage),
                 splashTransition: SplashTransition.slideTransition,
                 pageTransitionType: PageTransitionType.leftToRight,
                 backgroundColor: Colors.white,
@@ -82,6 +110,9 @@ class MainApp extends StatelessWidget {
                   });
                   vpn.init();
                   vpn.connect();
+
+                  Future.delayed(const Duration(seconds: 5));
+
                   return const AuthScreen();
                 },
               ),

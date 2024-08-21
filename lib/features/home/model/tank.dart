@@ -37,7 +37,7 @@ class Tank with ChangeNotifier {
   factory Tank.fromJson(dynamic json) {
     return Tank(
       material: json['Material'],
-      shiftStart: double.parse(json['Quantity'] ?? 0.0),
+      shiftStart: double.parse(json['ExpQuantity'] ?? 0.0),
       unitPrice: double.parse(json['PricingUnit']),
     );
   }

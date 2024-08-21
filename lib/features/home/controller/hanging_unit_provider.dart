@@ -171,10 +171,8 @@ class HangingUnitsProvider with ChangeNotifier {
   }
 
   List<Tank?> validateTanks() {
-    final tanksWithoutEntries = _tanks
-        .where((tank) => tank.quantity > 0)
-        .where((tank) => tank.shiftEnd == null)
-        .toList();
+    final tanksWithoutEntries =
+        _tanks.where((tank) => tank.shiftEnd == null).toList();
     return tanksWithoutEntries.isEmpty ? [] : tanksWithoutEntries;
   }
 }
