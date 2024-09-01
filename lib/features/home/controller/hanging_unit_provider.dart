@@ -39,6 +39,7 @@ class HangingUnitsProvider with ChangeNotifier {
     return _tanks;
   }
 
+  /// fetch hanging units
   Future<void> fetchProducts() async {
     try {
       await fetchHangingUnitsFromApi();
@@ -65,6 +66,7 @@ class HangingUnitsProvider with ChangeNotifier {
     }
   }
 
+  /// match each hose with it's related hanging unit
   void matchHosesToHangingUnits() {
     for (var unit in _hangingUnitItems) {
       for (var hose in _hoseList) {
@@ -75,6 +77,7 @@ class HangingUnitsProvider with ChangeNotifier {
     }
   }
 
+  /// fetch fuel tanks if shift type is F
   void addTanks(String funLoc, List<dynamic> hangingUnitResponse) async {
     try {
       _tanks = await hangingUnitRpo.addTanks(funLoc, hangingUnitResponse);
@@ -83,6 +86,7 @@ class HangingUnitsProvider with ChangeNotifier {
     }
   }
 
+  /// map json to hose objcet
   void addHoses(List<dynamic> extractedData) {
     final loadedHose = extractedData
         .map((e) => Hose.fromJson(e, extractedData.indexOf(e)))
@@ -90,6 +94,8 @@ class HangingUnitsProvider with ChangeNotifier {
     _hoseList = loadedHose;
   }
 
+  /// extract unique hanging units objest as the json sent by backend
+  /// contains an json map for each hose
   void addHangingUnits(
       List<dynamic> extractedData, Map<String, String> userData) {
     final loadedHangingUnits =
@@ -118,8 +124,10 @@ class HangingUnitsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// calculate total sales by looping on each hose
+  /// total sales = ( quantity - hose calibration quantity ) * material unit price
+  /// where quantity = enteredReading - lastReading
   void calculateTotal() {
-    // calculate total sales
     _totalSales = 0.0;
     for (var element in _hoseList) {
       _totalSales +=
@@ -129,7 +137,11 @@ class HangingUnitsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> calaulateTotalwithCredit() async {
+  /// In case of gas, fetch credit amount and quantity from backend
+  /// then remove credit qty from actual total qty
+  /// total sales = actual total qty * unit price for the first hose, as all gas hoses have same price
+  /// the add credit amount to the total sales
+  Future<void> calaulateTotalSalesWithCredit() async {
     try {
       final userData = await Shared.getUserdata();
 
@@ -143,12 +155,12 @@ class HangingUnitsProvider with ChangeNotifier {
       double creditQty =
           double.parse(responseData['d']['results'][0]['Quantity']);
 
-      double totalQty = calculateTotalQty();
+      double actualTotalQty = calculateTotalQty();
 
       // remove credit qty from totalQty
-      totalQty -= creditQty;
+      actualTotalQty -= creditQty;
 
-      _totalSales = totalQty * _hoseList.first.unitPrice;
+      _totalSales = actualTotalQty * _hoseList.first.unitPrice;
       _totalSales += _creditAmount;
       notifyListeners();
     } catch (error) {
@@ -156,9 +168,14 @@ class HangingUnitsProvider with ChangeNotifier {
     }
   }
 
+  /// calculate total qty
   double calculateTotalQty() =>
       _hoseList.fold(0.0, (sum, element) => sum + element.totalQuantity);
 
+
+  /// validate hose where for each hose with entered reading
+  /// the entred reading - last reading * unit price must be 
+  /// equal to entred amount - last amount
   List<Hose?> validateProducts() {
     final itemsWithIncorrectAmount = _hoseList
         .where((item) => item.enteredReading != 0.0)
@@ -170,6 +187,8 @@ class HangingUnitsProvider with ChangeNotifier {
     return itemsWithIncorrectAmount.isEmpty ? [] : itemsWithIncorrectAmount;
   }
 
+  /// validate tanks as for every shift, the end shift measurements must be 
+  /// entered for every tank
   List<Tank?> validateTanks() {
     final tanksWithoutEntries =
         _tanks.where((tank) => tank.shiftEnd == null).toList();

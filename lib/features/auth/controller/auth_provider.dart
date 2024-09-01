@@ -68,9 +68,12 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> login(String username, String password, String shiftType) async {
     try {
+      // check weather there is internet access
       if (await Connectivity.hasInternetAccess()) {
+        // fetch from api
         await _authenticate(username, password, shiftType);
       } else {
+        // fetch from shared prefrence
         if (await Shared.userDataFound()) {
           final userData = await Shared.getUserdata();
 
@@ -107,13 +110,17 @@ class AuthProvider with ChangeNotifier {
 
       final responseData = json.decode(response.body);
 
+      // if responseData['d']['Found'] not equal 0 that means there is an error
       if (responseData['d']['Found'] != '0') {
+        // lock counter 
         if (responseData['d']['Found'] == '1') {
           _lockCounter++;
         } else if (responseData['d']['Found'] == '2') {
           _lockCounter = 0;
           _lock = false;
         }
+
+        // fetch error message and throw exception
 
         String error = await getErrorMsg(responseData['d']['Found'].toString());
 
@@ -130,7 +137,9 @@ class AuthProvider with ChangeNotifier {
       _name = responseData['d']['Name'];
       _formattedDate = responseData['d']['ShiftDateStr'];
       _shiftType = shiftType;
+      
 
+      // save data in shared pref
       await Shared.saveUserData(
         _location!,
         _locationDescription!,
@@ -162,16 +171,11 @@ class AuthProvider with ChangeNotifier {
     return responseData['d']['Msg'];
   }
 
-  Future<void> register(String username, String password, String url) async {
-    try {
-      await Shared.saveSettings(username, password, url);
-    } catch (error) {
-      rethrow;
-    }
-  }
+ 
 
   Future<void> logout() async {
     try {
+      
       _location = null;
       notifyListeners();
 

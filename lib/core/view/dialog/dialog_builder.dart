@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gas_track/core/data/shared_pref/shared.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
+import 'package:gas_track/core/view/ui/dialog_button.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
@@ -16,22 +17,25 @@ class DialogBuilder {
 
   BuildContext context;
 
+  /// shows loading alert dialog
   void showLoadingIndicator(String text) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return PopScope(
-            onPopInvoked: (didPop) => false,
-            child: AlertDialog(
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              content: LoadingIndicator(text: text),
-            ));
+          onPopInvoked: (didPop) => false,
+          child: AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0))),
+            content: LoadingIndicator(text: text),
+          ),
+        );
       },
     );
   }
 
+  /// show snackbar
   void showSnackBar(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -47,10 +51,12 @@ class DialogBuilder {
     );
   }
 
+  /// pop any dialog
   void hideOpenDialog() {
     Navigator.of(context).pop();
   }
 
+  /// show end of day summery
   void showEndDayDialog() async {
     final sysDate = await Shared.getSystemDate();
     final shiftDate = await Shared.getShiftDate();
@@ -71,30 +77,29 @@ class DialogBuilder {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          _dialogTextButton(
-            () {
+          DialogButton(
+            fun: () {
               hideOpenDialog();
               showEndDayWarning(shiftDate);
             },
-            context.translate.endDayStr,
-            context.theme.primaryColor,
-            context.theme.primaryColor,
+            title: context.translate.endDayStr,
+            bgColor: context.theme.primaryColor,
             isEnabled: sysDate.isAfter(shiftDate),
           ),
-          _dialogTextButton(
-            () {
+          DialogButton(
+            fun: () {
               hideOpenDialog();
               showConfirmationDialog(false);
             },
-            context.translate.endShiftStr,
-            context.theme.primaryColor,
-            context.theme.primaryColor,
+            title: context.translate.endShiftStr,
+            bgColor: context.theme.primaryColor,
           ),
         ],
       ),
     );
   }
 
+  /// show warining dalog that the day has ended
   void showEndDayWarning(DateTime shiftDate) {
     showDialog(
       context: context,
@@ -113,23 +118,21 @@ class DialogBuilder {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          _dialogTextButton(
-            () {
+          DialogButton(
+            fun: () {
               hideOpenDialog();
               showConfirmationDialog(true);
             },
-            context.translate.okay,
-            Colors.green,
-            Colors.green,
+            title: context.translate.okay,
+            bgColor: Colors.green,
             textColor: Colors.white,
           ),
-          _dialogTextButton(
-            () {
+          DialogButton(
+            fun: () {
               hideOpenDialog();
             },
-            context.translate.cancel,
-            Colors.red,
-            Colors.red,
+            title: context.translate.cancel,
+            bgColor: Colors.red,
             textColor: Colors.white,
           ),
         ],
@@ -137,6 +140,8 @@ class DialogBuilder {
     );
   }
 
+  /// if day has ended and user choose to end day a confrimation
+  /// dialog is prsented
   void showConfirmationDialog(bool endDay) {
     final paymentData = context.paymentsProviderWithNoListner;
 
@@ -156,8 +161,8 @@ class DialogBuilder {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _dialogTextButton(
-                      () async {
+                    DialogButton(
+                      fun: () async {
                         Navigator.pop(context);
                         showLoadingIndicator(context.translate.uploading);
 
@@ -178,15 +183,14 @@ class DialogBuilder {
                           showErrorDialog(error.toString());
                         }
                       },
-                      context.translate.confirm,
-                      context.theme.primaryColor,
-                      context.theme.primaryColor,
+                      title: context.translate.confirm,
+                      bgColor: context.theme.primaryColor,
                     ),
-                    _dialogTextButton(
-                      hideOpenDialog,
-                      context.translate.cancel,
-                      Colors.white,
-                      context.theme.primaryColor,
+                    DialogButton(
+                      fun: hideOpenDialog,
+                      title: context.translate.cancel,
+                      bgColor: Colors.white,
+                      borderColor: context.theme.primaryColor,
                     )
                   ],
                 )
@@ -198,6 +202,7 @@ class DialogBuilder {
     );
   }
 
+  /// show end of day summery
   Future<dynamic> showEndOfDaySummery() {
     return showModalBottomSheet(
       context: context,
@@ -207,16 +212,15 @@ class DialogBuilder {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const SummeryWidget(),
-            _dialogTextButton(
-              () {
+            DialogButton(
+              fun: () {
                 hideOpenDialog();
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
                 context.authProvider.logout();
               },
-              context.translate.confirm,
-              context.theme.primaryColor,
-              context.theme.primaryColor,
+              title: context.translate.confirm,
+              bgColor: context.theme.primaryColor,
             )
           ],
         );
@@ -224,6 +228,7 @@ class DialogBuilder {
     );
   }
 
+  // show error dialog
   void showErrorDialog(
     String message,
   ) {
@@ -248,17 +253,17 @@ class DialogBuilder {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          _dialogTextButton(
-            hideOpenDialog,
-            context.translate.okay,
-            context.theme.primaryColor,
-            context.theme.primaryColor,
+          DialogButton(
+            fun: hideOpenDialog,
+            title: context.translate.okay,
+            bgColor: context.theme.primaryColor,
           )
         ],
       ),
     );
   }
 
+  /// show success dialog
   void showSuccessDialog(
     String message,
   ) {
@@ -283,20 +288,20 @@ class DialogBuilder {
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          _dialogTextButton(
-            () {
+          DialogButton(
+            fun: () {
               hideOpenDialog();
               showEndOfDaySummery();
             },
-            context.translate.next,
-            context.theme.primaryColor,
-            context.theme.primaryColor,
+            title: context.translate.next,
+            bgColor: context.theme.primaryColor,
           )
         ],
       ),
     );
   }
 
+  /// image deletion confrimation
   void showDeleteImgConfrimation(bool isCash, String path) {
     showDialog(
       context: context,
@@ -312,14 +317,14 @@ class DialogBuilder {
         iconColor: redColor,
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          _dialogTextButton(
-            hideOpenDialog,
-            context.translate.cancel,
-            Colors.white,
-            context.theme.primaryColor,
+          DialogButton(
+            fun: hideOpenDialog,
+            title: context.translate.cancel,
+            bgColor: Colors.white,
+            borderColor: context.theme.primaryColor,
           ),
-          _dialogTextButton(
-            () {
+          DialogButton(
+            fun: () {
               hideOpenDialog();
               if (isCash) {
                 context.paymentsProviderWithNoListner.setCashRecipetImg('');
@@ -328,59 +333,10 @@ class DialogBuilder {
                     .removeImgPathFromList(path);
               }
             },
-            context.translate.confirm,
-            context.theme.primaryColor,
-            context.theme.primaryColor,
+            title: context.translate.confirm,
+            bgColor: context.theme.primaryColor,
           ),
         ],
-      ),
-    );
-  }
-
-  Future<DateTime?> showDatePickerDialog() async {
-    return await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1950),
-      lastDate: DateTime.now(),
-    );
-  }
-
-  TextButton _dialogTextButton(
-      Function()? fun, String title, Color bgColor, Color borderColor,
-      {Color? textColor, bool isEnabled = true}) {
-    var textColorCheck = bgColor == context.theme.primaryColor;
-
-    return TextButton(
-      onPressed: isEnabled ? fun : null,
-      style: ButtonStyle(
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            side: BorderSide(
-              color: borderColor,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-        padding: WidgetStateProperty.all<EdgeInsets>(
-          const EdgeInsets.symmetric(
-            horizontal: 30.0,
-            vertical: 8.0,
-          ),
-        ),
-        backgroundColor: WidgetStateProperty.all(
-          isEnabled ? bgColor : Colors.grey,
-        ),
-      ),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontFamily: 'Bebas',
-          fontSize: 20.0,
-          color: textColor ??
-              (textColorCheck ? Colors.white : Theme.of(context).primaryColor),
-        ),
       ),
     );
   }

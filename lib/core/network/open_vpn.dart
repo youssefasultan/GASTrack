@@ -19,7 +19,6 @@ class OpenVpnService with ChangeNotifier {
     openvpn = OpenVPN(
       onVpnStatusChanged: (data) {
         status = data!;
-        // debugPrint('vpn status : ${status.toString()}');
       },
       onVpnStageChanged: (stage, rawStage) {
         this.stage = stage;

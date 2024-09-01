@@ -77,6 +77,7 @@
   "endShiftStr":"Shift",
   "endDayWarning": "current shift will be the last shift in day ",
   "connecting": "Connecting",
-  "connected": "Connected"
+  "connected": "Connected",
+  "shyftTypeError": "Please choose shift type"
 
 }

@@ -31,6 +31,14 @@ lane for android firebase app distribution
 
 
 
+### android firebase_distribution_customer_testers
+
+```sh
+[bundle exec] fastlane android firebase_distribution_customer_testers
+```
+
+
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

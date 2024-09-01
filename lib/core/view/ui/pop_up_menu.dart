@@ -15,6 +15,7 @@ class SettingsPopUpMenu extends StatelessWidget {
       ),
       onSelected: (value) {
         if (value == 'logout') {
+          // logout
           Navigator.of(context)
               .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
           context.authProvider.logout();

@@ -36,6 +36,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     final vpn = OpenVpnService();
+
+    // check whether application is paused then disconnect vpn else re-connect
     if (state == AppLifecycleState.paused) {
       vpn.disconnect();
     } else if (state == AppLifecycleState.resumed) {
@@ -53,15 +55,21 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        // open vpn provier
         ChangeNotifierProvider(
           create: (context) => OpenVpnService(),
         ),
+        // auth provider
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
+
+        // hanging uints provider
         ChangeNotifierProvider(
           create: (_) => HangingUnitsProvider(),
         ),
+
+        // payments provier [needs total sales and credit amount values]
         ChangeNotifierProxyProvider<HangingUnitsProvider, PaymentsProvider>(
           create: (context) => PaymentsProvider(
               context.hangingUnitsProviderWithNoListner.getTotalSales,
@@ -105,9 +113,12 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
                 pageTransitionType: PageTransitionType.leftToRight,
                 backgroundColor: Colors.white,
                 screenFunction: () async {
+                  // request notification permission
                   Permission.notification.isGranted.then((_) {
                     if (!_) Permission.notification.request();
                   });
+
+                  // init vpn and connect
                   vpn.init();
                   vpn.connect();
 

@@ -130,6 +130,7 @@ class _HomeScreenState extends State<HomeScreen>
             size: 35.0,
           ),
           onPressed: () async {
+            // calculate total sales
             context.hangingUnitsProviderWithNoListner.calculateTotal();
             if (shiftType == 'G') {
               var invalidHoses =
@@ -144,9 +145,10 @@ class _HomeScreenState extends State<HomeScreen>
                 context.dialogBuilder
                     .showErrorDialog(context.translate.totalError);
               } else {
+
                 context.dialogBuilder.showLoadingIndicator('');
                 await context.hangingUnitsProviderWithNoListner
-                    .calaulateTotalwithCredit()
+                    .calaulateTotalSalesWithCredit()
                     .onError(
                   (error, stackTrace) {
                     context.dialogBuilder.hideOpenDialog();
@@ -159,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen>
                 Navigator.of(context).pushNamed(PaymentScreen.routeName);
               }
             } else if (shiftType == 'F') {
+              
               context.hangingUnitsProviderWithNoListner.calculateTankQuantity();
               var unrecordedTanks =
                   context.hangingUnitsProviderWithNoListner.validateTanks();

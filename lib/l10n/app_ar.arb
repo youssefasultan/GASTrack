@@ -77,6 +77,7 @@
   "endShiftStr":"الشيفت",
   "endDayWarning": "الشيفت الحالي سوف يكون اخر شيفت في يوم",
   "connecting": "يتم الاتصال",
-  "connected": "تم الاتصال"
+  "connected": "تم الاتصال",
+  "shyftTypeError": "من فضلك اختر نوع الشيفت"
 
 }

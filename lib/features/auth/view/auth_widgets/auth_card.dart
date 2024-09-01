@@ -19,21 +19,22 @@ class _AuthCardState extends State<AuthCard>
     'username': '',
     'password': '',
     'url': '',
-    'shiftType': 'F',
+    'shiftType': '',
   };
 
   final _passwordController = TextEditingController();
   final _usernameController = TextEditingController();
-  // final _urlController = TextEditingController();
 
   var _isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Future<void> _submit() async {
+
+    // check if shiftType is not choosen
+    if (_authData['shiftType']!.isEmpty) {
+      context.dialogBuilder.showSnackBar(context.translate.shyftTypeError);
+      return;
+    }
+
     if (!_formKey.currentState!.validate()) {
       // Invalid!
       return;
@@ -118,6 +119,7 @@ class _AuthCardState extends State<AuthCard>
               padding: EdgeInsets.symmetric(horizontal: 4.w),
               child: Column(
                 children: [
+                  // username textfeild
                   TextFormField(
                     decoration:
                         InputDecoration(labelText: context.translate.username),
@@ -131,9 +133,11 @@ class _AuthCardState extends State<AuthCard>
                       return null;
                     },
                     onSaved: (value) {
+                      // add username value to _authData Map
                       _authData['username'] = value!;
                     },
                   ),
+                  // password text feild
                   TextFormField(
                     decoration:
                         InputDecoration(labelText: context.translate.password),
@@ -142,12 +146,14 @@ class _AuthCardState extends State<AuthCard>
                     enabled: _isLoading ? false : true,
                     validator: (value) {
                       if (value!.isEmpty || value.length < 5) {
+                        // password validation
                         return context.translate.shortPassword;
                       }
 
                       return null;
                     },
                     onSaved: (value) {
+                      // add password value to _authData Map
                       _authData['password'] = value!;
                     },
                   ),
@@ -158,6 +164,7 @@ class _AuthCardState extends State<AuthCard>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        // custom radio buttons to choose shift type
                         customRadioButton(context.translate.fuel, 'F'),
                         customRadioButton(context.translate.gas, 'G'),
                       ],

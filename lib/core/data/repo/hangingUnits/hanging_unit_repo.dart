@@ -37,6 +37,10 @@ class HangingUnitRepo {
       final responseData = json.decode(response.body);
       var extractedData = responseData['d']['results'] as List<dynamic>;
 
+
+      // if the extracted data is empty that means that no Tank table is created 
+      // in the backend, so we need to create it first using unique materials from the
+      // hanging units fetch 
       if (extractedData.isEmpty) {
         extractedData =
             DataManipulation.getUniqueObjects(hangingUnitResponse, 'Material');

@@ -43,7 +43,7 @@ class PaymentsProvider with ChangeNotifier {
   String get getCashRecipetImg {
     return _cashRecipetImg;
   }
-
+  
   void setCashRecipetImg(String path) {
     _cashRecipetImg = path;
     notifyListeners();
@@ -63,6 +63,7 @@ class PaymentsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// fetch end of day summry for all shif payments
   Future<void> getEndOfDaySummeryPayments() async {
     _summery = await paymentRepo.getSummery();
     _summeryTotals = calculateTotalSummery();
@@ -70,12 +71,14 @@ class PaymentsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// calculate total for each payment type
   Map<String, double> calculateTotalSummery() {
     var totalCash = 0.0;
     var totalCard = 0.0;
     var totalCoupon = 0.0;
     var totalCredit = 0.0;
     var totalSmartCard = 0.0;
+    Map<String, double> result = {};
     for (var payment in _summery) {
       switch (payment.paymentType.toLowerCase()) {
         case 'visa':
@@ -96,22 +99,47 @@ class PaymentsProvider with ChangeNotifier {
       }
     }
 
-    return {
-      'Cash': totalCash,
-      'Visa': totalCard,
-      'Coupon': totalCoupon,
-      'Credit': totalCredit,
-      'SmartCards': totalSmartCard,
-    };
+    if (totalCash != 0) {
+      result.addAll({
+        'Cash': totalCash,
+      });
+    }
+    if (totalCard != 0) {
+      result.addAll({
+        'Visa': totalCard,
+      });
+    }
+
+    if (totalCoupon != 0) {
+      result.addAll({'Coupon': totalCoupon});
+    }
+
+    if (totalCredit != 0) {
+      result.addAll({'Credit': totalCredit});
+    }
+
+    if (totalSmartCard != 0) {
+      result.addAll({'SmartCards': totalSmartCard});
+    }
+
+    return result;
   }
 
+  /// fetch payment methods
+  // if shift type is fuel(F) remove all payment methods except cash and visa
+  // else if shift type is Gas(G) set the credit anount to payment with icon == 'CARD'
+  // and add it to the end of the list
+  // after that for the cash payment the value is set to total - credit total
+  // then added to the end of the list
   Future<void> fetchPayments(String shiftType) async {
     try {
       _paymentsItems = await paymentRepo.fetchPayments(shiftType);
 
       if (shiftType == 'F') {
-        _paymentsItems.removeWhere(
-            (element) => element.icon == 'COUPON' || element.icon == 'CARD');
+        _paymentsItems.removeWhere((element) =>
+            element.icon == 'COUPON' ||
+            element.icon == 'CARD' ||
+            element.icon == 'SMART');
       } else {
         final Payment cardPayment = _paymentsItems
             .where(
@@ -141,6 +169,7 @@ class PaymentsProvider with ChangeNotifier {
     }
   }
 
+  // upload shift
   Future<bool> uploadShift(BuildContext context, bool endDay) async {
     try {
       final productsData =
@@ -155,6 +184,8 @@ class PaymentsProvider with ChangeNotifier {
     }
   }
 
+  /// calculate total of coupons amount
+  /// then calculate cash amount
   bool calculateCouponTotal() {
     for (var payment in _paymentsItems) {
       if (payment is Coupon) {
@@ -171,14 +202,15 @@ class PaymentsProvider with ChangeNotifier {
     }
   }
 
+  // cash payment is dimmed, so it is calculated by removing other payments amount from total amount
   bool calculateCash() {
-    double totalVisaCoupon = _paymentsItems
+    double nonCashTotal = _paymentsItems
         .where((p) => p.icon != 'CASH')
         .fold(0, (sum, p) => sum + p.amount);
 
     for (var p in _paymentsItems) {
       if (p.icon == 'CASH') {
-        final cashAmount = _total - totalVisaCoupon;
+        final cashAmount = _total - nonCashTotal;
 
         if ((cashAmount) < 0) {
           return false;
@@ -195,6 +227,7 @@ class PaymentsProvider with ChangeNotifier {
     return true;
   }
 
+  /// validate that payments total amount is equal to total amount
   bool validatePayments() {
     double total = 0.0;
     for (var payment in _paymentsItems) {
