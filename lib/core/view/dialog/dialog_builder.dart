@@ -169,9 +169,7 @@ class DialogBuilder {
                         try {
                           if (await paymentData.uploadShift(context, endDay)) {
                             hideOpenDialog();
-                            if (context.mounted) {
-                              showSuccessDialog(context.translate.successMsg);
-                            }
+                            showEndOfDaySummery();
                           } else {
                             hideOpenDialog();
                             if (context.mounted) {
@@ -207,6 +205,7 @@ class DialogBuilder {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      isDismissible: false,
       builder: (_) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,

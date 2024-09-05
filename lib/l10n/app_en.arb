@@ -78,6 +78,7 @@
   "endDayWarning": "current shift will be the last shift in day ",
   "connecting": "Connecting",
   "connected": "Connected",
-  "shyftTypeError": "Please choose shift type"
+  "shyftTypeError": "Please choose shift type",
+  "creditError": "Actual Quantity must be greater than credit quantity"
 
 }

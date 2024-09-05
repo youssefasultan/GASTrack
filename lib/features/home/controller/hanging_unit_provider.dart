@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:gas_track/core/data/repo/hangingUnits/hanging_unit_repo.dart';
 import 'package:gas_track/core/helper/data_manipulation.dart';
+import 'package:gas_track/core/models/http_exception.dart';
 import 'package:gas_track/features/home/model/hose.dart';
 
-import '../../../core/data/request_builder.dart';
 import '../../../core/data/shared_pref/shared.dart';
 import '../model/hanging_unit.dart';
 import '../model/tank.dart';
@@ -18,6 +16,7 @@ class HangingUnitsProvider with ChangeNotifier {
 
   double _totalSales = 0.0;
   double _creditAmount = 0.0;
+  double _mobileAmount = 0.0;
 
   double get getTotalSales {
     return _totalSales;
@@ -25,6 +24,10 @@ class HangingUnitsProvider with ChangeNotifier {
 
   double get getCreditAmount {
     return _creditAmount;
+  }
+
+  double get getMobileAmount {
+    return _mobileAmount;
   }
 
   List<HangingUnit> get getHangingUnits {
@@ -141,28 +144,30 @@ class HangingUnitsProvider with ChangeNotifier {
   /// then remove credit qty from actual total qty
   /// total sales = actual total qty * unit price for the first hose, as all gas hoses have same price
   /// the add credit amount to the total sales
-  Future<void> calaulateTotalSalesWithCredit() async {
+  Future<bool> calaulateTotalSalesWithCredit() async {
     try {
-      final userData = await Shared.getUserdata();
+      final responseData = await hangingUnitRpo.getCredit();
 
-      final response = await RequestBuilder.buildGetRequest(
-          "GetConditionsSet?\$filter=ShiftLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}' and ShiftNo eq '${userData['shiftNo']}' and ShiftDate eq '${userData['formattedDate']!.replaceAll('-', '')}' &");
+      _creditAmount = responseData['cAmount']!; // credit amount
+      _mobileAmount = responseData['mAmount']!; // mobile amount
 
-      final responseData = json.decode(response.body);
+      double creditQty = responseData['cQty']!; // credit qty
+      double mobileQty = responseData['mQty']!; // mobile qty
 
-      _creditAmount = double.parse(responseData['d']['results'][0]['Amount']);
-
-      double creditQty =
-          double.parse(responseData['d']['results'][0]['Quantity']);
-
+      // calculate actual total qty
       double actualTotalQty = calculateTotalQty();
 
-      // remove credit qty from totalQty
-      actualTotalQty -= creditQty;
+      if (creditQty + mobileQty < actualTotalQty) {
+        // remove credit qty from totalQty
+        actualTotalQty -= (creditQty + mobileQty);
 
-      _totalSales = actualTotalQty * _hoseList.first.unitPrice;
-      _totalSales += _creditAmount;
-      notifyListeners();
+        _totalSales = actualTotalQty * _hoseList.first.unitPrice;
+        _totalSales += (_creditAmount + _mobileAmount);
+        notifyListeners();
+        return true;
+      } else {
+        throw HttpException('creditError');
+      }
     } catch (error) {
       rethrow;
     }
@@ -172,9 +177,8 @@ class HangingUnitsProvider with ChangeNotifier {
   double calculateTotalQty() =>
       _hoseList.fold(0.0, (sum, element) => sum + element.totalQuantity);
 
-
   /// validate hose where for each hose with entered reading
-  /// the entred reading - last reading * unit price must be 
+  /// the entred reading - last reading * unit price must be
   /// equal to entred amount - last amount
   List<Hose?> validateProducts() {
     final itemsWithIncorrectAmount = _hoseList
@@ -187,7 +191,7 @@ class HangingUnitsProvider with ChangeNotifier {
     return itemsWithIncorrectAmount.isEmpty ? [] : itemsWithIncorrectAmount;
   }
 
-  /// validate tanks as for every shift, the end shift measurements must be 
+  /// validate tanks as for every shift, the end shift measurements must be
   /// entered for every tank
   List<Tank?> validateTanks() {
     final tanksWithoutEntries =

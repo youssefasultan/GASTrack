@@ -73,9 +73,10 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         ChangeNotifierProxyProvider<HangingUnitsProvider, PaymentsProvider>(
           create: (context) => PaymentsProvider(
               context.hangingUnitsProviderWithNoListner.getTotalSales,
-              context.hangingUnitsProviderWithNoListner.getCreditAmount),
-          update: (_, value, previous) =>
-              PaymentsProvider(value.getTotalSales, value.getCreditAmount),
+              context.hangingUnitsProviderWithNoListner.getCreditAmount,
+              context.hangingUnitsProviderWithNoListner.getMobileAmount),
+          update: (_, value, previous) => PaymentsProvider(value.getTotalSales,
+              value.getCreditAmount, value.getMobileAmount),
         ),
       ],
       child: Consumer<OpenVpnService>(

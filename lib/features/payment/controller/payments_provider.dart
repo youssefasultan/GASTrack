@@ -12,19 +12,22 @@ class PaymentsProvider with ChangeNotifier {
   List<Payment> _paymentsItems = [];
   double _total = 0.0;
   double _creditAmount = 0.0;
+  double _mobileAmount = 0.0;
 
   List<Summery> _summery = [];
-  Map<String, double> _summeryTotals = {};
+  List<Map<String, dynamic>> _summeryTotals = [];
 
   String _cashRecipetImg = '';
   final List<String> _visaReciptsImg = [];
 
-  PaymentsProvider(double totalSales, double creditAmount) {
+  PaymentsProvider(
+      double totalSales, double creditAmount, double mobileAmount) {
     _total = totalSales;
     _creditAmount = creditAmount;
+    _mobileAmount = mobileAmount;
   }
 
-  Map<String, double> get getSummeryTotals {
+  List<Map<String, dynamic>> get getSummeryTotals {
     return _summeryTotals;
   }
 
@@ -43,7 +46,7 @@ class PaymentsProvider with ChangeNotifier {
   String get getCashRecipetImg {
     return _cashRecipetImg;
   }
-  
+
   void setCashRecipetImg(String path) {
     _cashRecipetImg = path;
     notifyListeners();
@@ -72,55 +75,23 @@ class PaymentsProvider with ChangeNotifier {
   }
 
   /// calculate total for each payment type
-  Map<String, double> calculateTotalSummery() {
-    var totalCash = 0.0;
-    var totalCard = 0.0;
-    var totalCoupon = 0.0;
-    var totalCredit = 0.0;
-    var totalSmartCard = 0.0;
-    Map<String, double> result = {};
-    for (var payment in _summery) {
-      switch (payment.paymentType.toLowerCase()) {
-        case 'visa':
-          totalCard += payment.value;
-          break;
-        case 'cash':
-          totalCash += payment.value;
-          break;
-        case 'coupon':
-          totalCoupon += payment.value;
-          break;
-        case 'credit':
-          totalCredit += payment.value;
-          break;
-        case 'smart':
-          totalSmartCard += payment.value;
-          break;
+  List<Map<String, dynamic>> calculateTotalSummery() {
+    Map<String, double> sums = {};
+
+    for (Summery payment in _summery) {
+      String name = payment.paymentType;
+      double value = payment.value;
+
+      if (sums.containsKey(name)) {
+        sums[name] = sums[name]! + value;
+      } else {
+        sums[name] = value;
       }
     }
-
-    if (totalCash != 0) {
-      result.addAll({
-        'Cash': totalCash,
-      });
-    }
-    if (totalCard != 0) {
-      result.addAll({
-        'Visa': totalCard,
-      });
-    }
-
-    if (totalCoupon != 0) {
-      result.addAll({'Coupon': totalCoupon});
-    }
-
-    if (totalCredit != 0) {
-      result.addAll({'Credit': totalCredit});
-    }
-
-    if (totalSmartCard != 0) {
-      result.addAll({'SmartCards': totalSmartCard});
-    }
+    List<Map<String, dynamic>> result = [];
+    sums.forEach((name, sum) {
+      result.add({'name': name, 'value': sum});
+    });
 
     return result;
   }
@@ -135,31 +106,38 @@ class PaymentsProvider with ChangeNotifier {
     try {
       _paymentsItems = await paymentRepo.fetchPayments(shiftType);
 
-      if (shiftType == 'F') {
-        _paymentsItems.removeWhere((element) =>
-            element.icon == 'COUPON' ||
-            element.icon == 'CARD' ||
-            element.icon == 'SMART');
-      } else {
-        final Payment cardPayment = _paymentsItems
+      if (shiftType == 'G') {
+        // credit
+        final Payment creditPayment = _paymentsItems
             .where(
-              (element) => element.icon == 'CARD',
+              (element) => element.paymentType == 'ZUCP', // credit
             )
             .first;
 
-        cardPayment.amount = _creditAmount;
-        _paymentsItems.remove(cardPayment);
-        _paymentsItems.add(cardPayment);
+        creditPayment.amount = _creditAmount;
+        _paymentsItems.remove(creditPayment);
+        _paymentsItems.add(creditPayment);
+
+        // mobile
+        final Payment mobilePayment = _paymentsItems
+            .where(
+              (element) => element.paymentType == 'ZMOB',
+            )
+            .first;
+
+        mobilePayment.amount = _mobileAmount;
+        _paymentsItems.remove(mobilePayment);
+        _paymentsItems.add(mobilePayment);
       }
 
       // make cash payment at the end of payment list and set cash amount to total as default
       final Payment cashPayment = _paymentsItems
           .where(
-            (element) => element.icon == 'CASH',
+            (element) => element.paymentType == 'ZCSH',
           )
           .first;
 
-      cashPayment.amount = _total - _creditAmount;
+      cashPayment.amount = _total - _creditAmount - _mobileAmount;
       _paymentsItems.remove(cashPayment);
       _paymentsItems.add(cashPayment);
 

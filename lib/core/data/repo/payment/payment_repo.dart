@@ -13,7 +13,8 @@ class PaymentRepo {
   Future<List<Payment>> fetchPayments(String shiftType) async {
     try {
       // get payment methods
-      var response = await RequestBuilder.buildGetRequest("GasoPayMSet?");
+      var response = await RequestBuilder.buildGetRequest(
+          "GasoPayMSet?\$filter=ShiftType eq '$shiftType'&");
 
       var responseData = json.decode(response.body);
       var extractedData = responseData['d']['results'] as List<dynamic>;

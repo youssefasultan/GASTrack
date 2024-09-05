@@ -47,6 +47,8 @@ class _SummeryWidgetState extends State<SummeryWidget> {
         return context.translate.unpaidCoupons;
       case 'smart':
         return context.translate.smartCard;
+      case 'mobile':
+        return context.translate.smartCard;
       default:
         return '';
     }
@@ -108,18 +110,20 @@ class _SummeryWidgetState extends State<SummeryWidget> {
                 const DashSeparator(),
                 Container(
                   width: double.maxFinite,
-                  height: context.mediaQuery.size.height * 0.26,
+                  height: context.mediaQuery.size.height * 0.3,
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8.0, vertical: 8.0),
                   child: ListView.builder(
                     itemBuilder: (context, index) {
+                      final name = summryTotal[index]['name'];
+                      final value = summryTotal[index]['value'];
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${context.translate.total} ${getTitle(summryTotal.keys.elementAt(index))}',
+                              '${context.translate.total} $name',
                               style: TextStyle(
                                 fontFamily: 'Bebas',
                                 fontSize: 18,
@@ -128,7 +132,7 @@ class _SummeryWidgetState extends State<SummeryWidget> {
                               ),
                             ),
                             Text(
-                              '${summryTotal.values.elementAt(index)} ${context.translate.egp}',
+                              '$value ${context.translate.egp}',
                               style: const TextStyle(
                                 fontSize: 18,
                               ),

@@ -145,23 +145,28 @@ class _HomeScreenState extends State<HomeScreen>
                 context.dialogBuilder
                     .showErrorDialog(context.translate.totalError);
               } else {
-
                 context.dialogBuilder.showLoadingIndicator('');
                 await context.hangingUnitsProviderWithNoListner
                     .calaulateTotalSalesWithCredit()
                     .onError(
                   (error, stackTrace) {
                     context.dialogBuilder.hideOpenDialog();
-                    context.dialogBuilder.showErrorDialog(error.toString());
+                    context.dialogBuilder.showErrorDialog(
+                        error.toString() == 'creditError'
+                            ? context.translate.creditError
+                            : error.toString());
+                    return false;
+                  },
+                ).then(
+                  (value) {
+                    if (value) {
+                      context.dialogBuilder.hideOpenDialog();
+                      Navigator.of(context).pushNamed(PaymentScreen.routeName);
+                    }
                   },
                 );
-
-                if (!context.mounted) return;
-                context.dialogBuilder.hideOpenDialog();
-                Navigator.of(context).pushNamed(PaymentScreen.routeName);
               }
             } else if (shiftType == 'F') {
-              
               context.hangingUnitsProviderWithNoListner.calculateTankQuantity();
               var unrecordedTanks =
                   context.hangingUnitsProviderWithNoListner.validateTanks();
