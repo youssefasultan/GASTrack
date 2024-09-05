@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
-import 'package:gas_track/core/view/ui/ui_constants.dart';
+import 'package:gas_track/core/constants/ui_constants.dart';
 import 'package:sizer/sizer.dart';
 
 class TankListTile extends StatefulWidget {

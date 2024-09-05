@@ -8,7 +8,7 @@ import 'package:sizer/sizer.dart';
 import 'dialog_widgets/confirmation_widget.dart';
 import 'dialog_widgets/loading_indicator.dart';
 import 'dialog_widgets/summery_widget.dart';
-import '../ui/ui_constants.dart';
+import '../../constants/ui_constants.dart';
 
 class DialogBuilder {
   DialogBuilder(this.context) {
@@ -16,6 +16,8 @@ class DialogBuilder {
   }
 
   BuildContext context;
+
+  final shared = Shared();
 
   /// shows loading alert dialog
   void showLoadingIndicator(String text) {
@@ -58,8 +60,8 @@ class DialogBuilder {
 
   /// show end of day summery
   void showEndDayDialog() async {
-    final sysDate = await Shared.getSystemDate();
-    final shiftDate = await Shared.getShiftDate();
+    final sysDate = await shared.getSystemDate();
+    final shiftDate = await shared.getShiftDate();
 
     if (!context.mounted) return;
 
@@ -207,21 +209,24 @@ class DialogBuilder {
       isScrollControlled: true,
       isDismissible: false,
       builder: (_) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            const SummeryWidget(),
-            DialogButton(
-              fun: () {
-                hideOpenDialog();
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
-                context.authProvider.logout();
-              },
-              title: context.translate.confirm,
-              bgColor: context.theme.primaryColor,
-            )
-          ],
+        return PopScope(
+          canPop: false,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const SummeryWidget(),
+              DialogButton(
+                fun: () {
+                  hideOpenDialog();
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil('/', ModalRoute.withName('/'));
+                  context.authProvider.logout();
+                },
+                title: context.translate.confirm,
+                bgColor: context.theme.primaryColor,
+              )
+            ],
+          ),
         );
       },
     );

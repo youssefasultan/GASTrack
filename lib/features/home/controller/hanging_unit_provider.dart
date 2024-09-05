@@ -54,7 +54,7 @@ class HangingUnitsProvider with ChangeNotifier {
   }
 
   Future<void> fetchHangingUnitsFromApi() async {
-    final userData = await Shared.getUserdata();
+    final userData = await Shared().getUserdata();
 
     final extractedData = await hangingUnitRpo.fetchProducts();
 

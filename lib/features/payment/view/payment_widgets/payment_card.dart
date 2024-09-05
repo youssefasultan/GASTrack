@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../../core/view/ui/ui_constants.dart';
+import '../../../../core/constants/ui_constants.dart';
 
 class PaymentCard extends StatelessWidget {
   const PaymentCard({

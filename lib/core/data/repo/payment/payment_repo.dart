@@ -10,6 +10,8 @@ import 'package:gas_track/features/payment/model/summery.dart';
 class PaymentRepo {
   PaymentRepo();
 
+  final shared = Shared();
+
   Future<List<Payment>> fetchPayments(String shiftType) async {
     try {
       // get payment methods
@@ -24,7 +26,7 @@ class PaymentRepo {
       final List<Payment> loadedPayments = [];
 
       String sysDate = extractedData.first['Sdate'];
-      await Shared.saveSystemDate(sysDate);
+      await shared.saveSystemDate(sysDate);
 
       for (var element in extractedData) {
         final paymentType = element['PaymentType'];
@@ -96,7 +98,7 @@ class PaymentRepo {
   Future<List<Summery>> getSummery() async {
     try {
       // return all day total for each payment type, total collection and total sales
-      final userData = await Shared.getUserdata();
+      final userData = await shared.getUserdata();
 
       var response = await RequestBuilder.buildGetRequest(
           "GasAdminSet?\$filter=ShiftLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}' and ShiftDate eq datetime'${userData['formattedDate']}T00:00:00'&");

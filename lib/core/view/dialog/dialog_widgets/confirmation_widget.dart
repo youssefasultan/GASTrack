@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
-import 'package:gas_track/core/view/ui/ui_constants.dart';
+import 'package:gas_track/core/constants/ui_constants.dart';
 import 'package:gas_track/features/home/model/hose.dart';
 import 'package:gas_track/features/home/model/tank.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

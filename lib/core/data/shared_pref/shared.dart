@@ -1,7 +1,13 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Shared {
+  Shared._internal();
+  static final Shared _singleton = Shared._internal();
+
+  factory Shared() {
+    return _singleton;
+  }
 // pref constatnts
   static const String _serviceIp = 'serviceIp';
   static const String _serviceUser = 'serviceUser';
@@ -18,15 +24,25 @@ class Shared {
   static const String _formatedDate = 'dateFormatted';
   static const String _sysDate = 'sysDate';
 
-  static Future<void> saveSettings(
+  static const String _vpnUser = 'vpnUser';
+  static const String _vpnPass = 'vpnPass';
+
+  final storage = const FlutterSecureStorage(
+    aOptions: AndroidOptions(
+      encryptedSharedPreferences: true,
+    ),
+  );
+
+  Future<void> saveSettings(
       String username, String password, String url) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(_serviceIp, url);
-    prefs.setString(_serviceUser, username);
-    prefs.setString(_servicePass, password);
+    await Future.wait([
+      storage.write(key: _serviceIp, value: url),
+      storage.write(key: _serviceUser, value: username),
+      storage.write(key: _servicePass, value: password),
+    ]);
   }
 
-  static Future<void> saveUserData(
+  Future<void> saveUserData(
       String location,
       String locationDesc,
       String loggedInUser,
@@ -36,70 +52,68 @@ class Shared {
       String shiftType,
       String name,
       String formattedDate) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    prefs.setString(_functionalLocation, location);
-    prefs.setString(_locationDesc, locationDesc);
-    prefs.setString(_loggedInUser, loggedInUser);
-    prefs.setString(_shiftDate, shiftDate);
-    prefs.setString(_shiftNo, shiftNo);
-    prefs.setString(_shiftTime, shiftTime);
-    prefs.setString(_shiftType, shiftType);
-    prefs.setString(_name, name);
-    prefs.setString(_formatedDate, formattedDate);
+    await Future.wait([
+      storage.write(key: _functionalLocation, value: location),
+      storage.write(key: _locationDesc, value: locationDesc),
+      storage.write(key: _loggedInUser, value: loggedInUser),
+      storage.write(key: _shiftDate, value: shiftDate),
+      storage.write(key: _shiftNo, value: shiftNo),
+      storage.write(key: _shiftTime, value: shiftTime),
+      storage.write(key: _shiftType, value: shiftType),
+      storage.write(key: _name, value: name),
+      storage.write(key: _formatedDate, value: formattedDate),
+    ]);
   }
 
-  static Future<Map<String, String>> getSettings() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<Map<String, String>> getSettings() async {
+    final data = await storage.readAll();
 
     return {
-      'ip': '${prefs.getString(_serviceIp)}',
-      'username': '${prefs.getString(_serviceUser)}',
-      'password': '${prefs.getString(_servicePass)}',
+      'ip': '${data[_serviceIp]}',
+      'username': '${data[_serviceUser]}',
+      'password': '${data[_servicePass]}',
     };
   }
 
-  static Future<bool> userDataFound() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    return prefs.getString('funLoc')!.isNotEmpty;
+  Future<bool> userDataFound() async {
+    final funLoc = await storage.read(key: _functionalLocation);
+    return funLoc!.isNotEmpty;
   }
 
-  static Future<Map<String, String>> getUserdata() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<Map<String, String>> getUserdata() async {
+    final data = await storage.readAll();
 
     return {
-      'funLoc': '${prefs.getString(_functionalLocation)}',
-      'funLocDesc': '${prefs.getString(_locationDesc)}',
-      'user': '${prefs.getString(_loggedInUser)}',
-      'shiftDate': '${prefs.getString(_shiftDate)}',
-      'shiftNo': '${prefs.getString(_shiftNo)}',
-      'shiftTime': '${prefs.getString(_shiftTime)}',
-      'shiftType': '${prefs.getString(_shiftType)}',
-      'name': '${prefs.getString(_name)}',
-      'formattedDate': '${prefs.getString(_formatedDate)}',
+      'funLoc': '${data[_functionalLocation]}',
+      'funLocDesc': '${data[_locationDesc]}',
+      'user': '${data[_loggedInUser]}',
+      'shiftDate': '${data[_shiftDate]}',
+      'shiftNo': '${data[_shiftNo]}',
+      'shiftTime': '${data[_shiftTime]}',
+      'shiftType': '${data[_shiftType]}',
+      'name': '${data[_name]}',
+      'formattedDate': '${data[_formatedDate]}',
     };
   }
 
-  static Future<void> clearUserData() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(_functionalLocation, '');
-    prefs.setString(_locationDesc, '');
-    prefs.setString(_loggedInUser, '');
-    prefs.setString(_shiftDate, '');
-    prefs.setString(_shiftNo, '');
-    prefs.setString(_formatedDate, '');
+  Future<void> clearUserData() async {
+    await Future.wait([
+      storage.delete(key: _functionalLocation),
+      storage.delete(key: _locationDesc),
+      storage.delete(key: _loggedInUser),
+      storage.delete(key: _shiftDate),
+      storage.delete(key: _shiftNo),
+      storage.delete(key: _formatedDate),
+    ]);
   }
 
-  static Future<void> saveSystemDate(String date) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(_sysDate, date);
+  Future<void> saveSystemDate(String date) async {
+    await storage.write(key: _sysDate, value: date);
   }
 
-  static Future<DateTime> getSystemDate() async {
+  Future<DateTime> getSystemDate() async {
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final date = prefs.getString(_sysDate);
+      final date = await storage.read(key: _sysDate);
       String formattedDate =
           "${date!.substring(0, 4)}-${date.substring(4, 6)}-${date.substring(6, 8)}";
 
@@ -109,10 +123,27 @@ class Shared {
     }
   }
 
-  static Future<DateTime> getShiftDate() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final date = prefs.getString(_formatedDate);
+  Future<DateTime> getShiftDate() async {
+    final date = await storage.read(key: _formatedDate);
 
     return DateFormat('yyyy-MM-dd').parse(date!);
+  }
+
+  Future<void> saveVpnCredentials(String username, String password) async {
+    await Future.wait([
+      storage.write(key: _vpnUser, value: username),
+      storage.write(key: _vpnPass, value: password),
+    ]);
+  }
+
+
+  /// returns a map with key 'user' for username and 'pass' for password 
+  Future<Map<String, String?>> getVpnCredentials() async {
+    final data = await storage.readAll();
+
+    return {
+      'user': data[_vpnUser],
+      'pass' : data[_vpnPass],
+    };
   }
 }

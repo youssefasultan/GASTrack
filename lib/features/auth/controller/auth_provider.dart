@@ -20,11 +20,11 @@ class AuthProvider with ChangeNotifier {
   String? _name;
   String? _formattedDate;
   late String _shiftType;
-
   bool _lock = false;
   int _lockCounter = 0;
-
   bool _isAdmin = false;
+
+  final shared = Shared();
 
   String? get getLocation {
     if (_location != null) {
@@ -74,8 +74,8 @@ class AuthProvider with ChangeNotifier {
         await _authenticate(username, password, shiftType);
       } else {
         // fetch from shared prefrence
-        if (await Shared.userDataFound()) {
-          final userData = await Shared.getUserdata();
+        if (await shared.userDataFound()) {
+          final userData = await shared.getUserdata();
 
           _location = userData['funLoc'];
           _locationDescription = userData['funLocDesc'];
@@ -112,7 +112,7 @@ class AuthProvider with ChangeNotifier {
 
       // if responseData['d']['Found'] not equal 0 that means there is an error
       if (responseData['d']['Found'] != '0') {
-        // lock counter 
+        // lock counter
         if (responseData['d']['Found'] == '1') {
           _lockCounter++;
         } else if (responseData['d']['Found'] == '2') {
@@ -137,10 +137,9 @@ class AuthProvider with ChangeNotifier {
       _name = responseData['d']['Name'];
       _formattedDate = responseData['d']['ShiftDateStr'];
       _shiftType = shiftType;
-      
 
       // save data in shared pref
-      await Shared.saveUserData(
+      await shared.saveUserData(
         _location!,
         _locationDescription!,
         _username!,
@@ -171,15 +170,12 @@ class AuthProvider with ChangeNotifier {
     return responseData['d']['Msg'];
   }
 
- 
-
   Future<void> logout() async {
     try {
-      
       _location = null;
       notifyListeners();
 
-      await Shared.clearUserData();
+      await shared.clearUserData();
     } catch (error) {
       rethrow;
     }

@@ -79,6 +79,8 @@
   "connecting": "Connecting",
   "connected": "Connected",
   "shyftTypeError": "Please choose shift type",
-  "creditError": "Actual Quantity must be greater than credit quantity"
+  "creditError": "Actual Quantity must be greater than credit quantity",
+  "vpnCred": "Please Enter Vpn Credentials",
+  "vpnError": "Please Check Vpn Credentials"
 
 }

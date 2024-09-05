@@ -8,9 +8,11 @@ import 'package:gas_track/features/home/model/tank.dart';
 class HangingUnitRepo {
   HangingUnitRepo();
 
+  final shared = Shared();
+
   Future<List<dynamic>> fetchProducts() async {
     try {
-      final userData = await Shared.getUserdata();
+      final userData = await shared.getUserdata();
 
       final response = await RequestBuilder.buildGetRequest(
           "GasoItemsSet?\$filter=FunctionalLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}'&");
@@ -30,7 +32,7 @@ class HangingUnitRepo {
 
   Future<Map<String, double>> getCredit() async {
     try {
-      final userData = await Shared.getUserdata();
+      final userData = await shared.getUserdata();
 
       final response = await RequestBuilder.buildGetRequest(
           "GetConditionsSet?\$filter=ShiftLocation eq '${userData['funLoc']}' and ShiftType eq '${userData['shiftType']}' and ShiftNo eq '${userData['shiftNo']}' and ShiftDate eq '${userData['formattedDate']!.replaceAll('-', '')}' &");

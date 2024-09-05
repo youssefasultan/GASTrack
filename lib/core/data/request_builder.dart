@@ -16,6 +16,7 @@ class RequestBuilder {
   RequestBuilder._();
   static String? _token;
   static String? _cookie;
+  final shared = Shared();
 
   static Future<http.Response> buildGetRequest(String entitySet) async {
     String basicAuth =
@@ -96,7 +97,7 @@ class RequestBuilder {
       String cashImg,
       List<String> visaImgs,
       bool endDay) async {
-    var userData = await Shared.getUserdata();
+    var userData = await Shared().getUserdata();
     String cashBase64String = '';
     List<String> visaBase64String = [];
 

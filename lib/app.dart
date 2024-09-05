@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:gas_track/core/network/open_vpn.dart';
 import 'package:gas_track/core/view/splash_screen.dart';
-import 'package:gas_track/core/view/ui/ui_constants.dart';
+import 'package:gas_track/core/constants/ui_constants.dart';
 import 'package:gas_track/features/auth/controller/auth_provider.dart';
 import 'package:gas_track/features/auth/view/auth_screen.dart';
 import 'package:gas_track/features/home/controller/hanging_unit_provider.dart';
@@ -12,11 +12,14 @@ import 'package:gas_track/features/home/view/home_screen.dart';
 import 'package:gas_track/features/payment/controller/payments_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/features/payment/view/payment_screen.dart';
+import 'package:gas_track/vpn_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
+import 'core/data/shared_pref/shared.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
@@ -38,10 +41,12 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     final vpn = OpenVpnService();
 
     // check whether application is paused then disconnect vpn else re-connect
-    if (state == AppLifecycleState.paused) {
-      vpn.disconnect();
-    } else if (state == AppLifecycleState.resumed) {
-      vpn.connect();
+    if (vpn.openvpn != null) {
+      if (state == AppLifecycleState.paused) {
+        vpn.disconnect();
+      } else if (state == AppLifecycleState.resumed) {
+        vpn.connect();
+      }
     }
   }
 
@@ -80,8 +85,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         ),
       ],
       child: Consumer<OpenVpnService>(
-        builder: (context, vpn, child) => Sizer(
-          builder: (context, orientation, deviceType) {
+        builder: (_, vpn, child) => Sizer(
+          builder: (_, orientation, deviceType) {
             return MaterialApp(
               onGenerateTitle: (context) {
                 return context.translate.appTitle;
@@ -119,18 +124,27 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
                     if (!_) Permission.notification.request();
                   });
 
-                  // init vpn and connect
-                  vpn.init();
-                  vpn.connect();
+                  final shared = Shared();
 
-                  Future.delayed(const Duration(seconds: 5));
+                  // cheack if there is vpn credentials
+                  final cred = await shared.getVpnCredentials();
 
-                  return const AuthScreen();
+                  if (cred['user'] != null && cred['pass'] != null) {
+                    vpn.init();
+                    vpn.connect();
+
+                    Future.delayed(const Duration(seconds: 5));
+
+                    return const AuthScreen();
+                  } else {
+                    return VpnScreen();
+                  }
                 },
               ),
               routes: {
                 HomeScreen.routeName: (context) => const HomeScreen(),
                 PaymentScreen.routeName: (context) => const PaymentScreen(),
+                AuthScreen.routeName: (context) => const AuthScreen(),
               },
             );
           },

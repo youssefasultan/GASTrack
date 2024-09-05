@@ -98,7 +98,7 @@ class _SummeryWidgetState extends State<SummeryWidget> {
                             .map((e) => DataRow(
                                   cells: [
                                     DataCell(Text(e.shift)),
-                                    DataCell(Text(getTitle(e.paymentType))),
+                                    DataCell(Text(e.paymentType)),
                                     DataCell(Text(e.value.toString())),
                                   ],
                                 ))
