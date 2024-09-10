@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
+import 'package:number_text_input_formatter/number_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
@@ -138,6 +139,7 @@ class _PaymentTileState extends State<PaymentTile> {
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
                 key: Key(payment.paymentName),
+                // cash, credit and mobile sales are disabled as values are pre calculated
                 enabled: payment.paymentType == 'ZCSH' ||
                         payment.paymentType == 'ZUCP' ||
                         payment.paymentType == 'ZMOB'
@@ -146,6 +148,19 @@ class _PaymentTileState extends State<PaymentTile> {
                 onTapOutside: (event) {
                   amountFN.unfocus();
                 },
+                inputFormatters: [
+                  NumberTextInputFormatter(
+                    integerDigits: 7,
+                    decimalDigits: 2,
+                    maxValue: '9999999.99',
+                    decimalSeparator: '.',
+                    
+                    allowNegative: false,
+                    overrideDecimalPoint: true,
+                    insertDecimalPoint: false,
+                    insertDecimalDigits: false,
+                  ),
+                ],
               ),
             ),
           ),

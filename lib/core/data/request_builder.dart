@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../helper/image_converter.dart';
-import '../models/http_exception.dart';
+import '../extentions/http_exception.dart';
 import '../../features/payment/model/payment.dart';
 import '../../features/home/model/hanging_unit.dart';
 import '../../features/home/model/tank.dart';

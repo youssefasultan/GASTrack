@@ -121,7 +121,7 @@ class PaymentsProvider with ChangeNotifier {
         // mobile
         final Payment mobilePayment = _paymentsItems
             .where(
-              (element) => element.paymentType == 'ZMOB',
+              (element) => element.paymentType == 'ZMOB', // mobile stations
             )
             .first;
 
@@ -133,7 +133,7 @@ class PaymentsProvider with ChangeNotifier {
       // make cash payment at the end of payment list and set cash amount to total as default
       final Payment cashPayment = _paymentsItems
           .where(
-            (element) => element.paymentType == 'ZCSH',
+            (element) => element.paymentType == 'ZCSH',// cash
           )
           .first;
 

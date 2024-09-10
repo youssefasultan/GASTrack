@@ -336,6 +336,7 @@ class DialogBuilder {
                 context.paymentsProviderWithNoListner
                     .removeImgPathFromList(path);
               }
+          
             },
             title: context.translate.confirm,
             bgColor: context.theme.primaryColor,

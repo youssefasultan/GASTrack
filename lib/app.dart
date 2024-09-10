@@ -12,7 +12,7 @@ import 'package:gas_track/features/home/view/home_screen.dart';
 import 'package:gas_track/features/payment/controller/payments_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gas_track/features/payment/view/payment_screen.dart';
-import 'package:gas_track/vpn_screen.dart';
+import 'package:gas_track/core/view/vpn_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -124,12 +124,13 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
                     if (!_) Permission.notification.request();
                   });
 
-                  final shared = Shared();
+                  final shared = Shared();// shared pref
 
-                  // cheack if there is vpn credentials
+                  // check if there is vpn credentials
                   final cred = await shared.getVpnCredentials();
 
                   if (cred['user'] != null && cred['pass'] != null) {
+                    // init vpn and connect
                     vpn.init();
                     vpn.connect();
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
 import 'package:gas_track/core/constants/ui_constants.dart';
+import 'package:number_text_input_formatter/number_text_input_formatter.dart';
 import 'package:sizer/sizer.dart';
 
 class TankListTile extends StatefulWidget {
@@ -134,6 +135,18 @@ class _TankListTileState extends State<TankListTile> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       readOnly: isAdmin ? false : !(tank.shiftStart == 0.0),
+                      inputFormatters: [
+                        NumberTextInputFormatter(
+                          integerDigits: 7,
+                          decimalDigits: 2,
+                          maxValue: '9999999.99',
+                          decimalSeparator: '.',
+                          allowNegative: false,
+                          overrideDecimalPoint: true,
+                          insertDecimalPoint: false,
+                          insertDecimalDigits: false,
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -149,7 +162,10 @@ class _TankListTileState extends State<TankListTile> {
                               '${context.translate.unrecoredTankError} ${tank.material}');
                         }
                       } else {
-                        tank.setEndSift(double.parse(shifEndController.text.isEmpty ? '0' : shifEndController.text));
+                        tank.setEndSift(double.parse(
+                            shifEndController.text.isEmpty
+                                ? '0'
+                                : shifEndController.text));
                       }
                     }
                   },
@@ -170,6 +186,18 @@ class _TankListTileState extends State<TankListTile> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       onTapOutside: (event) => endFN.unfocus(),
+                      inputFormatters: [
+                        NumberTextInputFormatter(
+                          integerDigits: 7,
+                          decimalDigits: 2,
+                          maxValue: '9999999.99',
+                          decimalSeparator: '.',
+                          allowNegative: false,
+                          overrideDecimalPoint: true,
+                          insertDecimalPoint: false,
+                          insertDecimalDigits: false,
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -205,6 +233,18 @@ class _TankListTileState extends State<TankListTile> {
                   keyboardType: TextInputType.number,
                   onTapOutside: (event) => waredFN.unfocus(),
                   textAlign: TextAlign.center,
+                  inputFormatters: [
+                    NumberTextInputFormatter(
+                      integerDigits: 7,
+                      decimalDigits: 2,
+                      maxValue: '9999999.99',
+                      decimalSeparator: '.',
+                      allowNegative: false,
+                      overrideDecimalPoint: true,
+                      insertDecimalPoint: false,
+                      insertDecimalDigits: false,
+                    ),
+                  ],
                 ),
               ),
             ),

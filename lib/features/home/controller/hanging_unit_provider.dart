@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gas_track/core/data/repo/hangingUnits/hanging_unit_repo.dart';
 import 'package:gas_track/core/helper/data_manipulation.dart';
-import 'package:gas_track/core/models/http_exception.dart';
+import 'package:gas_track/core/extentions/http_exception.dart';
 import 'package:gas_track/features/home/model/hose.dart';
 
 import '../../../core/data/shared_pref/shared.dart';

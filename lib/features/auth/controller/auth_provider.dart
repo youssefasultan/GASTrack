@@ -6,7 +6,7 @@ import 'package:gas_track/core/network/connectivity.dart';
 
 import '../../../core/data/request_builder.dart';
 import '../../../core/data/shared_pref/shared.dart';
-import '../../../core/models/http_exception.dart';
+import '../../../core/extentions/http_exception.dart';
 
 class AuthProvider with ChangeNotifier {
   String? deviceId;
@@ -77,16 +77,16 @@ class AuthProvider with ChangeNotifier {
         if (await shared.userDataFound()) {
           final userData = await shared.getUserdata();
 
-          _location = userData['funLoc'];
-          _locationDescription = userData['funLocDesc'];
-          _username = userData['user'];
-          _shiftDate = userData['shiftDate'];
-          _shiftNo = userData['shiftNo'];
-          _shiftTime = userData['shiftTime'];
-          _isAdmin = false;
-          _name = userData['name'];
+          _location = userData['funLoc']; // function location
+          _locationDescription = userData['funLocDesc']; // fun loc name
+          _username = userData['user']; // user name
+          _shiftDate = userData['shiftDate']; // shift date 
+          _shiftNo = userData['shiftNo']; // shift number
+          _shiftTime = userData['shiftTime'];// shift time
+          _isAdmin = false; // admin
+          _name = userData['name']; // name
 
-          _shiftType = shiftType;
+          _shiftType = shiftType; // G or F
 
           notifyListeners();
         } else {
@@ -107,6 +107,8 @@ class AuthProvider with ChangeNotifier {
 
       final response = await RequestBuilder.buildGetRequest(
           "GasolinaLoginSet(Username='${username.toUpperCase().trim()}',Password='$password',ShiftType='$shiftType',Locked=$_lock)?");
+
+      debugPrint('response: ${response.body}');
 
       final responseData = json.decode(response.body);
 

@@ -25,6 +25,8 @@ class PaymentRepo {
       }
       final List<Payment> loadedPayments = [];
 
+
+      // get system date
       String sysDate = extractedData.first['Sdate'];
       await shared.saveSystemDate(sysDate);
 
@@ -109,7 +111,7 @@ class PaymentRepo {
       return extractedData.map((e) {
         return Summery(
           shift: e['Shift'],
-          paymentType: e['PaymentTextEg'],
+          paymentType: e['PaymentTextAr'],
           value: double.parse(e['PaymentValue']),
         );
       }).toList();

@@ -6,7 +6,7 @@ import 'package:gas_track/features/auth/view/auth_screen.dart';
 import 'package:openvpn_flutter/openvpn_flutter.dart';
 import 'package:sizer/sizer.dart';
 
-import 'core/constants/ui_constants.dart';
+import '../constants/ui_constants.dart';
 
 class VpnScreen extends StatelessWidget {
   VpnScreen({super.key});
@@ -74,15 +74,12 @@ class VpnScreen extends StatelessWidget {
                             return;
                           }
 
-                          await shared.saveVpnCredentials(
+                          // init vpn and connect
+                          vpn.init();
+                          vpn.connectWithUsernameAndPassword(
                             usernameController.text,
                             passwordController.text,
                           );
-
-                          // init vpn and connect
-
-                          vpn.init();
-                          vpn.connect();
 
                           if (!context.mounted) return;
                           context.dialogBuilder.showLoadingIndicator('');
@@ -95,6 +92,7 @@ class VpnScreen extends StatelessWidget {
                           );
                           if (!context.mounted) return;
                           if (vpn.stage == VPNStage.connected) {
+                            if (!context.mounted) return;
                             Navigator.pushReplacementNamed(
                                 context, AuthScreen.routeName);
                           } else {

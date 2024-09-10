@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gas_track/core/extentions/context_ext.dart';
+import 'package:number_text_input_formatter/number_text_input_formatter.dart';
 
 import 'package:sizer/sizer.dart';
 
@@ -220,6 +221,19 @@ class _HoseListTileState extends State<HoseListTile> {
               onTapOutside: (event) {
                 calibraionFN.unfocus();
               },
+              inputFormatters: [
+                NumberTextInputFormatter(
+                  integerDigits: 7,
+                  decimalDigits: 2,
+                  maxValue: '9999999.99',
+                  decimalSeparator: '.',
+                  
+                  allowNegative: false,
+                  overrideDecimalPoint: true,
+                  insertDecimalPoint: false,
+                  insertDecimalDigits: false,
+                ),
+              ],
             ),
           ),
         ),
@@ -268,7 +282,8 @@ class _HoseListTileState extends State<HoseListTile> {
                 ),
                 textAlign: TextAlign.center,
                 controller: lastAmountController,
-                keyboardType: TextInputType.number,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 key: UniqueKey(),
                 onTapOutside: (event) {
                   lastAmountFN.unfocus();
@@ -320,9 +335,23 @@ class _HoseListTileState extends State<HoseListTile> {
                 onTapOutside: (event) {
                   entredAmountFN.unfocus();
                 },
-                keyboardType: TextInputType.number,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 key: UniqueKey(),
                 enabled: !hose.inActiveFlag,
+                inputFormatters: [
+                  NumberTextInputFormatter(
+                    integerDigits: 7,
+                    decimalDigits: 2,
+                    maxValue: '9999999.99',
+                    decimalSeparator: '.',
+                  
+                    allowNegative: false,
+                    overrideDecimalPoint: true,
+                    insertDecimalPoint: false,
+                    insertDecimalDigits: false,
+                  ),
+                ],
               ),
             ),
           ),
@@ -420,12 +449,25 @@ class _HoseListTileState extends State<HoseListTile> {
                 ),
                 textAlign: TextAlign.center,
                 controller: readingController,
-                keyboardType: TextInputType.number,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 key: UniqueKey(),
                 enabled: !hose.inActiveFlag,
                 onTapOutside: (event) {
                   enteredReadingFN.unfocus();
                 },
+                inputFormatters: [
+                  NumberTextInputFormatter(
+                    integerDigits: 7,
+                    decimalDigits: 2,
+                    maxValue: '9999999.99',
+                    decimalSeparator: '.',
+                    allowNegative: false,
+                    overrideDecimalPoint: true,
+                    insertDecimalPoint: false,
+                    insertDecimalDigits: false,
+                  ),
+                ],
               ),
             ),
           ),

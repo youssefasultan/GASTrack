@@ -56,6 +56,30 @@ class OpenVpnService with ChangeNotifier {
     }
   }
 
+  void connectWithUsernameAndPassword(String username, String password) async {
+    try {
+      var content = await rootBundle
+          .loadString('assets/vpn/pfsense-TCP4-6443-gastech-config.ovpn');
+
+      if (openvpn!.initialized) {
+        openvpn!.connect(
+          content,
+          'GASTRACK VPN',
+          username: username,
+          password: password,
+          certIsRequired: true,
+        );
+
+        await storage.saveVpnCredentials(
+          username,
+          password,
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   void disconnect() {
     openvpn!.disconnect();
   }
